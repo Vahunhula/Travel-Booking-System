@@ -1,6 +1,14 @@
 package Application.DTOs;
 
 public class Customer {
+    //-- Create Customer table
+    //CREATE TABLE customer (
+    //    customer_id INT PRIMARY KEY AUTO_INCREMENT,
+    //    customer_name VARCHAR(20),
+    //    email VARCHAR(50) NOT NULL UNIQUE,
+    //    tel_num VARCHAR(20),
+    //    address VARCHAR(255)
+    //);
 //the customer class is used to store the information of the customer
     //customer_id, customer_name, email, tel_num, address.
     private int customer_id; // primary key and auto increment

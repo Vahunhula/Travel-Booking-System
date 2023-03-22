@@ -1,6 +1,12 @@
 package Application.DTOs;
 
 public class Airport {
+    //-- Create Airport table
+    //CREATE TABLE airport (
+    //    airport_id INT PRIMARY KEY AUTO_INCREMENT,
+    //    airport_name VARCHAR(30),
+    //    airport_location VARCHAR(50)
+    //);
     //the airport has the following fields: airport id - primary key and auto increment, airport name and airport_location
     private int airport_id;
 
@@ -53,5 +59,5 @@ public class Airport {
                 ", airport_location='" + airport_location + '\'' +
                 '}';
     }
-    
+
 }
