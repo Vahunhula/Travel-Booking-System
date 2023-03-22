@@ -25,6 +25,13 @@ public class Airport {
         this.airport_location = airport_location;
     }
 
+    //parameter with airport_id
+    public Airport(int airport_id, String airport_name, String airport_location) {
+        this.airport_id = airport_id;
+        this.airport_name = airport_name;
+        this.airport_location = airport_location;
+    }
+
     //getters and setters
     public int getAirport_id() {
         return airport_id;
