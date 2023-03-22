@@ -69,3 +69,26 @@ INSERT INTO customer (customer_name, email, tel_num, address) VALUES
 ('Sinead Ryan', 'sinead.ryan@example.com', '0868901234', 'Dublin 8'),
 ('Tommy Byrne', 'tommy.byrne@example.com', '0879012345', 'Dublin 9'),
 ('Katie Kennedy', 'katie.kennedy@example.com', '0850123456', 'Dublin 10');
+
+-- Insert data into airport table
+INSERT INTO airport (airport_name, airport_location) VALUES
+('Dublin Airport', 'Dublin'),
+('Cork Airport', 'Cork'),
+('Shannon Airport', 'Limerick'),
+('Galway Airport', 'Galway'),
+('Waterford Airport', 'Waterford'),
+('Belfast International Airport', 'Belfast'),
+('Belfast City Airport', 'Belfast'),
+('London Heathrow Airport', 'London'),
+('London Gatwick Airport', 'London'),
+('Manchester Airport', 'Manchester'),
+('Birmingham Airport', 'Birmingham'),
+('Edinburgh Airport', 'Edinburgh'),
+('Glasgow Airport', 'Glasgow'),
+('Paris Charles de Gaulle Airport', 'Paris'),
+('Paris Orly Airport', 'Paris'),
+('Amsterdam Airport Schiphol', 'Amsterdam'),
+('Frankfurt Airport', 'Frankfurt'),
+('Barcelona Airport', 'Barcelona'),
+('Rome Fiumicino Airport', 'Rome'),
+('Milan Malpensa Airport', 'Milan');
