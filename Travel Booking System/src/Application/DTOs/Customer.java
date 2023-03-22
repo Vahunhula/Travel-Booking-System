@@ -1,4 +1,78 @@
 package Application.DTOs;
 
 public class Customer {
+//the customer class is used to store the information of the customer
+    //customer_id, customer_name, email, tel_num, address.
+    private int customer_id; // primary key and auto increment
+    private String customer_name;
+    private String email;
+    private String tel_num;
+    private String address;
+
+    //default constructor
+    public Customer() {
+    }
+
+    //constructor with parameters
+    public Customer(int customer_id, String customer_name, String email, String tel_num, String address) {
+        this.customer_id = customer_id;
+        this.customer_name = customer_name;
+        this.email = email;
+        this.tel_num = tel_num;
+        this.address = address;
+    }
+
+    //getters and setters
+    public int getCustomer_id() {
+        return customer_id;
+    }
+
+    public void setCustomer_id(int customer_id) {
+        this.customer_id = customer_id;
+    }
+
+    public String getCustomer_name() {
+        return customer_name;
+    }
+
+    public void setCustomer_name(String customer_name) {
+        this.customer_name = customer_name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTel_num() {
+        return tel_num;
+    }
+
+    public void setTel_num(String tel_num) {
+        this.tel_num = tel_num;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    //toString method
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customer_id=" + customer_id +
+                ", customer_name='" + customer_name + '\'' +
+                ", email='" + email + '\'' +
+                ", tel_num='" + tel_num + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
+
 }
