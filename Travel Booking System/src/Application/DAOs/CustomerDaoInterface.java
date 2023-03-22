@@ -15,7 +15,7 @@ public interface CustomerDaoInterface {
     public Customer findCustomerById(int customerId) throws DaoException;
 //
 //    //Feature 3 – Delete an Entity by key e.g. deletePlayerById( id ) – remove entity from database boolean
-//    public boolean deleteCustomerById(int customerId) throws DaoException;
+    public boolean deleteCustomerById(int customerId) throws DaoException;
 //
 //    //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
 //    //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
