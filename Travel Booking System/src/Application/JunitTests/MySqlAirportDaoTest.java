@@ -29,4 +29,21 @@ class MySqlAirportDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the airport is found by id
+    @Test
+    void testFindAirportById() {
+        AirportDaoInterface airportDao = new MySqlAirportDao();
+        int airportId = 1;
+        try{
+            Airport airport = airportDao.findAirportById(airportId);
+            //this is a test to see if the airport is found by id
+            //if the airport is found by id, then the airport should not be null
+            assertNotNull(airport);
+            System.out.println(airport);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
