@@ -140,4 +140,45 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
         }
         return deleted;
     }
+
+    @Override
+    public Customer insertCustomer(Customer customer) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        Customer c = null;
+
+        try{
+            connection = getConnection();
+            String query = "INSERT INTO customer (customer_name, email, tel_num, address) VALUES (?,?,?,?)";
+            ps = connection.prepareStatement(query);
+            ps.setString(1,customer.getCustomer_name());
+            ps.setString(2,customer.getEmail());
+            ps.setString(3,customer.getTel_num());
+            ps.setString(4,customer.getAddress());
+
+            int result = ps.executeUpdate();
+            if(result == 1){
+                c = customer;
+            }
+        }catch(SQLException e){
+            throw new DaoException("insertCustomerresultSet() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("insertCustomer() " + e.getMessage());
+            }
+        }
+        return c;
+    }
 }

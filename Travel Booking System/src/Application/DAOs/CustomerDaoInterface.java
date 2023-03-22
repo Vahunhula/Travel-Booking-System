@@ -19,5 +19,5 @@ public interface CustomerDaoInterface {
 //
 //    //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
 //    //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
-//    public Customer insertCustomer(Customer customer) throws DaoException;
+    public Customer insertCustomer(Customer customer) throws DaoException;
 }
