@@ -56,3 +56,16 @@ CREATE TABLE Payment (
     method VARCHAR(20),
     FOREIGN KEY (booking_id) REFERENCES booking(booking_id)
 );
+
+-- Insert data into customer table
+INSERT INTO customer (customer_name, email, tel_num, address) VALUES
+('John Smith', 'john.smith@example.com', '0851234567', 'Dublin 1'),
+('Mary Johnson', 'mary.johnson@example.com', '0862345678', 'Dublin 2'),
+('James Murphy', 'james.murphy@example.com', '0873456789', 'Dublin 3'),
+('Sarah O\'Brien', 'sarah.obrien@example.com', '0834567890', 'Dublin 4'),
+('Michael Collins', 'michael.collins@example.com', '0865678901', 'Dublin 5'),
+('Aoife O\'Connor', 'aoife.oconnor@example.com', '0876789012', 'Dublin 6'),
+('David Walsh', 'david.walsh@example.com', '0857890123', 'Dublin 7'),
+('Sinead Ryan', 'sinead.ryan@example.com', '0868901234', 'Dublin 8'),
+('Tommy Byrne', 'tommy.byrne@example.com', '0879012345', 'Dublin 9'),
+('Katie Kennedy', 'katie.kennedy@example.com', '0850123456', 'Dublin 10');
