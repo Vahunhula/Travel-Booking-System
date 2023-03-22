@@ -22,7 +22,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
 
         try{
             connection = getConnection();
-            String query = "SELECT * FROM customers";
+            String query = "SELECT * FROM customer";
             ps = connection.prepareStatement(query);
 
             resultSet = ps.executeQuery();
