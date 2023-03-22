@@ -32,6 +32,15 @@ public class Customer {
         this.address = address;
     }
 
+    //paeameter with customer_id
+    public Customer(int customer_id, String customer_name, String email, String tel_num, String address) {
+        this.customer_id = customer_id;
+        this.customer_name = customer_name;
+        this.email = email;
+        this.tel_num = tel_num;
+        this.address = address;
+    }
+
     //getters and setters
     public int getCustomer_id() {
         return customer_id;
