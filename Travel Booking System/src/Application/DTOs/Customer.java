@@ -4,6 +4,8 @@ public class Customer {
 //the customer class is used to store the information of the customer
     //customer_id, customer_name, email, tel_num, address.
     private int customer_id; // primary key and auto increment
+
+    private static int customer_id_counter = 1;
     private String customer_name;
     private String email;
     private String tel_num;
@@ -14,8 +16,8 @@ public class Customer {
     }
 
     //constructor with parameters
-    public Customer(int customer_id, String customer_name, String email, String tel_num, String address) {
-        this.customer_id = customer_id;
+    public Customer(String customer_name, String email, String tel_num, String address) {
+        this.customer_id = customer_id_counter++;
         this.customer_name = customer_name;
         this.email = email;
         this.tel_num = tel_num;
@@ -27,9 +29,9 @@ public class Customer {
         return customer_id;
     }
 
-    public void setCustomer_id(int customer_id) {
-        this.customer_id = customer_id;
-    }
+//    public void setCustomer_id(int customer_id) {
+//        this.customer_id = customer_id;
+//    }
 
     public String getCustomer_name() {
         return customer_name;
