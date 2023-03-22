@@ -183,7 +183,4 @@ INSERT INTO payment (booking_id, amount_paid, payment_date, method) VALUES
 (10, 241.50, '2023-04-10', 'credit card'),
 (11, 482.00, '2023-04-11', 'debit card'),
 (12, 120.75, '2023-04-12', 'paypal'),
-(14, 241.50, '2023-04-13', 'credit card'),
-(17, 120.75, '2023-04-14', 'debit card'),
-(19, 482.00, '2023-04-15', 'paypal'),
-(20, 241.50, '2023-04-16', 'credit card');
+(14, 241.50, '2023-04-13', 'credit card');
