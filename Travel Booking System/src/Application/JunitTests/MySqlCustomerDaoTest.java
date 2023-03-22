@@ -41,4 +41,19 @@ class MySqlCustomerDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the customer is deleted by id
+    @org.junit.jupiter.api.Test
+    void testDeleteCustomerById(){
+        CustomerDaoInterface customerDao = new MySqlCustomerDao();
+        int customerId = 11;
+        try{
+            boolean deleted = customerDao.deleteCustomerById(customerId);
+            //this is a test to see if the customer is deleted by id
+            //if the customer is deleted by id, then the customer should be true
+            assertTrue(deleted);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
