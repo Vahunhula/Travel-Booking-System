@@ -14,7 +14,7 @@ public class Booking {
     //);
 
     private int booking_id;
-    private static int booking_id_counter = 1;
+    private static int booking_id_counter = 0;
     private int flight_id;
     private int customer_id;
     private String travel_date;
@@ -27,7 +27,7 @@ public class Booking {
 
     //constructor with parameters
     public Booking(int flight_id, int customer_id, String travel_date, String travel_time, int seats) {
-        this.booking_id = booking_id_counter++;
+        this.booking_id = ++booking_id_counter;
         this.flight_id = flight_id;
         this.customer_id = customer_id;
         this.travel_date = travel_date;

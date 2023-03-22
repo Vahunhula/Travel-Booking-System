@@ -13,7 +13,7 @@ public class Customer {
     //customer_id, customer_name, email, tel_num, address.
     private int customer_id; // primary key and auto increment
 
-    private static int customer_id_counter = 1;
+    private static int customer_id_counter = 0;
     private String customer_name;
     private String email;
     private String tel_num;
@@ -25,7 +25,7 @@ public class Customer {
 
     //constructor with parameters
     public Customer(String customer_name, String email, String tel_num, String address) {
-        this.customer_id = customer_id_counter++;
+        this.customer_id = ++customer_id_counter;
         this.customer_name = customer_name;
         this.email = email;
         this.tel_num = tel_num;

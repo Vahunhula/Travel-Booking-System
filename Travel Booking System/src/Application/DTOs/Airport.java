@@ -20,7 +20,7 @@ public class Airport {
 
     //constructor with parameters
     public Airport(String airport_name, String airport_location) {
-        this.airport_id = airport_id_counter++;
+        this.airport_id = ++airport_id_counter;
         this.airport_name = airport_name;
         this.airport_location = airport_location;
     }

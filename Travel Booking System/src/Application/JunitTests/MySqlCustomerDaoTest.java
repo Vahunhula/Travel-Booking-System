@@ -56,4 +56,20 @@ class MySqlCustomerDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the customer is inserted
+    @org.junit.jupiter.api.Test
+    void testInsertCustomer(){
+        CustomerDaoInterface customerDao = new MySqlCustomerDao();
+        Customer customer = new Customer("Patrick","d005@student.dkit.ie","0871234567","Dundalk");
+        try{
+            Customer insertedCustomer = customerDao.insertCustomer(customer);
+            //this is a test to see if the customer is inserted
+            //if the customer is inserted, then the customer should not be null
+            assertNotNull(insertedCustomer);
+            System.out.println(insertedCustomer);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -14,7 +14,7 @@ public class Flight {
     //);
 
     private int flight_id;
-    private static int flight_id_counter = 1;
+    private static int flight_id_counter = 0;
     private int airport_id;
     private String departure_location;
     private String arrival_location;
@@ -28,7 +28,7 @@ public class Flight {
 
     //constructor with parameters
     public Flight(int airport_id, String departure_location, String arrival_location, String airline_name, int duration, double flight_cost) {
-        this.flight_id = flight_id_counter++;
+        this.flight_id = ++flight_id_counter;
         this.airport_id = airport_id;
         this.departure_location = departure_location;
         this.arrival_location = arrival_location;

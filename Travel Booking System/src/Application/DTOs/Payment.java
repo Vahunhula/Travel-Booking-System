@@ -12,7 +12,7 @@ public class Payment {
     //);
 
     private int payment_id;
-    private static int payment_id_counter = 1;
+    private static int payment_id_counter = 0;
     private int booking_id;
     private double amount_paid;
     private String payment_date;
@@ -24,7 +24,7 @@ public class Payment {
 
     //constructor with parameters
     public Payment(int booking_id, double amount_paid, String payment_date, String method) {
-        this.payment_id = payment_id_counter++;
+        this.payment_id = ++payment_id_counter;
         this.booking_id = booking_id;
         this.amount_paid = amount_paid;
         this.payment_date = payment_date;

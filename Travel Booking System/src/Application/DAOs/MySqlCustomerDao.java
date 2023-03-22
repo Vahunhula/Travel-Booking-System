@@ -152,6 +152,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
             connection = getConnection();
             String query = "INSERT INTO customer (customer_name, email, tel_num, address) VALUES (?,?,?,?)";
             ps = connection.prepareStatement(query);
+//            ps.setInt(1,customer.getCustomer_id());
             ps.setString(1,customer.getCustomer_name());
             ps.setString(2,customer.getEmail());
             ps.setString(3,customer.getTel_num());
