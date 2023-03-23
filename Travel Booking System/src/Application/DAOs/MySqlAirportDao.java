@@ -135,4 +135,45 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
         }
         return deleted;
     }
+
+    @Override
+    public Airport insertAirport(Airport airport) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        Airport newAirport = null;
+
+        try {
+            connection = getConnection();
+            String query = "INSERT INTO airport (airport_name, airport_location) VALUES (?, ?)";
+            ps.executeQuery(query);
+            ps.setString(1, airport.getAirport_name());
+            ps.setString(2, airport.getAirport_location());
+            int result = ps.executeUpdate();
+
+            if (result == 1) {
+                newAirport = airport;
+            }
+        }
+        catch (SQLException e) {
+            throw new DaoException("insertAirportresultSet() " + e.getMessage());
+        }
+        finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            }
+            catch (SQLException e) {
+                throw new DaoException("insertAirport() " + e.getMessage());
+            }
+        }
+        return newAirport;
+    }
 }

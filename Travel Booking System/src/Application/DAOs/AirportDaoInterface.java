@@ -20,5 +20,5 @@ public interface AirportDaoInterface {
 //    //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
 //    //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
 
-//    public Airport insertAirport(Airport airport) throws DaoException;
+    public Airport insertAirport(Airport airport) throws DaoException;
 }
