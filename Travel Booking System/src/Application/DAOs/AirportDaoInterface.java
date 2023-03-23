@@ -15,7 +15,8 @@ public interface AirportDaoInterface {
     public Airport findAirportById(int airportId) throws DaoException;
 //    //Feature 3 – Delete an Entity by key e.g. deletePlayerById( id ) – remove entity from database boolean
 
-//    public boolean deleteAirportById(int airportId) throws DaoException;
+    public boolean deleteAirportById(int airportId) throws DaoException;
+
 //    //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
 //    //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
 

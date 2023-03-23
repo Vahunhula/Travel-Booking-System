@@ -100,4 +100,39 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
         }
         return airport;
     }
+
+    @Override
+    public boolean deleteAirportById(int airportId) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        boolean deleted = false;
+
+        try {
+            connection = getConnection();
+            String query = "DELETE FROM airport WHERE airport_id = ?";
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, airportId);
+            int rows = ps.executeUpdate();
+            if (rows == 1) {
+                deleted = true;
+            }
+        }
+        catch (SQLException e) {
+            throw new DaoException("deleteAirportById() " + e.getMessage());
+        }
+        finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            }
+            catch (SQLException e) {
+                throw new DaoException("deleteAirportById() " + e.getMessage());
+            }
+        }
+        return deleted;
+    }
 }
