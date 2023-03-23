@@ -46,4 +46,20 @@ class MySqlAirportDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the airport is deleted by id
+    @Test
+    void testDeleteAirportById() {
+        AirportDaoInterface airportDao = new MySqlAirportDao();
+        int airportId = 21;
+        try{
+            boolean deleted = airportDao.deleteAirportById(airportId);
+            //this is a test to see if the airport is deleted by id
+            //if the airport is deleted by id, then the airport should be true
+            assertTrue(deleted);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
