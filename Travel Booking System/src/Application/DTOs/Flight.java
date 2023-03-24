@@ -37,6 +37,17 @@ public class Flight {
         this.flight_cost = flight_cost;
     }
 
+    //parameter with flight_id
+    public Flight(int flight_id, int airport_id, String departure_location, String arrival_location, String airline_name, int duration, double flight_cost) {
+        this.flight_id = flight_id;
+        this.airport_id = airport_id;
+        this.departure_location = departure_location;
+        this.arrival_location = arrival_location;
+        this.airline_name = airline_name;
+        this.duration = duration;
+        this.flight_cost = flight_cost;
+    }
+
     //getters and setters
     public int getFlight_id() {
         return flight_id;
