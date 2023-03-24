@@ -146,7 +146,7 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
         try {
             connection = getConnection();
             String query = "INSERT INTO airport (airport_name, airport_location) VALUES (?, ?)";
-            ps.executeQuery(query);
+            ps = connection.prepareStatement(query);
             ps.setString(1, airport.getAirport_name());
             ps.setString(2, airport.getAirport_location());
             int result = ps.executeUpdate();

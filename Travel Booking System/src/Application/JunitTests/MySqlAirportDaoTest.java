@@ -62,4 +62,21 @@ class MySqlAirportDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the airport is inserted
+    @Test
+    void testInsertAirport() {
+        AirportDaoInterface airportDao = new MySqlAirportDao();
+        Airport airport = new Airport("Test Airport", "Test City");
+        try{
+            Airport insertedAirport = airportDao.insertAirport(airport);
+            //this is a test to see if the airport is inserted
+            //if the airport is inserted, then the airport should not be null
+            assertNotNull(insertedAirport);
+            System.out.println(insertedAirport);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
