@@ -46,7 +46,7 @@ class MySqlCustomerDaoTest {
     @org.junit.jupiter.api.Test
     void testDeleteCustomerById(){
         CustomerDaoInterface customerDao = new MySqlCustomerDao();
-        int customerId = 11;
+        int customerId = 13;
         try{
             boolean deleted = customerDao.deleteCustomerById(customerId);
             //this is a test to see if the customer is deleted by id
