@@ -19,5 +19,5 @@ public interface FlightDaoInterface {
 
     //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
     //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
-//    public Flight insertFlight(Flight flight) throws DaoException;
+    public Flight insertFlight(Flight flight) throws DaoException;
 }
