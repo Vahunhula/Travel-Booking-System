@@ -57,4 +57,93 @@ public class MySqlPaymentDao extends MySqlDao implements PaymentDaoInterface{
         }
         return payments;
     }
+
+    // @Override
+    //    public Customer findCustomerById(int customerId) throws DaoException {
+    //        Connection connection = null;
+    //        PreparedStatement ps = null;
+    //        ResultSet resultSet = null;
+    //        Customer c = null;
+    //
+    //        try{
+    //            connection = getConnection();
+    //            String query = "SELECT * FROM customer WHERE customer_id = ?";
+    //            ps = connection.prepareStatement(query);
+    //            ps.setInt(1,customerId);
+    //
+    //            resultSet = ps.executeQuery();
+    //
+    //            if(resultSet.next()){
+    //                String customerName = resultSet.getString("customer_name");
+    //                String customerEmail = resultSet.getString("email");
+    //                String customerPhone = resultSet.getString("tel_num");
+    //                String customerAddress = resultSet.getString("address");
+    //
+    //                c = new Customer(customerId,customerName,customerEmail,customerPhone,customerAddress);
+    //            }
+    //        }catch(SQLException e){
+    //            throw new DaoException("findCustomerByIdresultSet() " + e.getMessage());
+    //        }
+    //        finally{
+    //            try {
+    //                if (resultSet != null) {
+    //                    resultSet.close();
+    //                }
+    //                if (ps != null) {
+    //                    ps.close();
+    //                }
+    //                if (connection != null) {
+    //                    freeConnection(connection);
+    //                }
+    //            } catch (SQLException e) {
+    //                throw new DaoException("findCustomerById() " + e.getMessage());
+    //            }
+    //        }
+    //        return c;
+    //    }
+
+
+    @Override
+    public Payment findPaymentById(int paymentId) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        Payment p = null;
+
+        try{
+            connection = getConnection();
+            String query = "SELECT * FROM payment WHERE payment_id = ?";
+            ps = connection.prepareStatement(query);
+            ps.setInt(1,paymentId);
+
+            resultSet = ps.executeQuery();
+
+            if(resultSet.next()){
+                int bookingId = resultSet.getInt("booking_id");
+                double amountPaid = resultSet.getDouble("amount_paid");
+                String paymentDate = resultSet.getString("payment_date");
+                String method = resultSet.getString("method");
+
+                p = new Payment(paymentId,bookingId,amountPaid,paymentDate,method);
+            }
+        }catch(SQLException e){
+            throw new DaoException("findPaymentByIdresultSet() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("findPaymentById() " + e.getMessage());
+            }
+        }
+        return p;
+    }
 }
