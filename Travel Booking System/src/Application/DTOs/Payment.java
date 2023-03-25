@@ -31,6 +31,15 @@ public class Payment {
         this.method = method;
     }
 
+    //constructor with parameters
+    public Payment(int payment_id, int booking_id, double amount_paid, String payment_date, String method) {
+        this.payment_id = payment_id;
+        this.booking_id = booking_id;
+        this.amount_paid = amount_paid;
+        this.payment_date = payment_date;
+        this.method = method;
+    }
+
     //getters and setters
     public int getPayment_id() {
         return payment_id;
