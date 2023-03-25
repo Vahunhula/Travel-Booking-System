@@ -46,4 +46,20 @@ class MySqlBookingDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the booking is deleted by id
+    @Test
+    void testDeleteBookingById(){
+        BookingDaoInterface bookingDao = new MySqlBookingDao();
+        int bookingId = 17;
+        try{
+            boolean deleted = bookingDao.deleteBookingById(bookingId);
+            //this is a test to see if the booking is deleted by id
+            //if the booking is deleted by id, then the booking should be true
+            assertTrue(deleted);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
