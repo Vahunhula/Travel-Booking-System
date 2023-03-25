@@ -15,7 +15,7 @@ public interface FlightDaoInterface {
     public Flight findFlightById(int flightId) throws DaoException;
 
     //Feature 3 – Delete an Entity by key e.g. deletePlayerById( id ) – remove entity from database
-//    public boolean deleteFlightById(int flightId) throws DaoException;
+    public boolean deleteFlightById(int flightId) throws DaoException;
 
     //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
     //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.

@@ -109,4 +109,42 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface{
         }
         return f;
     }
+
+    @Override
+    public boolean deleteFlightById(int flightId) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        boolean deleted = false;
+
+        try{
+            connection = getConnection();
+            String query = "DELETE FROM flight WHERE flight_id = ?";
+            ps = connection.prepareStatement(query);
+            ps.setInt(1,flightId);
+
+            int result = ps.executeUpdate();
+            if(result == 1){
+                deleted = true;
+            }
+        }catch(SQLException e){
+            throw new DaoException("deleteFlightByIdresultSet() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("deleteFlightById() " + e.getMessage());
+            }
+        }
+        return deleted;
+    }
 }
