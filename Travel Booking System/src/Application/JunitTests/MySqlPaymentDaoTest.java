@@ -61,4 +61,25 @@ class MySqlPaymentDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the payment is inserted
+    @Test
+    void testInsertPayment() {
+        PaymentDaoInterface paymentDao = new MySqlPaymentDao();
+        Payment payment = new Payment();
+        payment.setBooking_id(2);
+        payment.setPayment_date("2020-12-12");
+        payment.setAmount_paid(100.00);
+        payment.setMethod("cash");
+
+        try {
+            Payment insertedPayment = paymentDao.insertPayment(payment);
+            //this is a test to see if the payment is inserted
+            //if the payment is inserted, then the payment should not be null
+            assertNotNull(insertedPayment);
+            System.out.println(insertedPayment);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
