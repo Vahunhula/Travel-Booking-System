@@ -14,7 +14,7 @@ public interface BookingDaoInterface {
     //entity and display its contents.
     public Booking findBookingById(int bookingId) throws DaoException;
     //Feature 3 – Delete an Entity by key e.g. deletePlayerById( id ) – remove entity from database
-//    public boolean deleteBookingById(int bookingId) throws DaoException;
+    public boolean deleteBookingById(int bookingId) throws DaoException;
     //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
     //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
 //    public Booking insertBooking(Booking booking) throws DaoException;

@@ -95,5 +95,82 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
         }
         return booking;
     }
+
+    //@Override
+    //    public boolean deleteCustomerById(int customerId) throws DaoException {
+    //        Connection connection = null;
+    //        PreparedStatement ps = null;
+    //        ResultSet resultSet = null;
+    //        boolean deleted = false;
+    //
+    //        try{
+    //            connection = getConnection();
+    //            String query = "DELETE FROM customer WHERE customer_id = ?";
+    //            ps = connection.prepareStatement(query);
+    //            ps.setInt(1,customerId);
+    //
+    //            int result = ps.executeUpdate();
+    //            if(result == 1){
+    //                deleted = true;
+    //            }
+    //        }catch(SQLException e){
+    //            throw new DaoException("deleteCustomerByIdresultSet() " + e.getMessage());
+    //        }
+    //        finally{
+    //            try {
+    //                if (resultSet != null) {
+    //                    resultSet.close();
+    //                }
+    //                if (ps != null) {
+    //                    ps.close();
+    //                }
+    //                if (connection != null) {
+    //                    freeConnection(connection);
+    //                }
+    //            } catch (SQLException e) {
+    //                throw new DaoException("deleteCustomerById() " + e.getMessage());
+    //            }
+    //        }
+    //        return deleted;
+    //    }
+
+
+    @Override
+    public boolean deleteBookingById(int bookingId) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        boolean deleted = false;
+
+        try{
+            connection = getConnection();
+            String query = "DELETE FROM booking WHERE booking_id = ?";
+            ps = connection.prepareStatement(query);
+            ps.setInt(1,bookingId);
+
+            int result = ps.executeUpdate();
+            if(result == 1){
+                deleted = true;
+            }
+        }catch(SQLException e){
+            throw new DaoException("deleteBookingByIdresultSet() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("deleteBookingById() " + e.getMessage());
+            }
+        }
+        return deleted;
+    }
 }
 
