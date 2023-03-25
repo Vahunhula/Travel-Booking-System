@@ -177,4 +177,45 @@ public class MySqlPaymentDao extends MySqlDao implements PaymentDaoInterface{
         }
         return deleted;
     }
+    @Override
+    public Payment insertPayment(Payment payment) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        Payment p = null;
+
+        try{
+            connection = getConnection();
+            String query = "INSERT INTO payment (booking_id, amount_paid, payment_date, method) VALUES (?,?,?,?)";
+            ps = connection.prepareStatement(query);
+//            ps.setInt(1,payment.getPayment_id());
+            ps.setInt(1,payment.getBooking_id());
+            ps.setDouble(2,payment.getAmount_paid());
+            ps.setString(3,payment.getPayment_date());
+            ps.setString(4,payment.getMethod());
+
+            int result = ps.executeUpdate();
+            if(result == 1){
+                p = payment;
+            }
+        }catch(SQLException e){
+            throw new DaoException("insertPaymentresultSet() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("insertPayment() " + e.getMessage());
+            }
+        }
+        return p;
+    }
 }

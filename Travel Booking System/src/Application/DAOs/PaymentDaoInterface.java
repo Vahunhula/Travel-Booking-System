@@ -17,5 +17,5 @@ public interface PaymentDaoInterface {
     public boolean deletePaymentById(int paymentId) throws DaoException;
     //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
     //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
-//    public Payment insertPayment(Payment payment) throws DaoException;
+    public Payment insertPayment(Payment payment) throws DaoException;
 }
