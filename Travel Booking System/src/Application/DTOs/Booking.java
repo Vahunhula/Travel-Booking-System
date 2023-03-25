@@ -35,6 +35,15 @@ public class Booking {
         this.seats = seats;
     }
 
+    //parameter with booking_id
+    public Booking(int booking_id, int flight_id, int customer_id, String travel_date, String travel_time, int seats) {
+        this.booking_id = booking_id;
+        this.flight_id = flight_id;
+        this.customer_id = customer_id;
+        this.travel_date = travel_date;
+        this.travel_time = travel_time;
+        this.seats = seats;
+    }
     //getters and setters
     public int getBooking_id() {
         return booking_id;
