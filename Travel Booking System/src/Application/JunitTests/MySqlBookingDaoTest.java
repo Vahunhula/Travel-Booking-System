@@ -62,4 +62,21 @@ class MySqlBookingDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the booking is inserted
+    @Test
+    void testInsertBooking(){
+        BookingDaoInterface bookingDao = new MySqlBookingDao();
+        Booking booking = new Booking(2,4,"2023-04-01","08:00:00",2);
+        try{
+            Booking newBooking = bookingDao.insertBooking(booking);
+            //this is a test to see if the booking is inserted
+            //if the booking is inserted, then the booking should not be null
+            assertNotNull(newBooking);
+            System.out.println(newBooking);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
