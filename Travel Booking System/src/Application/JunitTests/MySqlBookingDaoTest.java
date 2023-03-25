@@ -29,4 +29,21 @@ class MySqlBookingDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the booking is found by id
+    @Test
+    void testFindBookingById(){
+        BookingDaoInterface bookingDao = new MySqlBookingDao();
+        int bookingId = 1;
+        try{
+            Booking booking = bookingDao.findBookingById(bookingId);
+            //this is a test to see if the booking is found by id
+            //if the booking is found by id, then the booking should not be null
+            assertNotNull(booking);
+            System.out.println(booking);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
