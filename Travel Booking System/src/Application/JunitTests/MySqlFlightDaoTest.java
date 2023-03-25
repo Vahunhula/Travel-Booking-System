@@ -45,4 +45,19 @@ class MySqlFlightDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the flight is deleted by id
+    @Test
+    void testDeleteFlightById(){
+        FlightDaoInterface flightDao = new MySqlFlightDao();
+        int flightId = 58;
+        try{
+            boolean deleted = flightDao.deleteFlightById(flightId);
+            //this is a test to see if the flight is deleted by id
+            //if the flight is deleted by id, then the flight should be true
+            assertTrue(deleted);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
