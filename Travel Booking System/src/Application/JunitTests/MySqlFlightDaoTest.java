@@ -60,4 +60,27 @@ class MySqlFlightDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the flight is inserted
+    @Test
+    void testInsertFlght(){
+        FlightDaoInterface flightDao = new MySqlFlightDao();
+        Flight flight = new Flight();
+        flight.setAirport_id(2);
+        flight.setDeparture_location("Toronto");
+        flight.setArrival_location("Vancouver");
+        flight.setAirline_name("Air Canada");
+        flight.setDuration(200);
+        flight.setFlight_cost(200);
+
+        try{
+            Flight inserted = flightDao.insertFlight(flight);
+            //this is a test to see if the flight is inserted
+            //if the flight is inserted, then the flight should not be null
+            assertNotNull(inserted);
+            System.out.println(inserted);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
