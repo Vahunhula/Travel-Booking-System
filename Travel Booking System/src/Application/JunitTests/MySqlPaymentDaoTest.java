@@ -28,4 +28,21 @@ class MySqlPaymentDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the payment is found by id
+    @Test
+    void testFindPaymentById(){
+        PaymentDaoInterface paymentDao = new MySqlPaymentDao();
+        int paymentId = 1;
+        try{
+            Payment payment = paymentDao.findPaymentById(paymentId);
+            //this is a test to see if the payment is found by id
+            //if the payment is found by id, then the payment should not be null
+            assertNotNull(payment);
+            System.out.println(payment);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
