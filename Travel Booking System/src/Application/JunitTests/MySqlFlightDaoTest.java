@@ -29,4 +29,20 @@ class MySqlFlightDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the flight is found by id
+    @Test
+    void testFindFlightById(){
+        FlightDaoInterface flightDao = new MySqlFlightDao();
+        int flightId = 1;
+        try{
+            Flight flight = flightDao.findFlightById(flightId);
+            //this is a test to see if the flight is found by id
+            //if the flight is found by id, then the flight should not be null
+            assertNotNull(flight);
+            System.out.println(flight);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
