@@ -45,4 +45,20 @@ class MySqlPaymentDaoTest {
             e.printStackTrace();
         }
     }
+
+    //this is a test to see if the payment is deleted by id
+    @Test
+    void testDeletePaymentById(){
+        PaymentDaoInterface paymentDao = new MySqlPaymentDao();
+        int paymentId = 15;
+        try{
+            boolean deleted = paymentDao.deletePaymentById(paymentId);
+            //this is a test to see if the payment is deleted by id
+            //if the payment is deleted by id, then the payment should be true
+            assertTrue(deleted);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
