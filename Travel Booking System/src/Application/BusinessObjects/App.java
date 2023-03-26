@@ -184,7 +184,7 @@ public class App {
                     insertBooking();
                     break;
                 case 5:
-                    System.out.println("Insert Payment");
+                    insertPayment();
                     break;
                 case 6:
                     return;
@@ -717,6 +717,29 @@ public class App {
             }
             field = bookingNumber;
         }
+        //check for payment number
+        if (type.equalsIgnoreCase("paymentNumber")) {
+            String paymentNumber = "";
+            while (paymentNumber.isEmpty() || paymentNumber.length() > max) {
+                paymentNumber = readString("Enter payment number (max " + max + " characters): ");
+                if (paymentNumber.isEmpty()) {
+                    System.out.println("Payment number cannot be empty.");
+                } else if (paymentNumber.length() > max) {
+                    System.out.println("Payment number cannot be longer than " + max + " characters.");
+                }
+                //check if payment number already exists
+                try {
+                    Payment payment = paymentDao.findPaymentByNumber(paymentNumber);
+                    if (payment != null) {
+                        System.out.println("Payment number already exists. Please enter a different number.");
+                        paymentNumber = "";
+                    }
+                } catch (DaoException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+            }
+            field = paymentNumber;
+        }
         return field;
     }
 
@@ -796,6 +819,32 @@ public class App {
             }
         }
         return customerNumber;
+    }
+
+    //a separate method so when inserting in the payment table, the booking number can be checked if it exists and if it does
+    //then insert the booking number in the booking table and if not tell teh user that the booking number does not exist or they
+    //can add the booking first
+    private static String readBookingNumber() {
+        String bookingNumber = "";
+        while (bookingNumber.isEmpty() || bookingNumber.length() > 10) {
+            bookingNumber = readString("Enter booking number (max 10 characters): ");
+            if (bookingNumber.isEmpty()) {
+                System.out.println("Booking number cannot be empty.");
+            } else if (bookingNumber.length() > 10) {
+                System.out.println("Booking number cannot be longer than 10 characters.");
+            } else {
+                try {
+                    Booking booking = bookingDao.findBookingByNumber(bookingNumber);
+                    if (booking == null) {
+                        System.out.println("Booking number does not exist. Please add the booking first in the InsertBooking().");
+                        bookingNumber = "";
+                    }
+                } catch (DaoException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+            }
+        }
+        return bookingNumber;
     }
 
     //the method is to check if the email is valid and also if it is not already in the database
@@ -922,6 +971,47 @@ public class App {
         return seatNumber;
     }
 
+    //to validate the amountpaid for the payment table
+    private static double readAmountPaid() {
+        double amountPaid = 0;
+        while (amountPaid <= 0) {
+            amountPaid = readDouble("Enter amount paid: ");
+            if (amountPaid <= 0) {
+                System.out.println("Amount paid must be a positive number.");
+            }
+        }
+        return amountPaid;
+    }
+
+    //to validate the payment_date in format yyyy-mm-dd and also check so that the date is not before today
+    //and not more than 12 montsh format yyyy-mm-dd and not more than day 31
+    private static String readPaymentDate() {
+        String paymentDate = "";
+        while (paymentDate.isEmpty() || !paymentDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+            paymentDate = readString("Enter payment date in format yyyy-mm-dd: ");
+            if (!paymentDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+                System.out.println("Error: invalid date format.");
+            } else {
+                String[] date = paymentDate.split("-");
+                int year = Integer.parseInt(date[0]);
+                int month = Integer.parseInt(date[1]);
+                int day = Integer.parseInt(date[2]);
+                if (year < 2023 || month < 1 || month > 12 || day < 1 || day > 31) {
+                    System.out.println("Error: invalid date.");
+                    paymentDate = "";
+                } else {
+                    LocalDate paymentDate1 = LocalDate.of(year, month, day);
+                    LocalDate today = LocalDate.now();
+                    if (paymentDate1.isBefore(today)) {
+                        System.out.println("Error: payment date cannot be before today.");
+                        paymentDate = "";
+                    }
+                }
+            }
+        }
+        return paymentDate;
+    }
+
     //to insert a new customer
     private static void insertCustomer() {
         String customerNumber = readField("customerNumber", 10);
@@ -988,6 +1078,23 @@ public class App {
             System.out.println("Booking inserted.");
         } catch (DaoException e) {
             System.out.println("Error inserting booking: " + e.getMessage());
+        }
+    }
+
+    //to insert a new payment
+    private static void insertPayment() {
+        String paymentNumber = readField("paymentNumber", 10);
+        String bookingNumber = readBookingNumber();
+        double amountPaid = readAmountPaid();
+        String paymentDate = readPaymentDate();
+        String method = readString("Enter payment method: ");
+
+        Payment payment = new Payment(paymentNumber, bookingNumber, amountPaid, paymentDate, method);
+        try {
+            paymentDao.insertPayment(payment);
+            System.out.println("Payment inserted.");
+        } catch (DaoException e) {
+            System.out.println("Error inserting payment: " + e.getMessage());
         }
     }
 }
