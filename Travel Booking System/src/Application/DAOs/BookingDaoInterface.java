@@ -18,4 +18,8 @@ public interface BookingDaoInterface {
     //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
     //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
     public Booking insertBooking(Booking booking) throws DaoException;
+
+    //an extra method mae by me to find all bookings by customer number so that when a customer is
+    //about to be deleted, all their baffected bookings will be displayed
+    public List<Booking> findAllBookingsByCustomerNumber(String customerNumber) throws DaoException;
 }

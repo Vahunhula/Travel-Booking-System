@@ -181,5 +181,51 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
         }
         return b;
     }
+
+    @Override
+    public List<Booking> findAllBookingsByCustomerNumber(String customerNumber) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        List<Booking> bookings = new ArrayList<>();
+
+        try{
+            connection = getConnection();
+            String query = "SELECT * FROM booking WHERE LOWER(customer_number) = ?";
+            ps = connection.prepareStatement(query);
+            ps.setString(1, customerNumber.toLowerCase());
+
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                int bookingId = resultSet.getInt("booking_id");
+                String bookingNumber = resultSet.getString("booking_number");
+                String flightNumber = resultSet.getString("flight_number");
+                String travelDate = resultSet.getString("travel_date");
+                String travelTime = resultSet.getString("travel_time");
+                String seatNumber = resultSet.getString("seat_number");
+
+                Booking b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, travelTime, seatNumber);
+                bookings.add(b);
+            }
+        } catch(SQLException e){
+            throw new DaoException("findAllBookingsByCustomerNumber() " + e.getMessage());
+        } finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("findAllBookingsByCustomerNumber() " + e.getMessage());
+            }
+        }
+        return bookings;
+    }
 }
 

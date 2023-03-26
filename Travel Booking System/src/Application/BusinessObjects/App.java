@@ -10,6 +10,12 @@ import java.util.List;
 
 public class App {
     private static Scanner scanner = new Scanner(System.in);
+    static CustomerDaoInterface customerDao = new MySqlCustomerDao();
+    static AirportDaoInterface airportDao = new MySqlAirportDao();
+    static FlightDaoInterface flightDao = new MySqlFlightDao();
+    static BookingDaoInterface bookingDao = new MySqlBookingDao();
+    static PaymentDaoInterface paymentDao = new MySqlPaymentDao();
+
 
     public static void main(String[] args) {
         while (true) {
@@ -129,7 +135,7 @@ public class App {
             int choice = readInt("Enter your choice: ");
             switch (choice) {
                 case 1:
-                    System.out.println("Delete Customer by Number");
+                    deleteCustomerByNumber();
                     break;
                 case 2:
                     System.out.println("Delete Airport by Number");
@@ -378,6 +384,34 @@ public class App {
             }
         } catch (DaoException e) {
             System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    //to delete customer by number and also if no customer found then it will display no customer found
+    private static void deleteCustomerByNumber() {
+        CustomerDaoInterface customerDao = new MySqlCustomerDao();
+        String customerNumber = readString("Enter customer number: ");
+        try{
+            boolean deleted = customerDao.deleteCustomerByNumber(customerNumber);
+            if (deleted) {
+                System.out.println("Customer deleted.");
+            } else {
+                System.out.println("No customer found.");
+            }
+        }catch(DaoException e){
+            if (e.getMessage().contains("foreign key constraint")) {
+                System.out.println("Customer-" +customerNumber  + " cannot be deleted because it has related records in the database:");
+                try {
+                    List<Booking> bookings = bookingDao.findAllBookingsByCustomerNumber(customerNumber);
+                    for (Booking booking : bookings) {
+                        System.out.println(booking);
+                    }
+                } catch (DaoException e1) {
+                    System.out.println("Error: " + e1.getMessage());
+                }
+            } else {
+                System.out.println("Error deleting customer: " + e.getMessage());
+            }
         }
     }
 }
