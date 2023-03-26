@@ -11,9 +11,10 @@ public class Payment {
     //    FOREIGN KEY (booking_id) REFERENCES booking(booking_id)
     //);
 
+    private String payment_number; // primary key
     private int payment_id;
     private static int payment_id_counter = 0;
-    private int booking_id;
+    private String booking_number;
     private double amount_paid;
     private String payment_date;
     private String method;
@@ -23,34 +24,48 @@ public class Payment {
     }
 
     //constructor with parameters
-    public Payment(int booking_id, double amount_paid, String payment_date, String method) {
+    public Payment(String payment_number, String booking_number, double amount_paid, String payment_date, String method) {
+        this.payment_number = payment_number;
         this.payment_id = ++payment_id_counter;
-        this.booking_id = booking_id;
+        this.booking_number = booking_number;
         this.amount_paid = amount_paid;
         this.payment_date = payment_date;
         this.method = method;
     }
 
-    //constructor with parameters
-    public Payment(int payment_id, int booking_id, double amount_paid, String payment_date, String method) {
+    //parameter with payment_id
+    public Payment(int payment_id, String payment_number, String booking_number, double amount_paid, String payment_date, String method) {
+        this.payment_number = payment_number;
         this.payment_id = payment_id;
-        this.booking_id = booking_id;
+        this.booking_number = booking_number;
         this.amount_paid = amount_paid;
         this.payment_date = payment_date;
         this.method = method;
     }
 
     //getters and setters
+    public String getPayment_number() {
+        return payment_number;
+    }
+
+    public void setPayment_number(String payment_number) {
+        this.payment_number = payment_number;
+    }
+
     public int getPayment_id() {
         return payment_id;
     }
 
-    public int getBooking_id() {
-        return booking_id;
+    public void setPayment_id(int payment_id) {
+        this.payment_id = payment_id;
     }
 
-    public void setBooking_id(int booking_id) {
-        this.booking_id = booking_id;
+    public String getBooking_number() {
+        return booking_number;
+    }
+
+    public void setBooking_number(String booking_number) {
+        this.booking_number = booking_number;
     }
 
     public double getAmount_paid() {
@@ -79,6 +94,13 @@ public class Payment {
 
     @Override
     public String toString() {
-        return "Payment{" + "payment_id=" + payment_id + ", booking_id=" + booking_id + ", amount_paid=" + amount_paid + ", payment_date=" + payment_date + ", method=" + method + '}';
+        return "Payment{" +
+                "payment_number='" + payment_number + '\'' +
+                ", payment_id=" + payment_id +
+                ", booking_number='" + booking_number + '\'' +
+                ", amount_paid=" + amount_paid +
+                ", payment_date='" + payment_date + '\'' +
+                ", method='" + method + '\'' +
+                '}';
     }
 }

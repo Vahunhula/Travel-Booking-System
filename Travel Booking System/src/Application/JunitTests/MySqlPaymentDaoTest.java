@@ -29,56 +29,50 @@ class MySqlPaymentDaoTest {
         }
     }
 
-    //this is a test to see if the payment is found by id
+    //test to find payment by number
     @Test
-    void testFindPaymentById(){
+    void testFindPaymentByNumber(){
         PaymentDaoInterface paymentDao = new MySqlPaymentDao();
-        int paymentId = 1;
+        String paymentNumber = "P0007";
         try{
-            Payment payment = paymentDao.findPaymentById(paymentId);
-            //this is a test to see if the payment is found by id
-            //if the payment is found by id, then the payment should not be null
+            Payment payment = paymentDao.findPaymentByNumber(paymentNumber);
+            //this is a test to see if the payment is found by number
+            //if the payment is found by number, then the payment should not be null
             assertNotNull(payment);
             System.out.println(payment);
-        }
-        catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //this is a test to see if the payment is deleted by id
+    //test to delete payment by number
     @Test
-    void testDeletePaymentById(){
+    void testDeletePaymentByNumber(){
         PaymentDaoInterface paymentDao = new MySqlPaymentDao();
-        int paymentId = 15;
+        String paymentNumber = "P0041";
+
         try{
-            boolean deleted = paymentDao.deletePaymentById(paymentId);
-            //this is a test to see if the payment is deleted by id
-            //if the payment is deleted by id, then the payment should be true
+            boolean deleted = paymentDao.deletePaymentByNumber(paymentNumber);
+            //this is a test to see if the payment is deleted by number
+            //if the payment is deleted by number, then the payment should be true
             assertTrue(deleted);
-        }
-        catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //this is a test to see if the payment is inserted
+    //test to insert payment
     @Test
-    void testInsertPayment() {
+    void testInsertPayment(){
         PaymentDaoInterface paymentDao = new MySqlPaymentDao();
-        Payment payment = new Payment();
-        payment.setBooking_id(2);
-        payment.setPayment_date("2020-12-12");
-        payment.setAmount_paid(100.00);
-        payment.setMethod("cash");
-
-        try {
+        Payment payment = new Payment("P0041", "B0007", 175.0, "2023-03-31", "PayPal");
+        try{
             Payment insertedPayment = paymentDao.insertPayment(payment);
             //this is a test to see if the payment is inserted
-            //if the payment is inserted, then the payment should not be null
+            //if the payment is inserted, then the inserted payment should not be null
             assertNotNull(insertedPayment);
             System.out.println(insertedPayment);
-        } catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
