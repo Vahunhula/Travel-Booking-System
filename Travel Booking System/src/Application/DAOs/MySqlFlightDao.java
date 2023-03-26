@@ -360,4 +360,51 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface{
         }
         return f;
     }
+
+    @Override
+    public List<Flight> findAllFlightsByAirportNumber(String airportNumber) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        List<Flight> flights = new ArrayList<>();
+
+        try {
+            connection = getConnection();
+            String query = "SELECT * FROM flight WHERE LOWER(airport_number) = ?";
+            ps = connection.prepareStatement(query);
+            ps.setString(1, airportNumber.toLowerCase());
+
+            resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                int flightId = resultSet.getInt("flight_id");
+                String flightNumber = resultSet.getString("flight_number");
+                String departureLocation = resultSet.getString("departure_location");
+                String arrivalLocation = resultSet.getString("arrival_location");
+                String airlineName = resultSet.getString("airline_name");
+                int duration = resultSet.getInt("duration");
+                double flightCost = resultSet.getDouble("flight_cost");
+
+                Flight flight = new Flight(flightId, flightNumber, airportNumber, departureLocation, arrivalLocation, airlineName, duration, flightCost);
+                flights.add(flight);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("findAllFlightsByAirportNumber() " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("findAllFlightsByAirportNumber() " + e.getMessage());
+            }
+        }
+        return flights;
+    }
 }

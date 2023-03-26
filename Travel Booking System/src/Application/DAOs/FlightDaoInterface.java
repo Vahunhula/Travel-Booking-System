@@ -20,4 +20,8 @@ public interface FlightDaoInterface {
     //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
     //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
     public Flight insertFlight(Flight flight) throws DaoException;
+
+    //an extra method made by me to find all flights by customer number so that when a customer is
+    //about to be deleted, all their affected flights will be displayed
+    public List<Flight> findAllFlightsByAirportNumber(String customerNumber) throws DaoException;
 }
