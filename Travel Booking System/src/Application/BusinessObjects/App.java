@@ -567,6 +567,55 @@ public class App {
             }
             field = address;
         }
+        //check for airport number
+        if (type.equalsIgnoreCase("airportNumber")) {
+            String airportNumber = "";
+            while (airportNumber.isEmpty() || airportNumber.length() > max) {
+                airportNumber = readString("Enter airport number (max " + max + " characters): ");
+                if (airportNumber.isEmpty()) {
+                    System.out.println("Airport number cannot be empty.");
+                } else if (airportNumber.length() > max) {
+                    System.out.println("Airport number cannot be longer than " + max + " characters.");
+                }
+                //check if airport number already exists
+                try {
+                    Airport airport = airportDao.findAirportByNumber(airportNumber);
+                    if (airport != null) {
+                        System.out.println("Airport number already exists. Please enter a different number.");
+                        airportNumber = "";
+                    }
+                } catch (DaoException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+            }
+            field = airportNumber;
+        }
+        //check for airport name
+        if (type.equalsIgnoreCase("airportName")) {
+            String airportName = "";
+            while (airportName.isEmpty() || airportName.length() > max) {
+                airportName = readString("Enter airport name (max " + max + " characters): ");
+                if (airportName.isEmpty()) {
+                    System.out.println("Airport name cannot be empty.");
+                } else if (airportName.length() > max) {
+                    System.out.println("Airport name cannot be longer than " + max + " characters.");
+                }
+            }
+            field = airportName;
+        }
+        //check for airport location
+        if (type.equalsIgnoreCase("airportLocation")) {
+            String airportLocation = "";
+            while (airportLocation.isEmpty() || airportLocation.length() > max) {
+                airportLocation = readString("Enter airport location (max " + max + " characters): ");
+                if (airportLocation.isEmpty()) {
+                    System.out.println("Airport location cannot be empty.");
+                } else if (airportLocation.length() > max) {
+                    System.out.println("Airport location cannot be longer than " + max + " characters.");
+                }
+            }
+            field = airportLocation;
+        }
         return field;
     }
 
@@ -621,6 +670,21 @@ public class App {
             System.out.println("Customer inserted.");
         } catch (DaoException e) {
             System.out.println("Error inserting customer: " + e.getMessage());
+        }
+    }
+
+    //to insert a new airport
+    private static void insertAirport() {
+        String airportNumber = readField("airportNumber", 10);
+        String airportName = readField("airportName", 30);
+        String airportLocation = readField("airportLocation", 50);
+
+        Airport airport = new Airport(airportNumber, airportName, airportLocation);
+        try {
+            airportDao.insertAirport(airport);
+            System.out.println("Airport inserted.");
+        } catch (DaoException e) {
+            System.out.println("Error inserting airport: " + e.getMessage());
         }
     }
 }
