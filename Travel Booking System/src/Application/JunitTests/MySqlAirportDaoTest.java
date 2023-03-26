@@ -11,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MySqlAirportDaoTest {
 
+    //test to find all airports
     @Test
-    void testFindAllAirports() {
+    void testFindAllAirports(){
         AirportDaoInterface airportDao = new MySqlAirportDao();
-
         try{
             List<Airport> airports = airportDao.findAllAirports();
             //this is a test to see if the list is empty
@@ -24,58 +24,54 @@ class MySqlAirportDaoTest {
             for (Airport a : airports) {
                 System.out.println(a);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //this is a test to see if the airport is found by id
+    //test to find airport by number
     @Test
-    void testFindAirportById() {
+    void testFindAirportByNumber(){
         AirportDaoInterface airportDao = new MySqlAirportDao();
-        int airportId = 1;
+        String airportNumber = "AMS";
         try{
-            Airport airport = airportDao.findAirportById(airportId);
-            //this is a test to see if the airport is found by id
-            //if the airport is found by id, then the airport should not be null
+            Airport airport = airportDao.findAirportByNumber(airportNumber);
+            //this is a test to see if the airport is found by number
+            //if the airport is found by number, then the airport should not be null
             assertNotNull(airport);
             System.out.println(airport);
-        }
-        catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //this is a test to see if the airport is deleted by id
+    //test to delete airport by number
     @Test
-    void testDeleteAirportById() {
+    void testDeleteAirportByNumber(){
         AirportDaoInterface airportDao = new MySqlAirportDao();
-        int airportId = 21;
+        String airportNumber = "ttt";
         try{
-            boolean deleted = airportDao.deleteAirportById(airportId);
-            //this is a test to see if the airport is deleted by id
-            //if the airport is deleted by id, then the airport should be true
+            boolean deleted = airportDao.deleteAirportByNumber(airportNumber);
+            //this is a test to see if the airport is deleted by number
+            //if the airport is deleted by number, then the airport should be true
             assertTrue(deleted);
-        }
-        catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //this is a test to see if the airport is inserted
+    //test to insert airport
     @Test
     void testInsertAirport() {
         AirportDaoInterface airportDao = new MySqlAirportDao();
-        Airport airport = new Airport("Test Airport", "Test City");
-        try{
+        Airport airport = new Airport("ttt", "test", "test");
+        try {
             Airport insertedAirport = airportDao.insertAirport(airport);
             //this is a test to see if the airport is inserted
             //if the airport is inserted, then the airport should not be null
             assertNotNull(insertedAirport);
             System.out.println(insertedAirport);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

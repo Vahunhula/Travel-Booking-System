@@ -8,6 +8,9 @@ public class Airport {
     //    airport_location VARCHAR(50)
     //);
     //the airport has the following fields: airport id - primary key and auto increment, airport name and airport_location
+
+    private String airport_number; // primary key
+
     private int airport_id;
 
     private static int airport_id_counter = 1;
@@ -19,27 +22,37 @@ public class Airport {
     }
 
     //constructor with parameters
-    public Airport(String airport_name, String airport_location) {
+    public Airport(String airport_number, String airport_name, String airport_location) {
+        this.airport_number = airport_number;
         this.airport_id = ++airport_id_counter;
         this.airport_name = airport_name;
         this.airport_location = airport_location;
     }
 
     //parameter with airport_id
-    public Airport(int airport_id, String airport_name, String airport_location) {
+    public Airport(int airport_id, String airport_number, String airport_name, String airport_location) {
+        this.airport_number = airport_number;
         this.airport_id = airport_id;
         this.airport_name = airport_name;
         this.airport_location = airport_location;
     }
 
     //getters and setters
+    public String getAirport_number() {
+        return airport_number;
+    }
+
+    public void setAirport_number(String airport_number) {
+        this.airport_number = airport_number;
+    }
+
     public int getAirport_id() {
         return airport_id;
     }
 
-//    public void setAirport_id(int airport_id) {
-//        this.airport_id = airport_id;
-//    }
+    public void setAirport_id(int airport_id) {
+        this.airport_id = airport_id;
+    }
 
     public String getAirport_name() {
         return airport_name;
@@ -57,14 +70,13 @@ public class Airport {
         this.airport_location = airport_location;
     }
 
-    //toString method
     @Override
     public String toString() {
         return "Airport{" +
-                "airport_id=" + airport_id +
+                "airport_number='" + airport_number + '\'' +
+                ", airport_id=" + airport_id +
                 ", airport_name='" + airport_name + '\'' +
                 ", airport_location='" + airport_location + '\'' +
                 '}';
     }
-
 }
