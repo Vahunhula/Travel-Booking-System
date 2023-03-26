@@ -1,5 +1,6 @@
 package Application.JunitTests;
 
+
 import Application.DAOs.FlightDaoInterface;
 import Application.DAOs.MySqlFlightDao;
 import Application.DTOs.Flight;
@@ -11,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MySqlFlightDaoTest {
 
+    //test to find all flights
     @Test
-    void testFindAllFlights() {
+    void testFindAllFlights(){
         FlightDaoInterface flightDao = new MySqlFlightDao();
-
         try{
             List<Flight> flights = flightDao.findAllFlights();
             //this is a test to see if the list is empty
@@ -30,56 +31,51 @@ class MySqlFlightDaoTest {
         }
     }
 
-    //this is a test to see if the flight is found by id
+    //test to find flight by number
     @Test
-    void testFindFlightById(){
+    void testFindFlightByNumber(){
         FlightDaoInterface flightDao = new MySqlFlightDao();
-        int flightId = 1;
+        String flightNumber = "ba6001";
         try{
-            Flight flight = flightDao.findFlightById(flightId);
-            //this is a test to see if the flight is found by id
-            //if the flight is found by id, then the flight should not be null
+            Flight flight = flightDao.findFlightByNumber(flightNumber);
+            //this is a test to see if the flight is found by number
+            //if the flight is found by number, then the flight should not be null
             assertNotNull(flight);
             System.out.println(flight);
-        }catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //this is a test to see if the flight is deleted by id
+    //test to delete flight by number
     @Test
-    void testDeleteFlightById(){
+    void testDeleteFlightByNumber(){
         FlightDaoInterface flightDao = new MySqlFlightDao();
-        int flightId = 58;
+        String flightNumber = "kktest";
         try{
-            boolean deleted = flightDao.deleteFlightById(flightId);
-            //this is a test to see if the flight is deleted by id
-            //if the flight is deleted by id, then the flight should be true
+            boolean deleted = flightDao.deleteFlightByNumber(flightNumber);
+            //this is a test to see if the flight is deleted by number
+            //if the flight is deleted by number, then the flight should be true
             assertTrue(deleted);
-        }catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //this is a test to see if the flight is inserted
+    //test to insert flight
     @Test
-    void testInsertFlght(){
+    void testInsertFlight() {
         FlightDaoInterface flightDao = new MySqlFlightDao();
-        Flight flight = new Flight();
-        flight.setAirport_id(2);
-        flight.setDeparture_location("Toronto");
-        flight.setArrival_location("Vancouver");
-        flight.setAirline_name("Air Canada");
-        flight.setDuration(200);
-        flight.setFlight_cost(200);
-
-        try{
-            Flight inserted = flightDao.insertFlight(flight);
+        Flight flight = new Flight("kktest", "ORY", "AMS", "germany", "pass", 100, 100);
+        try {
+            Flight insertedFlight = flightDao.insertFlight(flight);
             //this is a test to see if the flight is inserted
             //if the flight is inserted, then the flight should not be null
-            assertNotNull(inserted);
-            System.out.println(inserted);
-        }catch (Exception e) {
+            assertNotNull(insertedFlight);
+            System.out.println(insertedFlight);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -13,9 +13,10 @@ public class Flight {
     //    FOREIGN KEY (airport_id) REFERENCES airport(airport_id)
     //);
 
+    private String flight_number; // primary key
     private int flight_id;
     private static int flight_id_counter = 0;
-    private int airport_id;
+    private String airport_number;
     private String departure_location;
     private String arrival_location;
     private String airline_name;
@@ -27,9 +28,10 @@ public class Flight {
     }
 
     //constructor with parameters
-    public Flight(int airport_id, String departure_location, String arrival_location, String airline_name, int duration, double flight_cost) {
+    public Flight(String flight_number, String airport_number, String departure_location, String arrival_location, String airline_name, int duration, double flight_cost) {
+        this.flight_number = flight_number;
         this.flight_id = ++flight_id_counter;
-        this.airport_id = airport_id;
+        this.airport_number = airport_number;
         this.departure_location = departure_location;
         this.arrival_location = arrival_location;
         this.airline_name = airline_name;
@@ -38,9 +40,10 @@ public class Flight {
     }
 
     //parameter with flight_id
-    public Flight(int flight_id, int airport_id, String departure_location, String arrival_location, String airline_name, int duration, double flight_cost) {
+public Flight(int flight_id, String flight_number, String airport_number, String departure_location, String arrival_location, String airline_name, int duration, double flight_cost) {
+        this.flight_number = flight_number;
         this.flight_id = flight_id;
-        this.airport_id = airport_id;
+        this.airport_number = airport_number;
         this.departure_location = departure_location;
         this.arrival_location = arrival_location;
         this.airline_name = airline_name;
@@ -49,16 +52,28 @@ public class Flight {
     }
 
     //getters and setters
+    public String getFlight_number() {
+        return flight_number;
+    }
+
+    public void setFlight_number(String flight_number) {
+        this.flight_number = flight_number;
+    }
+
     public int getFlight_id() {
         return flight_id;
     }
 
-    public int getAirport_id() {
-        return airport_id;
+    public void setFlight_id(int flight_id) {
+        this.flight_id = flight_id;
     }
 
-    public void setAirport_id(int airport_id) {
-        this.airport_id = airport_id;
+    public String getAirport_number() {
+        return airport_number;
+    }
+
+    public void setAirport_number(String airport_number) {
+        this.airport_number = airport_number;
     }
 
     public String getDeparture_location() {
@@ -101,12 +116,12 @@ public class Flight {
         this.flight_cost = flight_cost;
     }
 
-    //toString method
     @Override
     public String toString() {
         return "Flight{" +
-                "flight_id=" + flight_id +
-                ", airport_id=" + airport_id +
+                "flight_number='" + flight_number + '\'' +
+                ", flight_id=" + flight_id +
+                ", airport_number='" + airport_number + '\'' +
                 ", departure_location='" + departure_location + '\'' +
                 ", arrival_location='" + arrival_location + '\'' +
                 ", airline_name='" + airline_name + '\'' +

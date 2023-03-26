@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS `payment`, `booking`, `flight`, `airport`, `customer`;
 
 -- Create Customer table
 CREATE TABLE customer (
-    customer_number VARCHAR(7) PRIMARY KEY,
+    customer_number VARCHAR(10) PRIMARY KEY,
     customer_id INT AUTO_INCREMENT UNIQUE,
     customer_name VARCHAR(20),
     email VARCHAR(50) NOT NULL UNIQUE,
@@ -17,7 +17,7 @@ CREATE TABLE customer (
 
 -- Create Airport table
 CREATE TABLE airport (
-    airport_number VARCHAR(7) PRIMARY KEY,
+    airport_number VARCHAR(10) PRIMARY KEY,
     airport_id INT AUTO_INCREMENT UNIQUE,
     airport_name VARCHAR(30),
     airport_location VARCHAR(50)
@@ -26,7 +26,7 @@ CREATE TABLE airport (
 
 -- Create Flight table
 CREATE TABLE flight (
-    flight_number VARCHAR(7) PRIMARY KEY,
+    flight_number VARCHAR(10) PRIMARY KEY,
     flight_id INT AUTO_INCREMENT UNIQUE,
     airport_number VARCHAR(20) NOT NULL,
     departure_location VARCHAR(50),
@@ -40,7 +40,7 @@ CREATE TABLE flight (
 
 -- Create Booking table
 CREATE TABLE booking (
-    booking_number VARCHAR(7) PRIMARY KEY,
+    booking_number VARCHAR(10) PRIMARY KEY,
     booking_id INT AUTO_INCREMENT UNIQUE,
     flight_number VARCHAR(20) NOT NULL,
     customer_number VARCHAR(20) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE booking (
 
 -- Create Payment table
 CREATE TABLE Payment (
-    payment_number VARCHAR(7) PRIMARY KEY,
+    payment_number VARCHAR(10) PRIMARY KEY,
     payment_id INT AUTO_INCREMENT UNIQUE,
     booking_number VARCHAR(20) NOT NULL,
     amount_paid DECIMAL(10, 2),
