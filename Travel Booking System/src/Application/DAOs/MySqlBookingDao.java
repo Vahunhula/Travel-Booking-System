@@ -3,10 +3,7 @@ package Application.DAOs;
 import Application.DTOs.Booking;
 import Application.Exceptions.DaoException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,25 +14,29 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         List<Booking> bookings = new ArrayList<>();
-        try {
+
+        try{
             connection = getConnection();
             String query = "SELECT * FROM booking";
             ps = connection.prepareStatement(query);
+
             resultSet = ps.executeQuery();
-            while (resultSet.next()) {
+
+            while(resultSet.next()){
                 int bookingId = resultSet.getInt("booking_id");
-                int customerId = resultSet.getInt("customer_id");
-                int flightId = resultSet.getInt("flight_id");
+                String bookingNumber = resultSet.getString("booking_number");
+                String flightNumber = resultSet.getString("flight_number");
+                String customerNumber = resultSet.getString("customer_number");
                 String travelDate = resultSet.getString("travel_date");
                 String travelTime = resultSet.getString("travel_time");
-                int seats = resultSet.getInt("seats");
+                String seatNumber = resultSet.getString("seat_number");
 
-                Booking b = new Booking(bookingId,customerId,flightId,travelDate,travelTime,seats);
+                Booking b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, travelTime, seatNumber);
                 bookings.add(b);
             }
-        } catch (SQLException e) {
-            throw new DaoException("findAllBookingsresultSet() " + e.getMessage());
-        } finally {
+        } catch(SQLException e){
+            throw new DaoException("findAllBookings() " + e.getMessage());
+        } finally{
             try {
                 if (resultSet != null) {
                     resultSet.close();
@@ -54,31 +55,33 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
     }
 
     @Override
-    public Booking findBookingById(int bookingId) throws DaoException {
+    public Booking findBookingByNumber(String bookingNumber) throws DaoException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
-        Booking booking = null;
+        Booking b = null;
 
-        try {
+        try{
             connection = getConnection();
-            String query = "SELECT * FROM booking WHERE booking_id = ?";
+            String query = "SELECT * FROM booking WHERE LOWER(booking_number) = ?";
             ps = connection.prepareStatement(query);
-            ps.setInt(1, bookingId);
+            ps.setString(1, bookingNumber.toLowerCase());
+
             resultSet = ps.executeQuery();
 
-            if (resultSet.next()) {
-                int customerId = resultSet.getInt("customer_id");
-                int flightId = resultSet.getInt("flight_id");
+            if(resultSet.next()){
+                int bookingId = resultSet.getInt("booking_id");
+                String flightNumber = resultSet.getString("flight_number");
+                String customerNumber = resultSet.getString("customer_number");
                 String travelDate = resultSet.getString("travel_date");
                 String travelTime = resultSet.getString("travel_time");
-                int seats = resultSet.getInt("seats");
+                String seatNumber = resultSet.getString("seat_number");
 
-                booking = new Booking(bookingId,customerId,flightId,travelDate,travelTime,seats);
+                b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, travelTime, seatNumber);
             }
-        } catch (SQLException e) {
-            throw new DaoException("findBookingByIdresultSet() " + e.getMessage());
-        } finally {
+        } catch(SQLException e){
+            throw new DaoException("findBookingByNumber() " + e.getMessage());
+        } finally{
             try {
                 if (resultSet != null) {
                     resultSet.close();
@@ -90,13 +93,14 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
                     freeConnection(connection);
                 }
             } catch (SQLException e) {
-                throw new DaoException("findBookingById() " + e.getMessage());
+                throw new DaoException("findBookingByNumber() " + e.getMessage());
             }
         }
-        return booking;
+        return b;
     }
+
     @Override
-    public boolean deleteBookingById(int bookingId) throws DaoException {
+    public boolean deleteBookingByNumber(String bookingNumber) throws DaoException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
@@ -104,18 +108,17 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
 
         try{
             connection = getConnection();
-            String query = "DELETE FROM booking WHERE booking_id = ?";
+            String query = "DELETE FROM booking WHERE LOWER(booking_number) = ?";
             ps = connection.prepareStatement(query);
-            ps.setInt(1,bookingId);
+            ps.setString(1, bookingNumber.toLowerCase());
 
             int result = ps.executeUpdate();
             if(result == 1){
                 deleted = true;
             }
-        }catch(SQLException e){
-            throw new DaoException("deleteBookingByIdresultSet() " + e.getMessage());
-        }
-        finally{
+        } catch(SQLException e){
+            throw new DaoException("deleteBookingByNumber() " + e.getMessage());
+        } finally{
             try {
                 if (resultSet != null) {
                     resultSet.close();
@@ -127,11 +130,12 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
                     freeConnection(connection);
                 }
             } catch (SQLException e) {
-                throw new DaoException("deleteBookingById() " + e.getMessage());
+                throw new DaoException("deleteBookingByNumber() " + e.getMessage());
             }
         }
         return deleted;
     }
+
     @Override
     public Booking insertBooking(Booking booking) throws DaoException {
         Connection connection = null;
@@ -141,22 +145,26 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
 
         try{
             connection = getConnection();
-            String query = "INSERT INTO booking (customer_id, flight_id, travel_date, travel_time, seats) VALUES (?,?,?,?,?)";
-            ps = connection.prepareStatement(query);
-            ps.setInt(1,booking.getCustomer_id());
-            ps.setInt(2,booking.getFlight_id());
-            ps.setString(3,booking.getTravel_date());
-            ps.setString(4,booking.getTravel_time());
-            ps.setInt(5,booking.getSeats());
+            String query = "INSERT INTO booking (booking_number, flight_number, customer_number, travel_date, travel_time, seat_number) VALUES (?,?,?,?,?,?)";
+            ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, booking.getBooking_number());
+            ps.setString(2, booking.getFlight_number());
+            ps.setString(3, booking.getCustomer_number());
+            ps.setString(4, booking.getTravel_date());
+            ps.setString(5, booking.getTravel_time());
+            ps.setString(6, booking.getSeat_number());
 
             int result = ps.executeUpdate();
             if(result == 1){
-                b = booking;
+                resultSet = ps.getGeneratedKeys();
+                if(resultSet.next()){
+                    int bookingId = resultSet.getInt(1);
+                    b = new Booking(bookingId, booking.getBooking_number(), booking.getFlight_number(), booking.getCustomer_number(), booking.getTravel_date(), booking.getTravel_time(), booking.getSeat_number());
+                }
             }
-        }catch(SQLException e){
-            throw new DaoException("insertBookingresultSet() " + e.getMessage());
-        }
-        finally{
+        } catch(SQLException e){
+            throw new DaoException("insertBooking() " + e.getMessage());
+        } finally{
             try {
                 if (resultSet != null) {
                     resultSet.close();

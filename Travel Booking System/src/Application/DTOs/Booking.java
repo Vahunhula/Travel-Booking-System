@@ -13,56 +13,72 @@ public class Booking {
     //    FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
     //);
 
+    private String booking_number; // primary key
     private int booking_id;
     private static int booking_id_counter = 0;
-    private int flight_id;
-    private int customer_id;
+    private String flight_number;
+    private String  customer_number;
     private String travel_date;
     private String travel_time;
-    private int seats;
+    private String seat_number;
 
     //default constructor
     public Booking() {
     }
 
     //constructor with parameters
-    public Booking(int flight_id, int customer_id, String travel_date, String travel_time, int seats) {
+    public Booking(String booking_number, String flight_number, String customer_number, String travel_date, String travel_time, String seat_number) {
+        this.booking_number = booking_number;
         this.booking_id = ++booking_id_counter;
-        this.flight_id = flight_id;
-        this.customer_id = customer_id;
+        this.flight_number = flight_number;
+        this.customer_number = customer_number;
         this.travel_date = travel_date;
         this.travel_time = travel_time;
-        this.seats = seats;
+        this.seat_number = seat_number;
     }
 
     //parameter with booking_id
-    public Booking(int booking_id, int flight_id, int customer_id, String travel_date, String travel_time, int seats) {
+    public Booking(int booking_id, String booking_number, String flight_number, String customer_number, String travel_date, String travel_time, String seat_number) {
+        this.booking_number = booking_number;
         this.booking_id = booking_id;
-        this.flight_id = flight_id;
-        this.customer_id = customer_id;
+        this.flight_number = flight_number;
+        this.customer_number = customer_number;
         this.travel_date = travel_date;
         this.travel_time = travel_time;
-        this.seats = seats;
+        this.seat_number = seat_number;
     }
+
     //getters and setters
+    public String getBooking_number() {
+        return booking_number;
+    }
+
+    public void setBooking_number(String booking_number) {
+        this.booking_number = booking_number;
+    }
+
     public int getBooking_id() {
         return booking_id;
     }
 
-    public int getFlight_id() {
-        return flight_id;
+    public void setBooking_id(int booking_id) {
+        this.booking_id = booking_id;
     }
 
-    public void setFlight_id(int flight_id) {
-        this.flight_id = flight_id;
+    public String getFlight_number() {
+        return flight_number;
     }
 
-    public int getCustomer_id() {
-        return customer_id;
+    public void setFlight_number(String flight_number) {
+        this.flight_number = flight_number;
     }
 
-    public void setCustomer_id(int customer_id) {
-        this.customer_id = customer_id;
+    public String getCustomer_number() {
+        return customer_number;
+    }
+
+    public void setCustomer_number(String customer_number) {
+        this.customer_number = customer_number;
     }
 
     public String getTravel_date() {
@@ -81,16 +97,24 @@ public class Booking {
         this.travel_time = travel_time;
     }
 
-    public int getSeats() {
-        return seats;
+    public String getSeat_number() {
+        return seat_number;
     }
 
-    public void setSeats(int seats) {
-        this.seats = seats;
+    public void setSeat_number(String seat_number) {
+        this.seat_number = seat_number;
     }
 
     @Override
     public String toString() {
-        return "Booking{" + "booking_id=" + booking_id + ", flight_id=" + flight_id + ", customer_id=" + customer_id + ", travel_date=" + travel_date + ", travel_time=" + travel_time + ", seats=" + seats + '}';
+        return "Booking{" +
+                "booking_number='" + booking_number + '\'' +
+                ", booking_id=" + booking_id +
+                ", flight_number='" + flight_number + '\'' +
+                ", customer_number='" + customer_number + '\'' +
+                ", travel_date='" + travel_date + '\'' +
+                ", travel_time='" + travel_time + '\'' +
+                ", seat_number='" + seat_number + '\'' +
+                '}';
     }
 }
