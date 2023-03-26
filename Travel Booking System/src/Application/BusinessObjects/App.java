@@ -94,19 +94,19 @@ public class App {
             int choice = readInt("Enter your choice: ");
             switch (choice) {
                 case 1:
-                    System.out.println("Find Customer by Number");
+                    findCustomerByNumber();
                     break;
                 case 2:
-                    System.out.println("Find Airport by Number");
+                    findAirportByNumber();
                     break;
                 case 3:
-                    System.out.println("Find Flight by Number");
+                    findFlightByNumber();
                     break;
                 case 4:
-                    System.out.println("Find Booking by Number");
+                    findBookingByNumber();
                     break;
                 case 5:
-                    System.out.println("Find Payment by Number");
+                    findPaymentByNumber();
                     break;
                 case 6:
                     return;
@@ -201,10 +201,29 @@ public class App {
         return input;
     }
 
+    private static String readString(String message) {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        while (true) {
+            System.out.print(message);
+            input = scanner.nextLine();
+            if (input.isEmpty()) {
+                System.out.println("Invalid input, please enter a non-empty string.");
+            } else {
+                break;
+            }
+        }
+        return input;
+    }
+
+
     private static void findAllCustomers() {
-        MySqlCustomerDao customerDao = new MySqlCustomerDao();
+        CustomerDaoInterface customerDao = new MySqlCustomerDao();
         try {
             List<Customer> customers = customerDao.findAllCustomers();
+            if (customers.isEmpty()) {
+                System.out.println("No customers found.");
+            }
             for (Customer customer : customers) {
                 System.out.println(customer.toString());
             }
@@ -215,9 +234,12 @@ public class App {
 
     //display all airports
     private static void findAllAirports() {
-        MySqlAirportDao airportDao = new MySqlAirportDao();
+        AirportDaoInterface airportDao = new MySqlAirportDao();
         try {
             List<Airport> airports = airportDao.findAllAirports();
+            if (airports.isEmpty()) {
+                System.out.println("No airports found.");
+            }
             for (Airport airport : airports) {
                 System.out.println(airport.toString());
             }
@@ -228,9 +250,12 @@ public class App {
 
     //display all flights
     private static void findAllFlights() {
-        MySqlFlightDao flightDao = new MySqlFlightDao();
+        FlightDaoInterface flightDao = new MySqlFlightDao();
         try {
             List<Flight> flights = flightDao.findAllFlights();
+            if (flights.isEmpty()) {
+                System.out.println("No flights found.");
+            }
             for (Flight flight : flights) {
                 System.out.println(flight.toString());
             }
@@ -241,9 +266,12 @@ public class App {
 
     //display all bookings
     private static void findAllBookings() {
-        MySqlBookingDao bookingDao = new MySqlBookingDao();
+        BookingDaoInterface bookingDao = new MySqlBookingDao();
         try {
             List<Booking> bookings = bookingDao.findAllBookings();
+            if (bookings.isEmpty()) {
+                System.out.println("No bookings found.");
+            }
             for (Booking booking : bookings) {
                 System.out.println(booking.toString());
             }
@@ -254,10 +282,98 @@ public class App {
 
     //display all payments
     private static void findAllPayments() {
-        MySqlPaymentDao paymentDao = new MySqlPaymentDao();
+        PaymentDaoInterface paymentDao = new MySqlPaymentDao();
         try {
             List<Payment> payments = paymentDao.findAllPayments();
+            if (payments.isEmpty()) {
+                System.out.println("No payments found.");
+            }
             for (Payment payment : payments) {
+                System.out.println(payment.toString());
+            }
+        } catch (DaoException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    //to find customer by number and also if no customer found then it will display no customer found
+    //and if customer found then it will display customer details(customerNumber is a String)
+    private static void findCustomerByNumber() {
+        CustomerDaoInterface customerDao = new MySqlCustomerDao();
+        String customerNumber = readString("Enter customer number: ");
+        try {
+            Customer customer = customerDao.findCustomerByNumber(customerNumber);
+            if (customer == null) {
+                System.out.println("No customer found.");
+            } else {
+                System.out.println(customer.toString());
+            }
+        } catch (DaoException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    //to find airport by number and also if no airport found then it will display no airport found
+    //and if airport found then it will display airport details(airportNumber is a String)
+    private static void findAirportByNumber() {
+        AirportDaoInterface airportDao = new MySqlAirportDao();
+        String airportNumber = readString("Enter airport number: ");
+        try {
+            Airport airport = airportDao.findAirportByNumber(airportNumber);
+            if (airport == null) {
+                System.out.println("No airport found.");
+            } else {
+                System.out.println(airport.toString());
+            }
+        } catch (DaoException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    //to find flight by number and also if no flight found then it will display no flight found
+    //and if flight found then it will display flight details(flightNumber is a String)
+    private static void findFlightByNumber() {
+        FlightDaoInterface flightDao = new MySqlFlightDao();
+        String flightNumber = readString("Enter flight number: ");
+        try {
+            Flight flight = flightDao.findFlightByNumber(flightNumber);
+            if (flight == null) {
+                System.out.println("No flight found.");
+            } else {
+                System.out.println(flight.toString());
+            }
+        } catch (DaoException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    //to find booking by number and also if no booking found then it will display no booking found
+    //and if booking found then it will display booking details(bookingNumber is a String)
+    private static void findBookingByNumber() {
+        BookingDaoInterface bookingDao = new MySqlBookingDao();
+        String bookingNumber = readString("Enter booking number: ");
+        try {
+            Booking booking = bookingDao.findBookingByNumber(bookingNumber);
+            if (booking == null) {
+                System.out.println("No booking found.");
+            } else {
+                System.out.println(booking.toString());
+            }
+        } catch (DaoException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    //to find payment by number and also if no payment found then it will display no payment found
+    //and if payment found then it will display payment details(paymentNumber is a String)
+    private static void findPaymentByNumber() {
+        PaymentDaoInterface paymentDao = new MySqlPaymentDao();
+        String paymentNumber = readString("Enter payment number: ");
+        try {
+            Payment payment = paymentDao.findPaymentByNumber(paymentNumber);
+            if (payment == null) {
+                System.out.println("No payment found.");
+            } else {
                 System.out.println(payment.toString());
             }
         } catch (DaoException e) {
