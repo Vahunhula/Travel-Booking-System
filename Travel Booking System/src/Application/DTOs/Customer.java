@@ -11,6 +11,8 @@ public class Customer {
     //);
 //the customer class is used to store the information of the customer
     //customer_id, customer_name, email, tel_num, address.
+    private String customer_number; // primary key
+
     private int customer_id; // primary key and auto increment
 
     private static int customer_id_counter = 0;
@@ -24,7 +26,8 @@ public class Customer {
     }
 
     //constructor with parameters
-    public Customer(String customer_name, String email, String tel_num, String address) {
+    public Customer(String customer_number, String customer_name, String email, String tel_num, String address) {
+        this.customer_number = customer_number;
         this.customer_id = ++customer_id_counter;
         this.customer_name = customer_name;
         this.email = email;
@@ -33,7 +36,8 @@ public class Customer {
     }
 
     //paeameter with customer_id
-    public Customer(int customer_id, String customer_name, String email, String tel_num, String address) {
+    public Customer(int customer_id,String customer_number, String customer_name, String email, String tel_num, String address) {
+        this.customer_number = customer_number;
         this.customer_id = customer_id;
         this.customer_name = customer_name;
         this.email = email;
@@ -42,13 +46,21 @@ public class Customer {
     }
 
     //getters and setters
+    public String getCustomer_number() {
+        return customer_number;
+    }
+
+    public void setCustomer_number(String customer_number) {
+        this.customer_number = customer_number;
+    }
+
     public int getCustomer_id() {
         return customer_id;
     }
 
-//    public void setCustomer_id(int customer_id) {
-//        this.customer_id = customer_id;
-//    }
+    public void setCustomer_id(int customer_id) {
+        this.customer_id = customer_id;
+    }
 
     public String getCustomer_name() {
         return customer_name;
@@ -82,16 +94,15 @@ public class Customer {
         this.address = address;
     }
 
-    //toString method
     @Override
     public String toString() {
         return "Customer{" +
-                "customer_id=" + customer_id +
+                "customer_number='" + customer_number + '\'' +
+                ", customer_id=" + customer_id +
                 ", customer_name='" + customer_name + '\'' +
                 ", email='" + email + '\'' +
                 ", tel_num='" + tel_num + '\'' +
                 ", address='" + address + '\'' +
                 '}';
     }
-
 }

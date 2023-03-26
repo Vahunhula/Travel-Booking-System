@@ -26,15 +26,15 @@ class MySqlCustomerDaoTest {
         }
     }
 
-    //this is a test to see if the customer is found by id
+    //this is a test to see if the customer is found by number
     @org.junit.jupiter.api.Test
-    void testFindCustomerById(){
+    void testFindCustomerByNumber(){
         CustomerDaoInterface customerDao = new MySqlCustomerDao();
-        int customerId = 1;
+        String customerNumber = "C0001";
         try{
-            Customer customer = customerDao.findCustomerById(customerId);
-            //this is a test to see if the customer is found by id
-            //if the customer is found by id, then the customer should not be null
+            Customer customer = customerDao.findCustomerByNumber(customerNumber);
+            //this is a test to see if the customer is found by number
+            //if the customer is found by number, then the customer should not be null
             assertNotNull(customer);
             System.out.println(customer);
         }catch (Exception e) {
@@ -43,14 +43,15 @@ class MySqlCustomerDaoTest {
     }
 
     //this is a test to see if the customer is deleted by id
+    //this is a test to see if the customer is deleted by number
     @org.junit.jupiter.api.Test
-    void testDeleteCustomerById(){
+    void testDeleteCustomerByNumber(){
         CustomerDaoInterface customerDao = new MySqlCustomerDao();
-        int customerId = 13;
+        String customerNumber = "C0013";
         try{
-            boolean deleted = customerDao.deleteCustomerById(customerId);
-            //this is a test to see if the customer is deleted by id
-            //if the customer is deleted by id, then the customer should be true
+            boolean deleted = customerDao.deleteCustomerByNumber(customerNumber);
+            //this is a test to see if the customer is deleted by number
+            //if the customer is deleted by number, then the customer should be true
             assertTrue(deleted);
         }catch (Exception e) {
             e.printStackTrace();
@@ -61,7 +62,7 @@ class MySqlCustomerDaoTest {
     @org.junit.jupiter.api.Test
     void testInsertCustomer(){
         CustomerDaoInterface customerDao = new MySqlCustomerDao();
-        Customer customer = new Customer("Pack","d5@student.dkit.ie","0871234567","Dundalk");
+        Customer customer = new Customer("C0012","Pack","5@student.dkit.ie","0871234567","Dundalk");
         try{
             Customer insertedCustomer = customerDao.insertCustomer(customer);
             //this is a test to see if the customer is inserted

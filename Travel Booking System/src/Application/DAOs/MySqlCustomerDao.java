@@ -5,10 +5,7 @@ import Application.Exceptions.DaoException;
 import Application.DAOs.CustomerDaoInterface;
 import Application.DTOs.Customer;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,13 +25,13 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
             resultSet = ps.executeQuery();
 
             while(resultSet.next()){
-                int customerId = resultSet.getInt("customer_id");
+                String customerNumber = resultSet.getString("customer_number");
                 String customerName = resultSet.getString("customer_name");
                 String customerEmail = resultSet.getString("email");
                 String customerPhone = resultSet.getString("tel_num");
                 String customerAddress = resultSet.getString("address");
 
-                Customer c = new Customer(customerId,customerName,customerEmail,customerPhone,customerAddress);
+                Customer c = new Customer(customerNumber,customerName,customerEmail,customerPhone,customerAddress);
                 customers.add(c);
             }
 
@@ -60,7 +57,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
     }
 
     @Override
-    public Customer findCustomerById(int customerId) throws DaoException {
+    public Customer findCustomerByNumber(String customerNumber) throws DaoException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
@@ -68,9 +65,9 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
 
         try{
             connection = getConnection();
-            String query = "SELECT * FROM customer WHERE customer_id = ?";
+            String query = "SELECT * FROM customer WHERE LOWER(customer_number) = LOWER(?)";
             ps = connection.prepareStatement(query);
-            ps.setInt(1,customerId);
+            ps.setString(1,customerNumber);
 
             resultSet = ps.executeQuery();
 
@@ -80,12 +77,11 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
                 String customerPhone = resultSet.getString("tel_num");
                 String customerAddress = resultSet.getString("address");
 
-                c = new Customer(customerId,customerName,customerEmail,customerPhone,customerAddress);
+                c = new Customer(customerNumber, customerName, customerEmail, customerPhone, customerAddress);
             }
-        }catch(SQLException e){
-            throw new DaoException("findCustomerByIdresultSet() " + e.getMessage());
-        }
-        finally{
+        } catch(SQLException e){
+            throw new DaoException("findCustomerByNumber() " + e.getMessage());
+        } finally{
             try {
                 if (resultSet != null) {
                     resultSet.close();
@@ -97,33 +93,32 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
                     freeConnection(connection);
                 }
             } catch (SQLException e) {
-                throw new DaoException("findCustomerById() " + e.getMessage());
+                throw new DaoException("findCustomerByNumber() " + e.getMessage());
             }
         }
         return c;
     }
 
     @Override
-    public boolean deleteCustomerById(int customerId) throws DaoException {
+    public boolean deleteCustomerByNumber(String customerNumber) throws DaoException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         boolean deleted = false;
 
-        try{
+        try {
             connection = getConnection();
-            String query = "DELETE FROM customer WHERE customer_id = ?";
+            String query = "DELETE FROM customer WHERE LOWER(customer_number) = ?";
             ps = connection.prepareStatement(query);
-            ps.setInt(1,customerId);
+            ps.setString(1, customerNumber.toLowerCase());
 
             int result = ps.executeUpdate();
-            if(result == 1){
+            if (result == 1) {
                 deleted = true;
             }
-        }catch(SQLException e){
-            throw new DaoException("deleteCustomerByIdresultSet() " + e.getMessage());
-        }
-        finally{
+        } catch (SQLException e) {
+            throw new DaoException("deleteCustomerByNumber() " + e.getMessage());
+        } finally {
             try {
                 if (resultSet != null) {
                     resultSet.close();
@@ -135,7 +130,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
                     freeConnection(connection);
                 }
             } catch (SQLException e) {
-                throw new DaoException("deleteCustomerById() " + e.getMessage());
+                throw new DaoException("deleteCustomerByNumber() " + e.getMessage());
             }
         }
         return deleted;
@@ -148,24 +143,27 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
         ResultSet resultSet = null;
         Customer c = null;
 
-        try{
+        try {
             connection = getConnection();
-            String query = "INSERT INTO customer (customer_name, email, tel_num, address) VALUES (?,?,?,?)";
-            ps = connection.prepareStatement(query);
-//            ps.setInt(1,customer.getCustomer_id());
-            ps.setString(1,customer.getCustomer_name());
-            ps.setString(2,customer.getEmail());
-            ps.setString(3,customer.getTel_num());
-            ps.setString(4,customer.getAddress());
+            String query = "INSERT INTO customer (customer_number, customer_name, email, tel_num, address) VALUES (?,?,?,?,?)";
+            ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, customer.getCustomer_number());
+            ps.setString(2, customer.getCustomer_name());
+            ps.setString(3, customer.getEmail());
+            ps.setString(4, customer.getTel_num());
+            ps.setString(5, customer.getAddress());
 
             int result = ps.executeUpdate();
-            if(result == 1){
-                c = customer;
+            if (result == 1) {
+                resultSet = ps.getGeneratedKeys();
+                if (resultSet.next()) {
+                    int customerId = resultSet.getInt(1);
+                    c = new Customer(customerId, customer.getCustomer_number(), customer.getCustomer_name(), customer.getEmail(), customer.getTel_num(), customer.getAddress());
+                }
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("insertCustomerresultSet() " + e.getMessage());
-        }
-        finally{
+        } finally {
             try {
                 if (resultSet != null) {
                     resultSet.close();
