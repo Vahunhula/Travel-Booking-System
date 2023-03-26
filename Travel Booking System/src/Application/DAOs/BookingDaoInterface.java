@@ -22,4 +22,8 @@ public interface BookingDaoInterface {
     //an extra method mae by me to find all bookings by customer number so that when a customer is
     //about to be deleted, all their baffected bookings will be displayed
     public List<Booking> findAllBookingsByCustomerNumber(String customerNumber) throws DaoException;
+
+    //an extra method made by me to find all bookings by flight number so that when a flight is
+    //about to be deleted, all their affected bookings will be displayed
+    public List<Booking> findAllBookingsByFlightNumber(String flightNumber) throws DaoException;
 }

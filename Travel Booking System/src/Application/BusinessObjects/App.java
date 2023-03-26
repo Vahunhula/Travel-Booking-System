@@ -141,7 +141,7 @@ public class App {
                     deleteAirportByNumber();
                     break;
                 case 3:
-                    System.out.println("Delete Flight by Number");
+                    deleteFlightByNumber();
                     break;
                 case 4:
                     System.out.println("Delete Booking by Number");
@@ -438,6 +438,34 @@ public class App {
                 }
             } else {
                 System.out.println("Error deleting airport: " + e.getMessage());
+            }
+        }
+    }
+
+    //to delete flight by number and also if no flight found then it will display no flight found
+    //and also check if flight has related records in booking table then it will display those records
+    private static void deleteFlightByNumber() {
+        String flightNumber = readString("Enter flight number: ");
+        try{
+            boolean deleted = flightDao.deleteFlightByNumber(flightNumber);
+            if (deleted) {
+                System.out.println("Flight deleted.");
+            } else {
+                System.out.println("No flight found.");
+            }
+        }catch(DaoException e){
+            if (e.getMessage().contains("foreign key constraint")) {
+                System.out.println("Flight-" +flightNumber  + " cannot be deleted because it has related records in the database:");
+                try {
+                    List<Booking> bookings = bookingDao.findAllBookingsByFlightNumber(flightNumber);
+                    for (Booking booking : bookings) {
+                        System.out.println(booking);
+                    }
+                } catch (DaoException e1) {
+                    System.out.println("Error: " + e1.getMessage());
+                }
+            } else {
+                System.out.println("Error deleting flight: " + e.getMessage());
             }
         }
     }
