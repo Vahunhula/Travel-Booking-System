@@ -7,6 +7,7 @@ import Application.DTOs.*;
 import Application.Exceptions.DaoException;
 
 import java.util.List;
+import java.time.LocalDate;
 
 
 public class App {
@@ -180,7 +181,7 @@ public class App {
                     insertFlight();
                     break;
                 case 4:
-                    System.out.println("Insert Booking");
+                    insertBooking();
                     break;
                 case 5:
                     System.out.println("Insert Payment");
@@ -693,6 +694,29 @@ public class App {
             }
             field = airlineName;
         }
+        //check for booking number
+        if (type.equalsIgnoreCase("bookingNumber")) {
+            String bookingNumber = "";
+            while (bookingNumber.isEmpty() || bookingNumber.length() > max) {
+                bookingNumber = readString("Enter booking number (max " + max + " characters): ");
+                if (bookingNumber.isEmpty()) {
+                    System.out.println("Booking number cannot be empty.");
+                } else if (bookingNumber.length() > max) {
+                    System.out.println("Booking number cannot be longer than " + max + " characters.");
+                }
+                //check if booking number already exists
+                try {
+                    Booking booking = bookingDao.findBookingByNumber(bookingNumber);
+                    if (booking != null) {
+                        System.out.println("Booking number already exists. Please enter a different number.");
+                        bookingNumber = "";
+                    }
+                } catch (DaoException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+            }
+            field = bookingNumber;
+        }
         return field;
     }
 
@@ -720,6 +744,58 @@ public class App {
             }
         }
         return airportNumber;
+    }
+
+    //a separate method so when inserting in the booking table, the flight number can be checked if it exists and if it does
+    //then insert the flight number in the flight table and if not tell teh user that the flight number does not exist or they
+    //can add the flight first
+    private static String readFlightNumber() {
+        String flightNumber = "";
+        while (flightNumber.isEmpty() || flightNumber.length() > 10) {
+            flightNumber = readString("Enter flight number (max 10 characters): ");
+            if (flightNumber.isEmpty()) {
+                System.out.println("Flight number cannot be empty.");
+            } else if (flightNumber.length() > 10) {
+                System.out.println("Flight number cannot be longer than 10 characters.");
+            } else {
+                try {
+                    Flight flight = flightDao.findFlightByNumber(flightNumber);
+                    if (flight == null) {
+                        System.out.println("Flight number does not exist. Please add the flight first in the InsertFlight().");
+                        flightNumber = "";
+                    }
+                } catch (DaoException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+            }
+        }
+        return flightNumber;
+    }
+
+    //a separate method so when inserting in the booking table, the customer number can be checked if it exists and if it does
+    //then insert the customer number in the customer table and if not tell teh user that the customer number does not exist or they
+    //can add the customer first
+    private static String readCustomerNumber() {
+        String customerNumber = "";
+        while (customerNumber.isEmpty() || customerNumber.length() > 10) {
+            customerNumber = readString("Enter customer number (max 10 characters): ");
+            if (customerNumber.isEmpty()) {
+                System.out.println("Customer number cannot be empty.");
+            } else if (customerNumber.length() > 10) {
+                System.out.println("Customer number cannot be longer than 10 characters.");
+            } else {
+                try {
+                    Customer customer = customerDao.findCustomerByNumber(customerNumber);
+                    if (customer == null) {
+                        System.out.println("Customer number does not exist. Please add the customer first in the InsertCustomer().");
+                        customerNumber = "";
+                    }
+                } catch (DaoException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+            }
+        }
+        return customerNumber;
     }
 
     //the method is to check if the email is valid and also if it is not already in the database
@@ -783,6 +859,69 @@ public class App {
         return flightCost;
     }
 
+    //ro validate the travel_date in format yyyy-mm-dd and also check so that the date is not before today
+    //and not more than 12 montsh format yyyy-mm-dd and not more than day 31
+    private static String readTravelDate() {
+        String travelDate = "";
+        while (travelDate.isEmpty() || !travelDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+            travelDate = readString("Enter travel date in format yyyy-mm-dd: ");
+            if (!travelDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+                System.out.println("Error: invalid date format.");
+            } else {
+                String[] date = travelDate.split("-");
+                int year = Integer.parseInt(date[0]);
+                int month = Integer.parseInt(date[1]);
+                int day = Integer.parseInt(date[2]);
+                if (year < 2023 || month < 1 || month > 12 || day < 1 || day > 31) {
+                    System.out.println("Error: invalid date.");
+                    travelDate = "";
+                } else {
+                    LocalDate travelDate1 = LocalDate.of(year, month, day);
+                    LocalDate today = LocalDate.now();
+                    if (travelDate1.isBefore(today)) {
+                        System.out.println("Error: travel date cannot be before today.");
+                        travelDate = "";
+                    }
+                }
+            }
+        }
+        return travelDate;
+    }
+
+    //to validate the travel_time in format hh:mm:ss and also check so that the
+    //time is not before 00:00:00 and not after 23:59:59
+    private static String readTravelTime() {
+        String travelTime = "";
+        while (travelTime.isEmpty() || !travelTime.matches("^\\d{2}:\\d{2}:\\d{2}$")) {
+            travelTime = readString("Enter travel time in format hh:mm:ss: ");
+            if (!travelTime.matches("^\\d{2}:\\d{2}:\\d{2}$")) {
+                System.out.println("Error: invalid time format.");
+            } else {
+                String[] time = travelTime.split(":");
+                int hour = Integer.parseInt(time[0]);
+                int minute = Integer.parseInt(time[1]);
+                int second = Integer.parseInt(time[2]);
+                if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) {
+                    System.out.println("Error: invalid time format.");
+                    travelTime = "";
+                }
+            }
+        }
+        return travelTime;
+    }
+
+    //to validate the seat_number not less taht 1A and more than 100F
+    private static String readSeatNumber() {
+        String seatNumber = "";
+        while (seatNumber.isEmpty() || !seatNumber.matches("^[1-9][0-9]?[A-F]$")) {
+            seatNumber = readString("Enter seat number (1A-100F): ");
+            if (!seatNumber.matches("^[1-9][0-9]?[A-F]$")) {
+                System.out.println("Error: invalid seat number format.");
+            }
+        }
+        return seatNumber;
+    }
+
     //to insert a new customer
     private static void insertCustomer() {
         String customerNumber = readField("customerNumber", 10);
@@ -831,6 +970,24 @@ public class App {
             System.out.println("Flight inserted.");
         } catch (DaoException e) {
             System.out.println("Error inserting flight: " + e.getMessage());
+        }
+    }
+
+    //to insert a new booking
+    private static void insertBooking() {
+        String bookingNumber = readField("bookingNumber", 10);
+        String flightNumber = readFlightNumber();
+        String customerNumber = readCustomerNumber();
+        String travelDate = readTravelDate();
+        String travelTime = readTravelTime();
+        String seatNumber = readSeatNumber();
+
+        Booking booking = new Booking(bookingNumber, flightNumber, customerNumber, travelDate, travelTime, seatNumber);
+        try {
+            bookingDao.insertBooking(booking);
+            System.out.println("Booking inserted.");
+        } catch (DaoException e) {
+            System.out.println("Error inserting booking: " + e.getMessage());
         }
     }
 }
