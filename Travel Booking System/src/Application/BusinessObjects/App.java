@@ -174,10 +174,10 @@ public class App {
                     insertCustomer();
                     break;
                 case 2:
-                    System.out.println("Insert Airport");
+                    insertAirport();
                     break;
                 case 3:
-                    System.out.println("Insert Flight");
+                    insertFlight();
                     break;
                 case 4:
                     System.out.println("Insert Booking");
@@ -224,6 +224,21 @@ public class App {
         return input;
     }
 
+    //to read Double
+    private static double readDouble(String message) {
+        Scanner scanner = new Scanner(System.in);
+        double input;
+        while (true) {
+            try {
+                System.out.print(message);
+                input = Double.parseDouble(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input, please enter a double.");
+            }
+        }
+        return input;
+    }
 
     private static void findAllCustomers() {
         CustomerDaoInterface customerDao = new MySqlCustomerDao();
@@ -616,7 +631,95 @@ public class App {
             }
             field = airportLocation;
         }
+        //check for flight number
+        if (type.equalsIgnoreCase("flightNumber")) {
+            String flightNumber = "";
+            while (flightNumber.isEmpty() || flightNumber.length() > max) {
+                flightNumber = readString("Enter flight number (max " + max + " characters): ");
+                if (flightNumber.isEmpty()) {
+                    System.out.println("Flight number cannot be empty.");
+                } else if (flightNumber.length() > max) {
+                    System.out.println("Flight number cannot be longer than " + max + " characters.");
+                }
+                //check if flight number already exists
+                try {
+                    Flight flight = flightDao.findFlightByNumber(flightNumber);
+                    if (flight != null) {
+                        System.out.println("Flight number already exists. Please enter a different number.");
+                        flightNumber = "";
+                    }
+                } catch (DaoException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+            }
+            field = flightNumber;
+        }
+        //check for flight departure_location
+        if (type.equalsIgnoreCase("departureLocation")) {
+            String departureLocation = "";
+            while (departureLocation.isEmpty() || departureLocation.length() > max) {
+                departureLocation = readString("Enter departure location (max " + max + " characters): ");
+                if (departureLocation.isEmpty()) {
+                    System.out.println("Departure location cannot be empty.");
+                } else if (departureLocation.length() > max) {
+                    System.out.println("Departure location cannot be longer than " + max + " characters.");
+                }
+            }
+            field = departureLocation;
+        }
+        //check for flight arrival_location
+        if (type.equalsIgnoreCase("arrivalLocation")) {
+            String arrivalLocation = "";
+            while (arrivalLocation.isEmpty() || arrivalLocation.length() > max) {
+                arrivalLocation = readString("Enter arrival location (max " + max + " characters): ");
+                if (arrivalLocation.isEmpty()) {
+                    System.out.println("Arrival location cannot be empty.");
+                } else if (arrivalLocation.length() > max) {
+                    System.out.println("Arrival location cannot be longer than " + max + " characters.");
+                }
+            }
+            field = arrivalLocation;
+        }
+        //check for flight airline_name
+        if (type.equalsIgnoreCase("airlineName")) {
+            String airlineName = "";
+            while (airlineName.isEmpty() || airlineName.length() > max) {
+                airlineName = readString("Enter airline name (max " + max + " characters): ");
+                if (airlineName.isEmpty()) {
+                    System.out.println("Airline name cannot be empty.");
+                } else if (airlineName.length() > max) {
+                    System.out.println("Airline name cannot be longer than " + max + " characters.");
+                }
+            }
+            field = airlineName;
+        }
         return field;
+    }
+
+    //a separate method so when inserting in teh floght table, the airport number can be checked if it exists and if it does
+    //then insert the airport number in the flight table and if not tell teh user that the airport number does not exist or they
+    //can add the airport first
+    private static String readAirportNumber() {
+        String airportNumber = "";
+        while (airportNumber.isEmpty() || airportNumber.length() > 10) {
+            airportNumber = readString("Enter airport number (max 10 characters): ");
+            if (airportNumber.isEmpty()) {
+                System.out.println("Airport number cannot be empty.");
+            } else if (airportNumber.length() > 10) {
+                System.out.println("Airport number cannot be longer than 10 characters.");
+            } else {
+                try {
+                    Airport airport = airportDao.findAirportByNumber(airportNumber);
+                    if (airport == null) {
+                        System.out.println("Airport number does not exist. Please add the airport first in the InsertAirport().");
+                        airportNumber = "";
+                    }
+                } catch (DaoException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+            }
+        }
+        return airportNumber;
     }
 
     //the method is to check if the email is valid and also if it is not already in the database
@@ -656,6 +759,30 @@ public class App {
         return telNum;
     }
 
+    //to validate the duration of the flight
+    private static int readDuration() {
+        int duration = 0;
+        while (duration <= 0) {
+            duration = readInt("Enter duration (minutes): ");
+            if (duration <= 0) {
+                System.out.println("Duration must be a positive integer.");
+            }
+        }
+        return duration;
+    }
+
+    //to validate the flight_cost
+    private static double readFlightCost() {
+        double flightCost = 0;
+        while (flightCost <= 0) {
+            flightCost = readDouble("Enter flight cost: ");
+            if (flightCost <= 0) {
+                System.out.println("Flight cost must be a positive number.");
+            }
+        }
+        return flightCost;
+    }
+
     //to insert a new customer
     private static void insertCustomer() {
         String customerNumber = readField("customerNumber", 10);
@@ -685,6 +812,25 @@ public class App {
             System.out.println("Airport inserted.");
         } catch (DaoException e) {
             System.out.println("Error inserting airport: " + e.getMessage());
+        }
+    }
+
+    //to insert a new flight
+    private static void insertFlight() {
+        String flightNumber = readField("flightNumber", 10);
+        String airportNumber = readAirportNumber();
+        String departureLocation = readField("departureLocation", 50);
+        String arrivalLocation = readField("arrivalLocation", 50);
+        String airlineName = readField("airlineName", 30);
+        int duration = readDuration();
+        double flightCost = readFlightCost();
+
+        Flight flight = new Flight(flightNumber, airportNumber, departureLocation, arrivalLocation, airlineName, duration, flightCost);
+        try {
+            flightDao.insertFlight(flight);
+            System.out.println("Flight inserted.");
+        } catch (DaoException e) {
+            System.out.println("Error inserting flight: " + e.getMessage());
         }
     }
 }
