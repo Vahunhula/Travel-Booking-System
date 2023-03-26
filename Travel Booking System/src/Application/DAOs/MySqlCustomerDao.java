@@ -182,4 +182,41 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
         }
         return c;
     }
+
+    @Override
+    public boolean checkIfEmailExists(String email) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        boolean exists = false;
+
+        try {
+            connection = getConnection();
+            String query = "SELECT * FROM customer WHERE LOWER(email) = LOWER(?)";
+            ps = connection.prepareStatement(query);
+            ps.setString(1, email);
+
+            resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                exists = true;
+            }
+        } catch (SQLException e) {
+            throw new DaoException("checkIfEmailExists() " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("checkIfEmailExists() " + e.getMessage());
+            }
+        }
+        return exists;
+    }
 }

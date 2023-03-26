@@ -5,6 +5,7 @@ import java.util.Scanner;
 import Application.DAOs.*;
 import Application.DTOs.*;
 import Application.Exceptions.DaoException;
+
 import java.util.List;
 
 
@@ -147,7 +148,7 @@ public class App {
                     deleteBookingByNumber();
                     break;
                 case 5:
-                    System.out.println("Delete Payment by Number");
+                    deletePaymentByNumber();
                     break;
                 case 6:
                     return;
@@ -170,7 +171,7 @@ public class App {
             int choice = readInt("Enter your choice: ");
             switch (choice) {
                 case 1:
-                    System.out.println("Insert Customer");
+                    insertCustomer();
                     break;
                 case 2:
                     System.out.println("Insert Airport");
@@ -192,6 +193,7 @@ public class App {
             }
         }
     }
+
     private static int readInt(String message) {
         Scanner scanner = new Scanner(System.in);
         int input;
@@ -391,16 +393,16 @@ public class App {
     private static void deleteCustomerByNumber() {
         CustomerDaoInterface customerDao = new MySqlCustomerDao();
         String customerNumber = readString("Enter customer number: ");
-        try{
+        try {
             boolean deleted = customerDao.deleteCustomerByNumber(customerNumber);
             if (deleted) {
                 System.out.println("Customer deleted.");
             } else {
                 System.out.println("No customer found.");
             }
-        }catch(DaoException e){
+        } catch (DaoException e) {
             if (e.getMessage().contains("foreign key constraint")) {
-                System.out.println("Customer-" +customerNumber  + " cannot be deleted because it has related records in the database:");
+                System.out.println("Customer-" + customerNumber + " cannot be deleted because it has related records in the database:");
                 try {
                     List<Booking> bookings = bookingDao.findAllBookingsByCustomerNumber(customerNumber);
                     for (Booking booking : bookings) {
@@ -418,16 +420,16 @@ public class App {
     //to delete airport by number and also if no airport found then it will display no airport found
     private static void deleteAirportByNumber() {
         String airportNumber = readString("Enter airport number: ");
-        try{
+        try {
             boolean deleted = airportDao.deleteAirportByNumber(airportNumber);
             if (deleted) {
                 System.out.println("Airport deleted.");
             } else {
                 System.out.println("No airport found.");
             }
-        }catch(DaoException e){
+        } catch (DaoException e) {
             if (e.getMessage().contains("foreign key constraint")) {
-                System.out.println("Airport-" +airportNumber  + " cannot be deleted because it has related records in the database:");
+                System.out.println("Airport-" + airportNumber + " cannot be deleted because it has related records in the database:");
                 try {
                     List<Flight> flights = flightDao.findAllFlightsByAirportNumber(airportNumber);
                     for (Flight flight : flights) {
@@ -446,16 +448,16 @@ public class App {
     //and also check if flight has related records in booking table then it will display those records
     private static void deleteFlightByNumber() {
         String flightNumber = readString("Enter flight number: ");
-        try{
+        try {
             boolean deleted = flightDao.deleteFlightByNumber(flightNumber);
             if (deleted) {
                 System.out.println("Flight deleted.");
             } else {
                 System.out.println("No flight found.");
             }
-        }catch(DaoException e){
+        } catch (DaoException e) {
             if (e.getMessage().contains("foreign key constraint")) {
-                System.out.println("Flight-" +flightNumber  + " cannot be deleted because it has related records in the database:");
+                System.out.println("Flight-" + flightNumber + " cannot be deleted because it has related records in the database:");
                 try {
                     List<Booking> bookings = bookingDao.findAllBookingsByFlightNumber(flightNumber);
                     for (Booking booking : bookings) {
@@ -474,16 +476,16 @@ public class App {
     //and also check if booking has related records in payment table then it will display those records
     private static void deleteBookingByNumber() {
         String bookingNumber = readString("Enter booking number: ");
-        try{
+        try {
             boolean deleted = bookingDao.deleteBookingByNumber(bookingNumber);
             if (deleted) {
                 System.out.println("Booking deleted.");
             } else {
                 System.out.println("No booking found.");
             }
-        }catch(DaoException e){
+        } catch (DaoException e) {
             if (e.getMessage().contains("foreign key constraint")) {
-                System.out.println("Booking-" +bookingNumber  + " cannot be deleted because it has related records in the database:");
+                System.out.println("Booking-" + bookingNumber + " cannot be deleted because it has related records in the database:");
                 try {
                     List<Payment> payments = paymentDao.findAllPaymentsByBookingNumber(bookingNumber);
                     for (Payment payment : payments) {
@@ -495,6 +497,130 @@ public class App {
             } else {
                 System.out.println("Error deleting booking: " + e.getMessage());
             }
+        }
+    }
+
+    //to delete payment by number and also if no payment found then it will display no payment found
+    private static void deletePaymentByNumber() {
+        String paymentNumber = readString("Enter payment number: ");
+        try {
+            boolean deleted = paymentDao.deletePaymentByNumber(paymentNumber);
+            if (deleted) {
+                System.out.println("Payment deleted.");
+            } else {
+                System.out.println("No payment found.");
+            }
+        } catch (DaoException e) {
+            System.out.println("Error deleting payment: " + e.getMessage());
+        }
+    }
+
+    //a method to read a type of String from tge user and do proper check if it snot longer than teh max length
+    private static String readField(String type, int max) {
+        String field = "";
+        //check if type is customerNumber
+        if (type.equalsIgnoreCase("customerNumber")) {
+            String customerNumber = "";
+            while (customerNumber.isEmpty() || customerNumber.length() > max) {
+                customerNumber = readString("Enter customer number (max " + max + " characters): ");
+                if (customerNumber.isEmpty()) {
+                    System.out.println("Customer number cannot be empty.");
+                } else if (customerNumber.length() > max) {
+                    System.out.println("Customer number cannot be longer than " + max + " characters.");
+                }
+                //check if customer number already exists
+                try {
+                    Customer customer = customerDao.findCustomerByNumber(customerNumber);
+                    if (customer != null) {
+                        System.out.println("Customer number already exists. Please enter a different number.");
+                        customerNumber = "";
+                    }
+                } catch (DaoException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+            }
+            field = customerNumber;
+        }
+        //check if type is customerName
+        if (type.equalsIgnoreCase("customerName")) {
+            String customerName = "";
+            while (customerName.isEmpty() || customerName.length() > max) {
+                customerName = readString("Enter customer name (max " + max + " characters): ");
+                if (customerName.isEmpty()) {
+                    System.out.println("Customer name cannot be empty.");
+                } else if (customerName.length() > max) {
+                    System.out.println("Customer name cannot be longer than " + max + " characters.");
+                }
+            }
+            field = customerName;
+        }
+        //check if type is address
+        if (type.equalsIgnoreCase("address")) {
+            String address = "";
+            while (address.isEmpty() || address.length() > max) {
+                address = readString("Enter address (max " + max + " characters): ");
+                if (address.isEmpty()) {
+                    System.out.println("Address cannot be empty.");
+                } else if (address.length() > max) {
+                    System.out.println("Address cannot be longer than " + max + " characters.");
+                }
+            }
+            field = address;
+        }
+        return field;
+    }
+
+    //the method is to check if the email is valid and also if it is not already in the database
+    private static String readEmail() {
+        String email = "";
+        while (email.isEmpty() || email.length() > 50) {
+            email = readString("Enter email (max 50 characters): ");
+            if (email.length() > 50) {
+                System.out.println("Error: email cannot be more than 50 characters.");
+            } else if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                System.out.println("Error: invalid email format.");
+                email = "";
+            } else {
+                try {
+                    CustomerDaoInterface customerDao = new MySqlCustomerDao();
+                    if (customerDao.checkIfEmailExists(email)) {
+                        System.out.println("Error: email already exists.");
+                        email = "";
+                    }
+                } catch (DaoException e) {
+                    System.out.println("Error checking email: " + e.getMessage());
+                }
+            }
+        }
+        return email;
+    }
+
+    //the method is to check if the telephone number is valid
+    private static String readTelephone() {
+        String telNum = "";
+        while (telNum.isEmpty() || !telNum.matches("^\\+353\\d{9}$")) {
+            telNum = readString("Enter telephone number in Irish format (+353123456789): ");
+            if (!telNum.matches("^\\+353\\d{9}$")) {
+                System.out.println("Error: invalid telephone number format.");
+            }
+        }
+        return telNum;
+    }
+
+    //to insert a new customer
+    private static void insertCustomer() {
+        String customerNumber = readField("customerNumber", 10);
+        String customerName = readField("customerName", 50);
+        String email = readEmail();
+        String telephone = readTelephone();
+        String address = readField("address", 50);
+
+        Customer customer = new Customer(customerNumber, customerName, email, telephone, address);
+        try {
+            customerDao.insertCustomer(customer);
+            System.out.println("Customer inserted.");
+        } catch (DaoException e) {
+            System.out.println("Error inserting customer: " + e.getMessage());
         }
     }
 }

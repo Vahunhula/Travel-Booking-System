@@ -20,4 +20,7 @@ public interface CustomerDaoInterface {
     // Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
     // object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
     public Customer insertCustomer(Customer customer) throws DaoException;
+
+    //to check if an email is already in the database
+    public boolean checkIfEmailExists(String email) throws DaoException;
 }
