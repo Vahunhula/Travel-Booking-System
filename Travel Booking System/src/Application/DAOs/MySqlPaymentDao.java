@@ -352,4 +352,49 @@ public class MySqlPaymentDao extends MySqlDao implements PaymentDaoInterface{
         }
         return p;
     }
+
+    @Override
+    public List<Payment> findAllPaymentsByBookingNumber(String bookingNumber) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        List<Payment> payments = new ArrayList<>();
+
+        try{
+            connection = getConnection();
+            String query = "SELECT * FROM payment WHERE LOWER(booking_number) = ?";
+            ps = connection.prepareStatement(query);
+            ps.setString(1, bookingNumber.toLowerCase());
+
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                int paymentId = resultSet.getInt("payment_id");
+                String paymentNumber = resultSet.getString("payment_number");
+                double amountPaid = resultSet.getDouble("amount_paid");
+                String paymentDate = resultSet.getString("payment_date");
+                String method = resultSet.getString("method");
+
+                Payment p = new Payment(paymentId, paymentNumber, bookingNumber, amountPaid, paymentDate, method);
+                payments.add(p);
+            }
+        } catch(SQLException e){
+            throw new DaoException("findAllPaymentsByBookingNumber() " + e.getMessage());
+        } finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("findAllPaymentsByBookingNumber() " + e.getMessage());
+            }
+        }
+        return payments;
+    }
 }

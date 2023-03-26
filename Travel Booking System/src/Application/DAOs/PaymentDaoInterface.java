@@ -18,4 +18,8 @@ public interface PaymentDaoInterface {
     //Feature 4 – Insert an Entity in the database using DAO (gather data from user, store in DTO
     //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
     public Payment insertPayment(Payment payment) throws DaoException;
+
+    //an extra method mae by me to find all payments by booking number so that when a booking is
+    //about to be deleted, all their affected payments will be displayed
+    public List<Payment> findAllPaymentsByBookingNumber(String bookingNumber) throws DaoException;
 }
