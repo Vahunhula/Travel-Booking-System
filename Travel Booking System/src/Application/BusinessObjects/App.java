@@ -884,18 +884,6 @@ public class App {
         return telNum;
     }
 
-    //to validate the duration of the flight
-    private static int readDuration() {
-        int duration = 0;
-        while (duration <= 0) {
-            duration = readInt("Enter duration (minutes): ");
-            if (duration <= 0) {
-                System.out.println("Duration must be a positive integer.");
-            }
-        }
-        return duration;
-    }
-
     //to validate the flight_cost
     private static double readFlightCost() {
         double flightCost = 0;
@@ -939,7 +927,7 @@ public class App {
 
     //to validate the travel_time in format hh:mm:ss and also check so that the
     //time is not before 00:00:00 and not after 23:59:59
-    private static String readTravelTime() {
+    private static String readTime() {
         String travelTime = "";
         while (travelTime.isEmpty() || !travelTime.matches("^\\d{2}:\\d{2}:\\d{2}$")) {
             travelTime = readString("Enter travel time in format hh:mm:ss: ");
@@ -1049,12 +1037,13 @@ public class App {
         String flightNumber = readField("flightNumber", 10);
         String airportNumber = readAirportNumber();
         String departureLocation = readField("departureLocation", 50);
+        String departureTime = readTime();
         String arrivalLocation = readField("arrivalLocation", 50);
+        String arrivalTime = readTime();
         String airlineName = readField("airlineName", 30);
-        int duration = readDuration();
         double flightCost = readFlightCost();
 
-        Flight flight = new Flight(flightNumber, airportNumber, departureLocation, arrivalLocation, airlineName, duration, flightCost);
+        Flight flight = new Flight(flightNumber, airportNumber, departureLocation, departureTime, arrivalLocation, arrivalTime, airlineName, flightCost);
         try {
             flightDao.insertFlight(flight);
             System.out.println("Flight inserted.");
@@ -1069,10 +1058,9 @@ public class App {
         String flightNumber = readFlightNumber();
         String customerNumber = readCustomerNumber();
         String travelDate = readTravelDate();
-        String travelTime = readTravelTime();
         String seatNumber = readSeatNumber();
 
-        Booking booking = new Booking(bookingNumber, flightNumber, customerNumber, travelDate, travelTime, seatNumber);
+        Booking booking = new Booking(bookingNumber, flightNumber, customerNumber, travelDate, seatNumber);
         try {
             bookingDao.insertBooking(booking);
             System.out.println("Booking inserted.");
