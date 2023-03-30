@@ -80,4 +80,24 @@ class MySqlBookingDaoTest {
             e.printStackTrace();
         }
     }
+
+    //find all bookings by customer number
+    @Test
+    void testFindAllBookingsByCustomerNumber(){
+        BookingDaoInterface bookingDao = new MySqlBookingDao();
+        String customerNumber = "C0004";
+        try{
+            List<Booking> bookings = bookingDao.findAllBookingsByCustomerNumber(customerNumber);
+            //this is a test to see if the list is empty
+            assertNotNull(bookings);
+            //if the list is not empty, then the size of the list should be greater than 0 which is true
+            assertTrue(bookings.size() > 0);
+            for (Booking b : bookings) {
+                System.out.println(b);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
