@@ -7,7 +7,6 @@ public class Booking {
     //    flight_id INT NOT NULL,
     //    customer_id INT NOT NULL,
     //    travel_date DATE NOT NULL,
-    //    travel_time TIME NOT NULL,
     //    seats INT NOT NULL,
     //    FOREIGN KEY (flight_id) REFERENCES flight(flight_id),
     //    FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
@@ -19,7 +18,6 @@ public class Booking {
     private String flight_number;
     private String  customer_number;
     private String travel_date;
-    private String travel_time;
     private String seat_number;
 
     //default constructor
@@ -27,24 +25,22 @@ public class Booking {
     }
 
     //constructor with parameters
-    public Booking(String booking_number, String flight_number, String customer_number, String travel_date, String travel_time, String seat_number) {
+    public Booking(String booking_number, String flight_number, String customer_number, String travel_date, String seat_number) {
         this.booking_number = booking_number;
         this.booking_id = ++booking_id_counter;
         this.flight_number = flight_number;
         this.customer_number = customer_number;
         this.travel_date = travel_date;
-        this.travel_time = travel_time;
         this.seat_number = seat_number;
     }
 
     //parameter with booking_id
-    public Booking(int booking_id, String booking_number, String flight_number, String customer_number, String travel_date, String travel_time, String seat_number) {
+    public Booking(int booking_id, String booking_number, String flight_number, String customer_number, String travel_date, String seat_number) {
         this.booking_number = booking_number;
         this.booking_id = booking_id;
         this.flight_number = flight_number;
         this.customer_number = customer_number;
         this.travel_date = travel_date;
-        this.travel_time = travel_time;
         this.seat_number = seat_number;
     }
 
@@ -89,14 +85,6 @@ public class Booking {
         this.travel_date = travel_date;
     }
 
-    public String getTravel_time() {
-        return travel_time;
-    }
-
-    public void setTravel_time(String travel_time) {
-        this.travel_time = travel_time;
-    }
-
     public String getSeat_number() {
         return seat_number;
     }
@@ -113,7 +101,6 @@ public class Booking {
                 ", flight_number='" + flight_number + '\'' +
                 ", customer_number='" + customer_number + '\'' +
                 ", travel_date='" + travel_date + '\'' +
-                ", travel_time='" + travel_time + '\'' +
                 ", seat_number='" + seat_number + '\'' +
                 '}';
     }
