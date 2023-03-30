@@ -28,10 +28,9 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
                 String flightNumber = resultSet.getString("flight_number");
                 String customerNumber = resultSet.getString("customer_number");
                 String travelDate = resultSet.getString("travel_date");
-                String travelTime = resultSet.getString("travel_time");
                 String seatNumber = resultSet.getString("seat_number");
 
-                Booking b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, travelTime, seatNumber);
+                Booking b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, seatNumber);
                 bookings.add(b);
             }
         } catch(SQLException e){
@@ -74,10 +73,9 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
                 String flightNumber = resultSet.getString("flight_number");
                 String customerNumber = resultSet.getString("customer_number");
                 String travelDate = resultSet.getString("travel_date");
-                String travelTime = resultSet.getString("travel_time");
                 String seatNumber = resultSet.getString("seat_number");
 
-                b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, travelTime, seatNumber);
+                b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, seatNumber);
             }
         } catch(SQLException e){
             throw new DaoException("findBookingByNumber() " + e.getMessage());
@@ -145,21 +143,20 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
 
         try{
             connection = getConnection();
-            String query = "INSERT INTO booking (booking_number, flight_number, customer_number, travel_date, travel_time, seat_number) VALUES (?,?,?,?,?,?)";
+            String query = "INSERT INTO booking (booking_number, flight_number, customer_number, travel_date, seat_number) VALUES (?,?,?,?,?)";
             ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, booking.getBooking_number());
             ps.setString(2, booking.getFlight_number());
             ps.setString(3, booking.getCustomer_number());
             ps.setString(4, booking.getTravel_date());
-            ps.setString(5, booking.getTravel_time());
-            ps.setString(6, booking.getSeat_number());
+            ps.setString(5, booking.getSeat_number());
 
             int result = ps.executeUpdate();
             if(result == 1){
                 resultSet = ps.getGeneratedKeys();
                 if(resultSet.next()){
                     int bookingId = resultSet.getInt(1);
-                    b = new Booking(bookingId, booking.getBooking_number(), booking.getFlight_number(), booking.getCustomer_number(), booking.getTravel_date(), booking.getTravel_time(), booking.getSeat_number());
+                    b = new Booking(bookingId, booking.getBooking_number(), booking.getFlight_number(), booking.getCustomer_number(), booking.getTravel_date(), booking.getSeat_number());
                 }
             }
         } catch(SQLException e){
@@ -202,10 +199,9 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
                 String bookingNumber = resultSet.getString("booking_number");
                 String flightNumber = resultSet.getString("flight_number");
                 String travelDate = resultSet.getString("travel_date");
-                String travelTime = resultSet.getString("travel_time");
                 String seatNumber = resultSet.getString("seat_number");
 
-                Booking b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, travelTime, seatNumber);
+                Booking b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, seatNumber);
                 bookings.add(b);
             }
         } catch(SQLException e){
@@ -248,10 +244,9 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
                 String bookingNumber = resultSet.getString("booking_number");
                 String customerNumber = resultSet.getString("customer_number");
                 String travelDate = resultSet.getString("travel_date");
-                String travelTime = resultSet.getString("travel_time");
                 String seatNumber = resultSet.getString("seat_number");
 
-                Booking b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, travelTime, seatNumber);
+                Booking b = new Booking(bookingId, bookingNumber, flightNumber, customerNumber, travelDate, seatNumber);
                 bookings.add(b);
             }
         } catch(SQLException e){
