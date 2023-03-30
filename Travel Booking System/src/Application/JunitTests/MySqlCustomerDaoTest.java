@@ -73,4 +73,19 @@ class MySqlCustomerDaoTest {
             e.printStackTrace();
         }
     }
+
+    //test to check if a customer is trying to input an email that already exists
+    @org.junit.jupiter.api.Test
+    void testCheckIfEmailExists(){
+        CustomerDaoInterface customerDao = new MySqlCustomerDao();
+        String email = "john.smith@example.com";
+        try{
+            boolean emailExists = customerDao.checkIfEmailExists(email);
+            //this is a test to see if the email exists
+            //if the email exists, then the email should be true
+            assertTrue(emailExists);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
