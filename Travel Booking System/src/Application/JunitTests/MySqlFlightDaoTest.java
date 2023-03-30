@@ -79,4 +79,24 @@ class MySqlFlightDaoTest {
             e.printStackTrace();
         }
     }
+
+    //find all flight by airport number
+    @Test
+    void testFindAllFlightsByAirportNumber(){
+        FlightDaoInterface flightDao = new MySqlFlightDao();
+        String airportNumber = "ORY";
+        try{
+            List<Flight> flights = flightDao.findAllFlightsByAirportNumber(airportNumber);
+            //this is a test to see if the list is empty
+            assertNotNull(flights);
+            //if the list is not empty, then the size of the list should be greater than 0 which is true
+            assertTrue(flights.size() > 0);
+            for (Flight f : flights) {
+                System.out.println(f);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
