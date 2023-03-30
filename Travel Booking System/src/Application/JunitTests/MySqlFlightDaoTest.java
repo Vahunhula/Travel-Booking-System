@@ -68,7 +68,7 @@ class MySqlFlightDaoTest {
     @Test
     void testInsertFlight() {
         FlightDaoInterface flightDao = new MySqlFlightDao();
-        Flight flight = new Flight("kktest", "ORY", "AMS", "germany", "pass", 100, 100);
+        Flight flight = new Flight("kktest", "ORY", "AMS","16:50:00", "germany","20:00:00", "pass", 100);
         try {
             Flight insertedFlight = flightDao.insertFlight(flight);
             //this is a test to see if the flight is inserted
