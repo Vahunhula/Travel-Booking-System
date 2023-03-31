@@ -221,7 +221,7 @@ public class App {
             System.out.println("--- Filter Entity ---");
             System.out.println("1. Filter Airport With City");
             System.out.println("2. Filter Flights With Airline");
-            System.out.println("3. Insert Flight");
+            System.out.println("3. Filter Flights By The Time Of The Day");
             System.out.println("4. Insert Booking");
             System.out.println("5. Insert Payment");
             System.out.println("6. Back to Main Menu");
@@ -234,7 +234,7 @@ public class App {
                     filter.filterFlightByAirline();
                     break;
                 case 3:
-                    insert.insertFlight();
+                    filter.filterFlightByDepartureTime();
                     break;
                 case 4:
                     insert.insertBooking();

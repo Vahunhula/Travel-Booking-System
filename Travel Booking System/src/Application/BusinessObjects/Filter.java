@@ -1,9 +1,6 @@
 package Application.BusinessObjects;
 
-import Application.CompMethods.CompAscAirportName;
-import Application.CompMethods.CompAscFliAirName;
-import Application.CompMethods.CompDescAirportName;
-import Application.CompMethods.CompDescFliAirName;
+import Application.CompMethods.*;
 import Application.DAOs.*;
 import Application.DTOs.Airport;
 import Application.DTOs.Flight;
@@ -149,4 +146,65 @@ public class Filter {
         }
     }
 
+    public void filterFlightByDepartureTime(){
+        try{
+            Map<String, List<Flight>> flightsByDepartureTime = flightDao.timeOfFlight();
+            int i = 1;
+            for (Map.Entry<String, List<Flight>> entry : flightsByDepartureTime.entrySet()) {
+                System.out.println(i + ". " + entry.getKey());
+                i++;
+            }
+            while (true) {
+                int choice = helper.readInt("Enter your choice: ");
+                if (choice > flightsByDepartureTime.size() || choice < 1) {
+                    System.out.println("Invalid choice, please try again.");
+                } else {
+                    String departureTime = new ArrayList<>(flightsByDepartureTime.keySet()).get(choice - 1);
+                    //the flights is the value of the map with the key of departureTime
+                    List<Flight> flights = flightsByDepartureTime.get(departureTime);
+                    if (flights.isEmpty()) {
+                        System.out.println("No flights found.");
+                    } else {
+                        System.out.println("How do you want the flights to be sorted?");
+                        System.out.println("1. By Default");
+                        System.out.println("2. By Ascending Order");
+                        System.out.println("3. By Descending Order");
+                        while (true) {
+                            int sortChoice = helper.readInt("Enter your choice: ");
+                            if (sortChoice > 3 || sortChoice < 1) {
+                                System.out.println("Invalid choice, please try again.");
+                            } else {
+                                switch (sortChoice) {
+                                    case 1:
+                                        System.out.println("Flights by " + departureTime + ":");
+                                        for (Flight flight : flights) {
+                                            System.out.println(flight);
+                                        }
+                                        break;
+                                    case 2:
+                                        System.out.println("Flights by " + departureTime + " sorted by ascending order:");
+                                        flights.sort(new CompAscFliTime());
+                                        for (Flight flight : flights) {
+                                            System.out.println(flight);
+                                        }
+                                        break;
+                                    case 3:
+                                        System.out.println("Flights by " + departureTime + " sorted by descending order:");
+                                        flights.sort(new CompDescFliTime());
+                                        for (Flight flight : flights) {
+                                            System.out.println(flight);
+                                        }
+                                        break;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        } catch (DaoException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
 }
