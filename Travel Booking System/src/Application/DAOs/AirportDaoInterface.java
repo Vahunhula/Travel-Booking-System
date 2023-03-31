@@ -5,6 +5,8 @@ import Application.DTOs.Customer;
 import Application.Exceptions.DaoException;
 
 import java.util.List;
+import java.util.Set;
+
 public interface AirportDaoInterface {
 
     //Feature 1 – Find all Entities e.g. findAllPlayers() to return a List of all the entities and display
@@ -21,4 +23,7 @@ public interface AirportDaoInterface {
 //    //object, pass into method insertPlayer ( Player ), return new entity including assigned auto-id.
 
     public Airport insertAirport(Airport airport) throws DaoException;
+
+    //to store the unique airport location using a set that i will use in the App to filter the airport, return a set
+    public Set<String> uniqueAirportLocation() throws DaoException;
 }

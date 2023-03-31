@@ -8,7 +8,10 @@ import Application.DTOs.Customer;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
     //private String airport_number
     //private String airport_name
@@ -181,5 +184,46 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
             }
         }
         return a;
+    }
+
+    @Override
+    public Set<String> uniqueAirportLocation() throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        //in case can easily change to TreeSet
+        HashSet<String> airportLocations = null;
+
+        try{
+            connection = getConnection();
+            String query = "SELECT DISTINCT airport_location FROM airport";
+            ps = connection.prepareStatement(query);
+
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                String airportLocation = resultSet.getString("airport_location");
+                airportLocations.add(airportLocation);
+            }
+
+        }catch(SQLException e){
+            throw new DaoException("uniqueAirportLocationresultSet() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("uniqueAirportLocation() " + e.getMessage());
+            }
+        }
+        return airportLocations;
     }
 }
