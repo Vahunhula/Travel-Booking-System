@@ -192,7 +192,7 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         //in case can easily change to TreeSet
-        HashSet<String> airportLocations = null;
+        HashSet<String> airportLocations = new HashSet<>();
 
         try{
             connection = getConnection();

@@ -6,6 +6,7 @@ import Application.DTOs.Airport;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -71,6 +72,24 @@ class MySqlAirportDaoTest {
             //if the airport is inserted, then the airport should not be null
             assertNotNull(insertedAirport);
             System.out.println(insertedAirport);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //to test to get the uniqueAirportLocations
+    @Test
+    void testFindUniqueAirportLocation(){
+        AirportDaoInterface airportDao = new MySqlAirportDao();
+        try{
+            Set<String> uniqueAirportLocations = airportDao.uniqueAirportLocation();
+            //this is a test to see if the list is empty
+            assertNotNull(uniqueAirportLocations);
+            //if the set is not empty, then the size of the set should be greater than 0 which is true
+            assertTrue(uniqueAirportLocations.size() > 0);
+            for (String a : uniqueAirportLocations) {
+                System.out.println(a);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
