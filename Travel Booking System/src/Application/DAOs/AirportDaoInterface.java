@@ -26,4 +26,7 @@ public interface AirportDaoInterface {
 
     //to store the unique airport location using a set that i will use in the App to filter the airport, return a set
     public Set<String> uniqueAirportLocation() throws DaoException;
+
+    //to find airport by location
+    public List<Airport> findAirportByLocation(String airportLocation) throws DaoException;
 }

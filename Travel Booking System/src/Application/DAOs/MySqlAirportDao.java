@@ -226,4 +226,49 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
         }
         return airportLocations;
     }
+
+    @Override
+    public List<Airport> findAirportByLocation(String airportLocation) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        List<Airport> airports = new ArrayList<>();
+
+        try{
+            connection = getConnection();
+            String query = "SELECT * FROM airport WHERE LOWER(airport_location) = LOWER(?)";
+            ps = connection.prepareStatement(query);
+            ps.setString(1,airportLocation);
+
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                int airportId = resultSet.getInt("airport_id");
+                String airportNumber = resultSet.getString("airport_number");
+                String airportName = resultSet.getString("airport_name");
+
+                Airport a = new Airport(airportId,airportNumber,airportName,airportLocation);
+                airports.add(a);
+            }
+
+        }catch(SQLException e){
+            throw new DaoException("findAirportByLocationresultSet() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("findAirportByLocation() " + e.getMessage());
+            }
+        }
+        return airports;
+    }
 }

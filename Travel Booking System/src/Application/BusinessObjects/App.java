@@ -31,6 +31,9 @@ public class App {
     //to access the insert entity menu
     static Insert insert = new Insert();
 
+    //to access the filter menu
+    static Filter filter = new Filter();
+
 
     public static void main(String[] args) {
         while (true) {
@@ -50,6 +53,9 @@ public class App {
                     insertMenu();
                     break;
                 case 5:
+                    filterMenu();
+                    break;
+                case 6:
                     System.out.println("Exiting program...");
                     System.exit(0);
                 default:
@@ -65,7 +71,8 @@ public class App {
         System.out.println("2. Find Entity by Number");
         System.out.println("3. Delete Entity by Number");
         System.out.println("4. Insert Entity");
-        System.out.println("5. Exit");
+        System.out.println("5. Filter Entity");
+        System.out.println("6. Exit");
     }
 
     private static void findAllEntitiesMenu() {
@@ -186,6 +193,42 @@ public class App {
             switch (choice) {
                 case 1:
                     insert.insertCustomer();
+                    break;
+                case 2:
+                    insert.insertAirport();
+                    break;
+                case 3:
+                    insert.insertFlight();
+                    break;
+                case 4:
+                    insert.insertBooking();
+                    break;
+                case 5:
+                    insert.insertPayment();
+                    break;
+                case 6:
+                    return;
+                default:
+                    System.out.println("Invalid choice, please try again.");
+                    break;
+            }
+        }
+    }
+
+    //menu to filter
+    private static void filterMenu() {
+        while (true) {
+            System.out.println("--- Filter Entity ---");
+            System.out.println("1. Filter Airport With City");
+            System.out.println("2. Insert Airport");
+            System.out.println("3. Insert Flight");
+            System.out.println("4. Insert Booking");
+            System.out.println("5. Insert Payment");
+            System.out.println("6. Back to Main Menu");
+            int choice = helper.readInt("Enter your choice: ");
+            switch (choice) {
+                case 1:
+                    filter.filterAirportByCity();
                     break;
                 case 2:
                     insert.insertAirport();
