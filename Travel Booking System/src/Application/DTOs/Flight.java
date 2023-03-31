@@ -1,6 +1,8 @@
 package Application.DTOs;
 
-public class Flight {
+import java.util.Objects;
+
+public class Flight implements Comparable<Flight> {
     //-- Create Flight table
     //CREATE TABLE flight (
     //    flight_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -143,5 +145,23 @@ public class Flight {
                 ", airline_name='" + airline_name + '\'' +
                 ", flight_cost=" + flight_cost +
                 '}';
+    }
+
+    //compare flights on ascending flight number
+    @Override
+    public int compareTo(Flight o) {
+        return this.flight_number.compareTo(o.flight_number);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Flight flight)) return false;
+        return Double.compare(flight.getFlight_cost(), getFlight_cost()) == 0 && Objects.equals(getFlight_number(), flight.getFlight_number()) && Objects.equals(getAirport_number(), flight.getAirport_number()) && Objects.equals(getDeparture_location(), flight.getDeparture_location()) && Objects.equals(getDeparture_time(), flight.getDeparture_time()) && Objects.equals(getArrival_location(), flight.getArrival_location()) && Objects.equals(getArrival_time(), flight.getArrival_time()) && Objects.equals(getAirline_name(), flight.getAirline_name());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getFlight_number(), getAirport_number(), getDeparture_location(), getDeparture_time(), getArrival_location(), getArrival_time(), getAirline_name(), getFlight_cost());
     }
 }
