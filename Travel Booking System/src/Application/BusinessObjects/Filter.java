@@ -1,13 +1,12 @@
 package Application.BusinessObjects;
 
+import Application.CompMethods.CompAscAirportName;
+import Application.CompMethods.CompDescAirportName;
 import Application.DAOs.*;
 import Application.DTOs.Airport;
 import Application.Exceptions.DaoException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Filter {
     static Helpers helper = new Helpers();
@@ -39,8 +38,39 @@ public class Filter {
                     if(airports.isEmpty()){
                         System.out.println("No airports found.");
                     }else {
-                        for (Airport airport : airports) {
-                            System.out.println(airport.toString());
+                        System.out.println("How do you want the airports to be sorted?");
+                        System.out.println("1. By Default");
+                        System.out.println("2. By Ascending Order");
+                        System.out.println("3. By Descending Order");
+                        while (true) {
+                            int sortChoice = helper.readInt("Enter your choice: ");
+                            if (sortChoice > 3 || sortChoice < 1) {
+                                System.out.println("Invalid choice, please try again.");
+                            } else {
+                                switch (sortChoice) {
+                                    case 1:
+                                        System.out.println("Airports in " + airportLocation + ":");
+                                        for (Airport airport : airports) {
+                                            System.out.println(airport);
+                                        }
+                                        break;
+                                    case 2:
+                                        System.out.println("Airports in " + airportLocation + " sorted by ascending order:");
+                                        airports.sort(new CompAscAirportName());
+                                        for (Airport airport : airports) {
+                                            System.out.println(airport);
+                                        }
+                                        break;
+                                    case 3:
+                                        System.out.println("Airports in " + airportLocation + " sorted by descending order:");
+                                        airports.sort(new CompDescAirportName());
+                                        for (Airport airport : airports) {
+                                            System.out.println(airport);
+                                        }
+                                        break;
+                                }
+                                break;
+                            }
                         }
                     }
                     break;
