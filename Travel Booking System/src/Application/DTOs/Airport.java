@@ -1,6 +1,8 @@
 package Application.DTOs;
 
-public class Airport {
+import java.util.Objects;
+
+public class Airport implements Comparable<Airport> {
     //-- Create Airport table
     //CREATE TABLE airport (
     //    airport_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -78,5 +80,24 @@ public class Airport {
                 ", airport_name='" + airport_name + '\'' +
                 ", airport_location='" + airport_location + '\'' +
                 '}';
+    }
+
+    //compare to method based on airport_number
+    @Override
+    public int compareTo(Airport o) {
+        //based on id
+        return this.getAirport_number().compareTo(o.getAirport_number());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Airport airport)) return false;
+        return Objects.equals(getAirport_number(), airport.getAirport_number()) && Objects.equals(getAirport_name(), airport.getAirport_name()) && Objects.equals(getAirport_location(), airport.getAirport_location());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAirport_number(), getAirport_name(), getAirport_location());
     }
 }
