@@ -6,12 +6,9 @@ import Application.DAOs.MySqlDao;
 import Application.DAOs.FlightDaoInterface;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface{
+public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
     @Override
     public List<Flight> findAllFlights() throws DaoException {
         Connection connection = null;
@@ -85,7 +82,7 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface{
                 String airlineName = resultSet.getString("airline_name");
                 double flightCost = resultSet.getDouble("flight_cost");
 
-                   flight = new Flight(flightId, flightNumber, airportNumber, departureLocation, departureTime, arrivalLocation, arrivalTime, airlineName, flightCost);
+                flight = new Flight(flightId, flightNumber, airportNumber, departureLocation, departureTime, arrivalLocation, arrivalTime, airlineName, flightCost);
             }
         } catch (SQLException e) {
             throw new DaoException("findFlightByNumber() " + e.getMessage());
@@ -324,5 +321,69 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface{
             }
         }
         return flights;
+    }
+
+    //to store the deparure time in morning, afternoon and night using a map that i will use in the App to filter the flights, return a map
+    public Map<String, List<Flight>> timeOfFlight() throws DaoException {
+        //check the departure time if it is between 00:00 and 11:59 then it is morning, 12:00 and 17:59 is afternoon and 18:00 and 23:59 is night
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        Map<String, List<Flight>> timeOfFlight = new HashMap<>();
+        List<Flight> morningFlights = new ArrayList<>();
+        List<Flight> afternoonFlights = new ArrayList<>();
+        List<Flight> nightFlights = new ArrayList<>();
+
+        try {
+            connection = getConnection();
+            String query = "SELECT * FROM flight";
+            ps = connection.prepareStatement(query);
+
+            resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                int flightId = resultSet.getInt("flight_id");
+                String flightNumber = resultSet.getString("flight_number");
+                String airportNumber = resultSet.getString("airport_number");
+                String departureLocation = resultSet.getString("departure_location");
+                String departureTime = resultSet.getString("departure_time");
+                String arrivalLocation = resultSet.getString("arrival_location");
+                String arrivalTime = resultSet.getString("arrival_time");
+                String airlineName = resultSet.getString("airline_name");
+                double flightCost = resultSet.getDouble("flight_cost");
+
+                Flight flight = new Flight(flightId, flightNumber, airportNumber, departureLocation, departureTime, arrivalLocation, arrivalTime, airlineName, flightCost);
+
+                //check the departure time if it is between 00:00 and 11:59 then it is morning, 12:00 and 17:59 is afternoon and 18:00 and 23:59 is night
+                //using the compareTo method of the String class
+                if (departureTime.compareTo("00:00:00") >= 0 && departureTime.compareTo("11:59:59") <= 0) {
+                    morningFlights.add(flight);
+                } else if (departureTime.compareTo("12:00:00") >= 0 && departureTime.compareTo("17:59:59") <= 0) {
+                    afternoonFlights.add(flight);
+                } else if (departureTime.compareTo("18:00:00") >= 0 && departureTime.compareTo("23:59:59") <= 0) {
+                    nightFlights.add(flight);
+                }
+            }
+            timeOfFlight.put("morning", morningFlights);
+            timeOfFlight.put("afternoon", afternoonFlights);
+            timeOfFlight.put("night", nightFlights);
+        } catch (SQLException e) {
+            throw new DaoException("timeOfFlight() " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("timeOfFlight() " + e.getMessage());
+            }
+        }
+        return timeOfFlight;
     }
 }

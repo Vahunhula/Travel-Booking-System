@@ -4,6 +4,7 @@ import Application.DTOs.Flight;
 import Application.Exceptions.DaoException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface FlightDaoInterface {
@@ -31,4 +32,7 @@ public interface FlightDaoInterface {
 
     //to find flight by airline name
     public List<Flight> findFlightByAirlineName(String airlineName) throws DaoException;
+
+    //to store the deparure time in morning, afternoon and night using a map that i will use in the App to filter the flights, return a map
+    public Map<String, List<Flight>> timeOfFlight() throws DaoException;
 }
