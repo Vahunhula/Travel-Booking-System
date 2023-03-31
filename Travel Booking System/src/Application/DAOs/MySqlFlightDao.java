@@ -7,7 +7,9 @@ import Application.DAOs.FlightDaoInterface;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface{
     @Override
@@ -233,6 +235,92 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface{
                 }
             } catch (SQLException e) {
                 throw new DaoException("findAllFlightsByAirportNumber() " + e.getMessage());
+            }
+        }
+        return flights;
+    }
+
+    @Override
+    public Set<String> uniqueAirlineName() throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        Set<String> airlineNames = new HashSet<>();
+
+        try {
+            connection = getConnection();
+            String query = "SELECT DISTINCT airline_name FROM flight";
+            ps = connection.prepareStatement(query);
+
+            resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                String airlineName = resultSet.getString("airline_name");
+                airlineNames.add(airlineName);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("uniqueAirlineName() " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("uniqueAirlineName() " + e.getMessage());
+            }
+        }
+        return airlineNames;
+    }
+
+    @Override
+    public List<Flight> findFlightByAirlineName(String airlineName) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        List<Flight> flights = new ArrayList<>();
+
+        try {
+            connection = getConnection();
+            String query = "SELECT * FROM flight WHERE LOWER(airline_name) = ?";
+            ps = connection.prepareStatement(query);
+            ps.setString(1, airlineName.toLowerCase());
+
+            resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                int flightId = resultSet.getInt("flight_id");
+                String flightNumber = resultSet.getString("flight_number");
+                String airportNumber = resultSet.getString("airport_number");
+                String departureLocation = resultSet.getString("departure_location");
+                String departureTime = resultSet.getString("departure_time");
+                String arrivalLocation = resultSet.getString("arrival_location");
+                String arrivalTime = resultSet.getString("arrival_time");
+                double flightCost = resultSet.getDouble("flight_cost");
+
+                Flight flight = new Flight(flightId, flightNumber, airportNumber, departureLocation, departureTime, arrivalLocation, arrivalTime, airlineName, flightCost);
+                flights.add(flight);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("findFlightByAirlineName() " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("findFlightByAirlineName() " + e.getMessage());
             }
         }
         return flights;

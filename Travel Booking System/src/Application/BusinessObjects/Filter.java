@@ -1,9 +1,12 @@
 package Application.BusinessObjects;
 
 import Application.CompMethods.CompAscAirportName;
+import Application.CompMethods.CompAscFliAirName;
 import Application.CompMethods.CompDescAirportName;
+import Application.CompMethods.CompDescFliAirName;
 import Application.DAOs.*;
 import Application.DTOs.Airport;
+import Application.DTOs.Flight;
 import Application.Exceptions.DaoException;
 
 import java.util.*;
@@ -16,8 +19,8 @@ public class Filter {
     static BookingDaoInterface bookingDao = new MySqlBookingDao();
     static PaymentDaoInterface paymentDao = new MySqlPaymentDao();
 
-    public void filterAirportByCity(){
-        try{
+    public void filterAirportByCity() {
+        try {
             Set<String> uniqueAirportLocations = airportDao.uniqueAirportLocation();
             HashMap<Integer, String> numberedAirportLocations = new HashMap<>();
             int i = 1;
@@ -35,9 +38,9 @@ public class Filter {
                 } else {
                     String airportLocation = numberedAirportLocations.get(choice);
                     List<Airport> airports = airportDao.findAirportByLocation(airportLocation);
-                    if(airports.isEmpty()){
+                    if (airports.isEmpty()) {
                         System.out.println("No airports found.");
-                    }else {
+                    } else {
                         System.out.println("How do you want the airports to be sorted?");
                         System.out.println("1. By Default");
                         System.out.println("2. By Ascending Order");
@@ -76,8 +79,74 @@ public class Filter {
                     break;
                 }
             }
-        }catch (DaoException e){
+        } catch (DaoException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
+
+    public void filterFlightByAirline() {
+        try {
+            Set<String> uniqueAirlineNames = flightDao.uniqueAirlineName();
+            HashMap<Integer, String> numberedAirlineNames = new HashMap<>();
+            int i = 1;
+            for (String airlineName : uniqueAirlineNames) {
+                numberedAirlineNames.put(i, airlineName);
+                i++;
+            }
+            for (Map.Entry<Integer, String> entry : numberedAirlineNames.entrySet()) {
+                System.out.println(entry.getKey() + ". " + entry.getValue());
+            }
+            while (true) {
+                int choice = helper.readInt("Enter your choice: ");
+                if (choice > numberedAirlineNames.size() || choice < 1) {
+                    System.out.println("Invalid choice, please try again.");
+                } else {
+                    String airlineName = numberedAirlineNames.get(choice);
+                    List<Flight> flights = flightDao.findFlightByAirlineName(airlineName);
+                    if (flights.isEmpty()) {
+                        System.out.println("No flights found.");
+                    } else {
+                        System.out.println("How do you want the flights to be sorted?");
+                        System.out.println("1. By Default");
+                        System.out.println("2. By Ascending Order");
+                        System.out.println("3. By Descending Order");
+                        while (true) {
+                            int sortChoice = helper.readInt("Enter your choice: ");
+                            if (sortChoice > 3 || sortChoice < 1) {
+                                System.out.println("Invalid choice, please try again.");
+                            } else {
+                                switch (sortChoice) {
+                                    case 1:
+                                        System.out.println("Flights by " + airlineName + ":");
+                                        for (Flight flight : flights) {
+                                            System.out.println(flight);
+                                        }
+                                        break;
+                                    case 2:
+                                        System.out.println("Flights by " + airlineName + " sorted by ascending order:");
+                                        flights.sort(new CompAscFliAirName());
+                                        for (Flight flight : flights) {
+                                            System.out.println(flight);
+                                        }
+                                        break;
+                                    case 3:
+                                        System.out.println("Flights by " + airlineName + " sorted by descending order:");
+                                        flights.sort(new CompDescFliAirName());
+                                        for (Flight flight : flights) {
+                                            System.out.println(flight);
+                                        }
+                                        break;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        } catch (DaoException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
 }
