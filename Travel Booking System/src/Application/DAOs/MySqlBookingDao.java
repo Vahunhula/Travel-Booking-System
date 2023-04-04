@@ -8,6 +8,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
+    private static List<String> bookingNumbersCache = new ArrayList<>();
+
+    public void populateBookingCache() throws DaoException{
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        bookingNumbersCache.clear();
+
+        try{
+            connection = getConnection();
+            String query = "SELECT * FROM booking";
+            ps = connection.prepareStatement(query);
+
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                String bookingNumber = resultSet.getString("booking_number");
+                //add the booking number to the cache
+                bookingNumbersCache.add(bookingNumber.toLowerCase());
+            }
+
+        }catch(SQLException e){
+            throw new DaoException("populateBookingCache() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("populateBookingCache() " + e.getMessage());
+            }
+        }
+    }
     @Override
     public List<Booking> findAllBookings() throws DaoException {
         Connection connection = null;
@@ -59,6 +99,12 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         Booking b = null;
+
+        //check if the booking number is in the cache in both upper and lower case
+        if(!bookingNumbersCache.contains(bookingNumber.toLowerCase()) && !bookingNumbersCache.contains(bookingNumber.toUpperCase())){
+            //if it is NOT in the cache, then it is not in the database
+            return null;
+        }
 
         try{
             connection = getConnection();
@@ -113,6 +159,9 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
             int result = ps.executeUpdate();
             if(result == 1){
                 deleted = true;
+
+                //remove the booking number from the cache
+                bookingNumbersCache.remove(bookingNumber.toLowerCase());
             }
         } catch(SQLException e){
             throw new DaoException("deleteBookingByNumber() " + e.getMessage());
@@ -156,7 +205,7 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
                 resultSet = ps.getGeneratedKeys();
                 if(resultSet.next()){
                     int bookingId = resultSet.getInt(1);
-                    b = new Booking(bookingId, booking.getBooking_number(), booking.getFlight_number(), booking.getCustomer_number(), booking.getTravel_date(), booking.getSeat_number());
+                    b = new Booking(bookingId, booking.getBooking_number().toLowerCase(), booking.getFlight_number(), booking.getCustomer_number(), booking.getTravel_date(), booking.getSeat_number());
                 }
             }
         } catch(SQLException e){
