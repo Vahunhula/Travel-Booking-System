@@ -12,58 +12,29 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
 
     private static TreeSet<String> flightNumbersCache = new TreeSet<>();
 
+    //to get the helper connection
+    private HelperConnection helperConnection = new HelperConnection();
+
     public void populateFlightCache() throws DaoException{
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         flightNumbersCache.clear();
-
         try{
-            connection = getConnection();
-            String query = "SELECT * FROM flight";
-            ps = connection.prepareStatement(query);
-
-            resultSet = ps.executeQuery();
-
+            String query = "SELECT flight_number FROM flight";
+            ResultSet resultSet = helperConnection.executeQuery(query);
             while(resultSet.next()){
                 String flightNumber = resultSet.getString("flight_number");
                 //add the flight number to the cache
                 flightNumbersCache.add(flightNumber.toLowerCase());
             }
-
         }catch(SQLException e){
             throw new DaoException("populateFlightCache() " + e.getMessage());
-        }
-        finally{
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("populateFlightCache() " + e.getMessage());
-            }
         }
     }
     @Override
     public List<Flight> findAllFlights() throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         List<Flight> flights = new ArrayList<>();
-
         try {
-            connection = getConnection();
             String query = "SELECT * FROM flight";
-            ps = connection.prepareStatement(query);
-
-            resultSet = ps.executeQuery();
-
+            ResultSet resultSet = helperConnection.executeQuery(query);
             while (resultSet.next()) {
                 int flightId = resultSet.getInt("flight_id");
                 String flightNumber = resultSet.getString("flight_number");
@@ -80,45 +51,21 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
             }
         } catch (SQLException e) {
             throw new DaoException("findAllFlights() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("findAllFlights() " + e.getMessage());
-            }
         }
         return flights;
     }
 
     @Override
     public Flight findFlightByNumber(String flightNumber) throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         Flight flight = null;
-
         //check if the flight number is in the cache in both upper and lower case
         if(flightNumbersCache.contains(flightNumber.toUpperCase()) && flightNumbersCache.contains(flightNumber.toLowerCase())){
             //if it is, then we can skip the database query
             return null;
         }
-
         try {
-            connection = getConnection();
             String query = "SELECT * FROM flight WHERE LOWER(flight_number) = ?";
-            ps = connection.prepareStatement(query);
-            ps.setString(1, flightNumber.toLowerCase());
-
-            resultSet = ps.executeQuery();
-
+            ResultSet resultSet = helperConnection.executeQuery(query, flightNumber.toLowerCase());
             if (resultSet.next()) {
                 int flightId = resultSet.getInt("flight_id");
                 String airportNumber = resultSet.getString("airport_number");
@@ -133,130 +80,51 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
             }
         } catch (SQLException e) {
             throw new DaoException("findFlightByNumber() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("findFlightByNumber() " + e.getMessage());
-            }
         }
         return flight;
     }
 
     @Override
     public boolean deleteFlightByNumber(String flightNumber) throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         boolean deleted = false;
-
         try {
-            connection = getConnection();
             String query = "DELETE FROM flight WHERE LOWER(flight_number) = ?";
-            ps = connection.prepareStatement(query);
-            ps.setString(1, flightNumber.toLowerCase());
-
-            int result = ps.executeUpdate();
+            int result = helperConnection.executeUpdate(query, flightNumber.toLowerCase());
             if (result == 1) {
                 deleted = true;
-
                 //remove the flight number from the cache
                 flightNumbersCache.remove(flightNumber.toLowerCase());
             }
         } catch (SQLException e) {
             throw new DaoException("deleteFlightByNumber() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("deleteFlightByNumber() " + e.getMessage());
-            }
         }
         return deleted;
     }
 
     @Override
     public Flight insertFlight(Flight flight) throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         Flight f = null;
-
         try {
-            connection = getConnection();
-            String query = "INSERT INTO flight (flight_number, airport_number, departure_location, arrival_location, airline_name, duration, flight_cost) VALUES (?,?,?,?,?,?,?)";
-            ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, flight.getFlight_number());
-            ps.setString(2, flight.getAirport_number());
-            ps.setString(3, flight.getDeparture_location());
-            ps.setString(4, flight.getDeparture_time());
-            ps.setString(5, flight.getArrival_location());
-            ps.setString(6, flight.getArrival_time());
-            ps.setString(7, flight.getAirline_name());
-            ps.setDouble(8, flight.getFlight_cost());
-
-            int result = ps.executeUpdate();
+            String query = "INSERT INTO flight (flight_number, airport_number, departure_location, departure_time, arrival_location, arrival_time, airline_name, flight_cost) VALUES (?,?,?,?,?,?,?,?)";
+            int result = helperConnection.executeUpdate(query, flight.getFlight_number(), flight.getAirport_number(), flight.getDeparture_location(), flight.getDeparture_time(), flight.getArrival_location(), flight.getArrival_time(), flight.getAirline_name(), flight.getFlight_cost());
             if (result == 1) {
-                resultSet = ps.getGeneratedKeys();
-                if (resultSet.next()) {
-                    int flightId = resultSet.getInt(1);
-                    f = new Flight(flightId, flight.getFlight_number().toLowerCase(), flight.getAirport_number(), flight.getDeparture_location(), flight.getDeparture_time(), flight.getArrival_location(), flight.getArrival_time(), flight.getAirline_name(), flight.getFlight_cost());
-                }
-
+                Flight insertedFlight = findFlightByNumber(flight.getFlight_number());
+                f = insertedFlight;
                 //add the flight number to the cache
                 flightNumbersCache.add(f.getFlight_number().toLowerCase());
             }
         } catch (SQLException e) {
             throw new DaoException("insertFlight() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("insertFlight() " + e.getMessage());
-            }
         }
         return f;
     }
 
     @Override
     public List<Flight> findAllFlightsByAirportNumber(String airportNumber) throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         List<Flight> flights = new ArrayList<>();
-
         try {
-            connection = getConnection();
             String query = "SELECT * FROM flight WHERE LOWER(airport_number) = ?";
-            ps = connection.prepareStatement(query);
-            ps.setString(1, airportNumber.toLowerCase());
-
-            resultSet = ps.executeQuery();
-
+            ResultSet resultSet = helperConnection.executeQuery(query, airportNumber.toLowerCase());
             while (resultSet.next()) {
                 int flightId = resultSet.getInt("flight_id");
                 String flightNumber = resultSet.getString("flight_number");
@@ -272,77 +140,32 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
             }
         } catch (SQLException e) {
             throw new DaoException("findAllFlightsByAirportNumber() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("findAllFlightsByAirportNumber() " + e.getMessage());
-            }
         }
         return flights;
     }
 
     @Override
     public Set<String> uniqueAirlineName() throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         Set<String> airlineNames = new HashSet<>();
-
         try {
-            connection = getConnection();
             String query = "SELECT DISTINCT airline_name FROM flight";
-            ps = connection.prepareStatement(query);
-
-            resultSet = ps.executeQuery();
-
+            ResultSet resultSet = helperConnection.executeQuery(query);
             while (resultSet.next()) {
                 String airlineName = resultSet.getString("airline_name");
                 airlineNames.add(airlineName);
             }
         } catch (SQLException e) {
             throw new DaoException("uniqueAirlineName() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("uniqueAirlineName() " + e.getMessage());
-            }
         }
         return airlineNames;
     }
 
     @Override
     public List<Flight> findFlightByAirlineName(String airlineName) throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         List<Flight> flights = new ArrayList<>();
-
         try {
-            connection = getConnection();
             String query = "SELECT * FROM flight WHERE LOWER(airline_name) = ?";
-            ps = connection.prepareStatement(query);
-            ps.setString(1, airlineName.toLowerCase());
-
-            resultSet = ps.executeQuery();
-
+            ResultSet resultSet = helperConnection.executeQuery(query, airlineName.toLowerCase());
             while (resultSet.next()) {
                 int flightId = resultSet.getInt("flight_id");
                 String flightNumber = resultSet.getString("flight_number");
@@ -358,20 +181,6 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
             }
         } catch (SQLException e) {
             throw new DaoException("findFlightByAirlineName() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("findFlightByAirlineName() " + e.getMessage());
-            }
         }
         return flights;
     }
@@ -379,21 +188,14 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
     //to store the deparure time in morning, afternoon and night using a map that i will use in the App to filter the flights, return a map
     public Map<String, List<Flight>> timeOfFlight() throws DaoException {
         //check the departure time if it is between 00:00 and 11:59 then it is morning, 12:00 and 17:59 is afternoon and 18:00 and 23:59 is night
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         Map<String, List<Flight>> timeOfFlight = new HashMap<>();
         List<Flight> morningFlights = new ArrayList<>();
         List<Flight> afternoonFlights = new ArrayList<>();
         List<Flight> nightFlights = new ArrayList<>();
 
         try {
-            connection = getConnection();
             String query = "SELECT * FROM flight";
-            ps = connection.prepareStatement(query);
-
-            resultSet = ps.executeQuery();
-
+            ResultSet resultSet = helperConnection.executeQuery(query);
             while (resultSet.next()) {
                 int flightId = resultSet.getInt("flight_id");
                 String flightNumber = resultSet.getString("flight_number");
@@ -422,20 +224,6 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
             timeOfFlight.put("night", nightFlights);
         } catch (SQLException e) {
             throw new DaoException("timeOfFlight() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("timeOfFlight() " + e.getMessage());
-            }
         }
         return timeOfFlight;
     }
