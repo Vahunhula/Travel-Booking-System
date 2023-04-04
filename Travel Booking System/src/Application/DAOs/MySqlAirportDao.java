@@ -206,7 +206,7 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
                 }
 
                 //add the airport number to the cache
-                airportNumberCache.add(airport.getAirport_number());
+                airportNumberCache.add(airport.getAirport_number().toLowerCase());
             }
         } catch (SQLException e) {
             throw new DaoException("insertAirportresultSet() " + e.getMessage());

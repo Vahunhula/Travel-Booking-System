@@ -208,6 +208,9 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
                     int bookingId = resultSet.getInt(1);
                     b = new Booking(bookingId, booking.getBooking_number().toLowerCase(), booking.getFlight_number(), booking.getCustomer_number(), booking.getTravel_date(), booking.getSeat_number());
                 }
+
+                //add the booking number to the cache
+                bookingNumbersCache.add(booking.getBooking_number().toLowerCase());
             }
         } catch(SQLException e){
             throw new DaoException("insertBooking() " + e.getMessage());

@@ -208,6 +208,9 @@ public class MySqlPaymentDao extends MySqlDao implements PaymentDaoInterface{
                     int paymentId = resultSet.getInt(1);
                     p = new Payment(paymentId, payment.getPayment_number().toLowerCase(), payment.getBooking_number(), payment.getAmount_paid(), payment.getPayment_date(), payment.getMethod());
                 }
+
+                //add the payment number to the cache
+                paymentNumbersCache.add(payment.getPayment_number().toLowerCase());
             }
         } catch(SQLException e){
             throw new DaoException("insertPayment() " + e.getMessage());

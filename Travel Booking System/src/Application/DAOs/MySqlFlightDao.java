@@ -218,6 +218,9 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
                     int flightId = resultSet.getInt(1);
                     f = new Flight(flightId, flight.getFlight_number().toLowerCase(), flight.getAirport_number(), flight.getDeparture_location(), flight.getDeparture_time(), flight.getArrival_location(), flight.getArrival_time(), flight.getAirline_name(), flight.getFlight_cost());
                 }
+
+                //add the flight number to the cache
+                flightNumbersCache.add(f.getFlight_number().toLowerCase());
             }
         } catch (SQLException e) {
             throw new DaoException("insertFlight() " + e.getMessage());

@@ -215,7 +215,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
                 }
 
                 //add the customer number to the cache
-                customerNumbersCache.add(customer.getCustomer_number());
+                customerNumbersCache.add(customer.getCustomer_number().toLowerCase());
             }
         } catch (SQLException e) {
             throw new DaoException("insertCustomerresultSet() " + e.getMessage());
