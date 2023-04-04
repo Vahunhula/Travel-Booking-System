@@ -36,6 +36,7 @@ public class App {
 
 
     public static void main(String[] args) {
+        autoInitialize();
         while (true) {
             printMainMenu();
             int choice = helper.readInt("Enter your choice: ");
@@ -248,6 +249,16 @@ public class App {
                     System.out.println("Invalid choice, please try again.");
                     break;
             }
+        }
+    }
+
+    //TO autoinitialize the cache
+    private static void autoInitialize() {
+        MySqlCustomerDao mySqlCustomerDao = new MySqlCustomerDao();
+        try {
+            mySqlCustomerDao.populateCustomerCache();
+        } catch (DaoException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -7,9 +7,61 @@ import Application.DTOs.Customer;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 
 public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
+    private static TreeSet<String> customerNumbersCache = new TreeSet<>();
+
+    public void populateCustomerCache() throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        List<Customer> customers = new ArrayList<>();
+
+        try{
+            connection = getConnection();
+            String query = "SELECT * FROM customer";
+            ps = connection.prepareStatement(query);
+
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                int customerId = resultSet.getInt("customer_id");
+                String customerNumber = resultSet.getString("customer_number");
+                String customerName = resultSet.getString("customer_name");
+                String customerEmail = resultSet.getString("email");
+                String customerPhone = resultSet.getString("tel_num");
+                String customerAddress = resultSet.getString("address");
+
+                Customer c = new Customer(customerId,customerNumber,customerName,customerEmail,customerPhone,customerAddress);
+                customers.add(c);
+
+                //add the customer number to the cache
+                customerNumbersCache.add(customerNumber);
+            }
+
+        }catch(SQLException e){
+            throw new DaoException("findAllCustomersresultSet() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("findAllCustomers() " + e.getMessage());
+            }
+        }
+    }
+
     @Override
     public List<Customer> findAllCustomers() throws DaoException {
         Connection connection = null;
@@ -64,6 +116,11 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
         ResultSet resultSet = null;
         Customer c = null;
 
+        //check if the customer number is in the cache with both lower and upper case
+        if(!customerNumbersCache.contains(customerNumber.toLowerCase()) && !customerNumbersCache.contains(customerNumber.toUpperCase())){
+            return null;
+        }
+
         try{
             connection = getConnection();
             String query = "SELECT * FROM customer WHERE LOWER(customer_number) = LOWER(?)";
@@ -117,6 +174,9 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
             int result = ps.executeUpdate();
             if (result == 1) {
                 deleted = true;
+
+                //remove the customer number from the cache
+                customerNumbersCache.remove(customerNumber);
             }
         } catch (SQLException e) {
             throw new DaoException("deleteCustomerByNumber() " + e.getMessage());
@@ -162,6 +222,9 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
                     int customerId = resultSet.getInt(1);
                     c = new Customer(customerId, customer.getCustomer_number(), customer.getCustomer_name(), customer.getEmail(), customer.getTel_num(), customer.getAddress());
                 }
+
+                //add the customer number to the cache
+                customerNumbersCache.add(customer.getCustomer_number());
             }
         } catch (SQLException e) {
             throw new DaoException("insertCustomerresultSet() " + e.getMessage());
