@@ -5,9 +5,7 @@ import Application.DAOs.MySqlDao;
 import Application.Exceptions.DaoException;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
 public class MySqlPaymentDao extends MySqlDao implements PaymentDaoInterface{
     private static TreeSet<String> paymentNumbersCache = new TreeSet<>();
@@ -272,6 +270,89 @@ public class MySqlPaymentDao extends MySqlDao implements PaymentDaoInterface{
                 }
             } catch (SQLException e) {
                 throw new DaoException("findAllPaymentsByBookingNumber() " + e.getMessage());
+            }
+        }
+        return payments;
+    }
+
+    @Override
+    public Set<String> uniquePaymentMethod() throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        Set<String> paymentMethods = new HashSet<>();
+
+        try{
+            connection = getConnection();
+            String query = "SELECT DISTINCT method FROM payment";
+            ps = connection.prepareStatement(query);
+
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                String method = resultSet.getString("method");
+                paymentMethods.add(method);
+            }
+        } catch(SQLException e){
+            throw new DaoException("uniquePaymentMethod() " + e.getMessage());
+        } finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("uniquePaymentMethod() " + e.getMessage());
+            }
+        }
+        return paymentMethods;
+    }
+
+    @Override
+    public List<Payment> findPaymentByPaymentMethod(String paymentMethod) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        List<Payment> payments = new ArrayList<>();
+
+        try{
+            connection = getConnection();
+            String query = "SELECT * FROM payment WHERE LOWER(method) = ?";
+            ps = connection.prepareStatement(query);
+            ps.setString(1, paymentMethod.toLowerCase());
+
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                int paymentId = resultSet.getInt("payment_id");
+                String paymentNumber = resultSet.getString("payment_number");
+                String bookingNumber = resultSet.getString("booking_number");
+                double amountPaid = resultSet.getDouble("amount_paid");
+                String paymentDate = resultSet.getString("payment_date");
+
+                Payment p = new Payment(paymentId, paymentNumber, bookingNumber, amountPaid, paymentDate, paymentMethod);
+                payments.add(p);
+            }
+        } catch(SQLException e){
+            throw new DaoException("findPaymentByPaymentMethod() " + e.getMessage());
+        } finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("findPaymentByPaymentMethod() " + e.getMessage());
             }
         }
         return payments;

@@ -223,9 +223,8 @@ public class App {
             System.out.println("1. Filter Airport With City");
             System.out.println("2. Filter Flights With Airline");
             System.out.println("3. Filter Flights By The Time Of The Day");
-            System.out.println("4. Insert Booking");
-            System.out.println("5. Insert Payment");
-            System.out.println("6. Back to Main Menu");
+            System.out.println("4. Filter Payment By Method");
+            System.out.println("5. Back to Main Menu");
             int choice = helper.readInt("Enter your choice: ");
             switch (choice) {
                 case 1:
@@ -238,12 +237,9 @@ public class App {
                     filter.filterFlightByDepartureTime();
                     break;
                 case 4:
-                    insert.insertBooking();
+                    filter.filterPaymentByPaymentMethod();
                     break;
                 case 5:
-                    insert.insertPayment();
-                    break;
-                case 6:
                     return;
                 default:
                     System.out.println("Invalid choice, please try again.");

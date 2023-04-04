@@ -1,6 +1,8 @@
 package Application.DTOs;
 
-public class Payment {
+import java.util.Objects;
+
+public class Payment implements Comparable<Payment> {
     //-- Create Payment table
     //CREATE TABLE Payment (
     //    payment_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -102,5 +104,22 @@ public class Payment {
                 ", payment_date='" + payment_date + '\'' +
                 ", method='" + method + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Payment payment)) return false;
+        return getPayment_id() == payment.getPayment_id() && Double.compare(payment.getAmount_paid(), getAmount_paid()) == 0 && Objects.equals(getBooking_number(), payment.getBooking_number()) && Objects.equals(getPayment_date(), payment.getPayment_date()) && Objects.equals(getMethod(), payment.getMethod());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPayment_id(), getBooking_number(), getAmount_paid(), getPayment_date(), getMethod());
+    }
+
+    @Override
+    public int compareTo(Payment o) {
+        return this.payment_number.compareTo(o.payment_number);
     }
 }

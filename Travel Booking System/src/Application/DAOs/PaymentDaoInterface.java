@@ -5,6 +5,7 @@ import Application.DAOs.MySqlDao;
 import Application.Exceptions.DaoException;
 
 import java.util.List;
+import java.util.Set;
 
 public interface PaymentDaoInterface {
     //Feature 1 – Find all Entities e.g. findAllPlayers() to return a List of all the entities and display
@@ -22,4 +23,10 @@ public interface PaymentDaoInterface {
     //an extra method mae by me to find all payments by booking number so that when a booking is
     //about to be deleted, all their affected payments will be displayed
     public List<Payment> findAllPaymentsByBookingNumber(String bookingNumber) throws DaoException;
+
+    //to store the unique payment type using a set that i will use in the App to filter the payments, return a set
+    public Set<String> uniquePaymentMethod() throws DaoException;
+
+    //to find payment by payment type
+    public List<Payment> findPaymentByPaymentMethod(String paymentMethod) throws DaoException;
 }

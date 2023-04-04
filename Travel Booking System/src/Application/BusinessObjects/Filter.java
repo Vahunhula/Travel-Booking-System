@@ -4,6 +4,7 @@ import Application.CompMethods.*;
 import Application.DAOs.*;
 import Application.DTOs.Airport;
 import Application.DTOs.Flight;
+import Application.DTOs.Payment;
 import Application.Exceptions.DaoException;
 
 import java.util.*;
@@ -193,6 +194,72 @@ public class Filter {
                                         flights.sort(new CompDescFliTime());
                                         for (Flight flight : flights) {
                                             System.out.println(flight);
+                                        }
+                                        break;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        } catch (DaoException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    //to filter the payment with the payment method
+    public void filterPaymentByPaymentMethod() {
+        try {
+            Set<String> uniquePaymentMethods = paymentDao.uniquePaymentMethod();
+            HashMap<Integer, String> numberedPaymentMethods = new HashMap<>();
+            int i = 1;
+            for (String paymentMethod : uniquePaymentMethods) {
+                numberedPaymentMethods.put(i, paymentMethod);
+                i++;
+            }
+            for (Map.Entry<Integer, String> entry : numberedPaymentMethods.entrySet()) {
+                System.out.println(entry.getKey() + ". " + entry.getValue());
+            }
+            while (true) {
+                int choice = helper.readInt("Enter your choice: ");
+                if (choice > numberedPaymentMethods.size() || choice < 1) {
+                    System.out.println("Invalid choice, please try again.");
+                } else {
+                    String paymentMethod = numberedPaymentMethods.get(choice);
+                    List<Payment> payments = paymentDao.findPaymentByPaymentMethod(paymentMethod);
+                    if (payments.isEmpty()) {
+                        System.out.println("No payments found.");
+                    } else {
+                        System.out.println("How do you want the payments to be sorted?");
+                        System.out.println("1. By Default");
+                        System.out.println("2. By Ascending Order");
+                        System.out.println("3. By Descending Order");
+                        while (true) {
+                            int sortChoice = helper.readInt("Enter your choice: ");
+                            if (sortChoice > 3 || sortChoice < 1) {
+                                System.out.println("Invalid choice, please try again.");
+                            } else {
+                                switch (sortChoice) {
+                                    case 1:
+                                        System.out.println("Payments by " + paymentMethod + ":");
+                                        for (Payment payment : payments) {
+                                            System.out.println(payment);
+                                        }
+                                        break;
+                                    case 2:
+                                        System.out.println("Payments by " + paymentMethod + " sorted by ascending order:");
+                                        payments.sort(new CompAscPayMethod());
+                                        for (Payment payment : payments) {
+                                            System.out.println(payment);
+                                        }
+                                        break;
+                                    case 3:
+                                        System.out.println("Payments by " + paymentMethod + " sorted by descending order:");
+                                        payments.sort(new CompDescPayMethod());
+                                        for (Payment payment : payments) {
+                                            System.out.println(payment);
                                         }
                                         break;
                                 }
