@@ -11,29 +11,23 @@ import java.time.LocalDate;
 
 
 public class App {
-    static CustomerDaoInterface customerDao = new MySqlCustomerDao();
-    static AirportDaoInterface airportDao = new MySqlAirportDao();
-    static FlightDaoInterface flightDao = new MySqlFlightDao();
-    static BookingDaoInterface bookingDao = new MySqlBookingDao();
-    static PaymentDaoInterface paymentDao = new MySqlPaymentDao();
     //for my helper functions
     static Helpers helper = new Helpers();
 
-    //to access the find all entities menu
-    static FindAll findAll = new FindAll();
+    //to access the customer fuctions
+    static CustomerObj customerObj = new CustomerObj();
 
-    //to access the find entity by number menu
-    static FindBy findBy = new FindBy();
+    //to access the airport functions
+    static AirportObj airportObj = new AirportObj();
 
-    //to access the delete entity by number menu
-    static Delete delete = new Delete();
+    //to access the flight functions
+    static FlightObj flightObj = new FlightObj();
 
-    //to access the insert entity menu
-    static Insert insert = new Insert();
+    //to access the booking functions
+    static BookingObj bookingObj = new BookingObj();
 
-    //to access the filter menu
-    static Filter filter = new Filter();
-
+    //to access the payment functions
+    static PaymentObj paymentObj = new PaymentObj();
 
     public static void main(String[] args) {
         autoInitialize();
@@ -88,19 +82,19 @@ public class App {
             int choice = helper.readInt("Enter your choice: ");
             switch (choice) {
                 case 1:
-                    findAll.findAllCustomers();
+                    customerObj.findAllCustomers();
                     break;
                 case 2:
-                    findAll.findAllAirports();
+                    airportObj.findAllAirports();
                     break;
                 case 3:
-                    findAll.findAllFlights();
+                    flightObj.findAllFlights();
                     break;
                 case 4:
-                    findAll.findAllBookings();
+                    bookingObj.findAllBookings();
                     break;
                 case 5:
-                    findAll.findAllPayments();
+                    paymentObj.findAllPayments();
                     break;
                 case 6:
                     return;
@@ -123,19 +117,19 @@ public class App {
             int choice = helper.readInt("Enter your choice: ");
             switch (choice) {
                 case 1:
-                    findBy.findCustomerByNumber();
+                    customerObj.findCustomerByNumber();
                     break;
                 case 2:
-                    findBy.findAirportByNumber();
+                    airportObj.findAirportByNumber();
                     break;
                 case 3:
-                    findBy.findFlightByNumber();
+                    flightObj.findFlightByNumber();
                     break;
                 case 4:
-                    findBy.findBookingByNumber();
+                    bookingObj.findBookingByNumber();
                     break;
                 case 5:
-                    findBy.findPaymentByNumber();
+                    paymentObj.findPaymentByNumber();
                     break;
                 case 6:
                     return;
@@ -158,19 +152,19 @@ public class App {
             int choice = helper.readInt("Enter your choice: ");
             switch (choice) {
                 case 1:
-                    delete.deleteCustomerByNumber();
+                    customerObj.deleteCustomerByNumber();
                     break;
                 case 2:
-                    delete.deleteAirportByNumber();
+                    airportObj.deleteAirportByNumber();
                     break;
                 case 3:
-                    delete.deleteFlightByNumber();
+                    flightObj.deleteFlightByNumber();
                     break;
                 case 4:
-                    delete.deleteBookingByNumber();
+                    bookingObj.deleteBookingByNumber();
                     break;
                 case 5:
-                    delete.deletePaymentByNumber();
+                    paymentObj.deletePaymentByNumber();
                     break;
                 case 6:
                     return;
@@ -193,19 +187,19 @@ public class App {
             int choice = helper.readInt("Enter your choice: ");
             switch (choice) {
                 case 1:
-                    insert.insertCustomer();
+                    customerObj.insertCustomer();
                     break;
                 case 2:
-                    insert.insertAirport();
+                    airportObj.insertAirport();
                     break;
                 case 3:
-                    insert.insertFlight();
+                    flightObj.insertFlight();
                     break;
                 case 4:
-                    insert.insertBooking();
+                    bookingObj.insertBooking();
                     break;
                 case 5:
-                    insert.insertPayment();
+                    paymentObj.insertPayment();
                     break;
                 case 6:
                     return;
@@ -228,16 +222,16 @@ public class App {
             int choice = helper.readInt("Enter your choice: ");
             switch (choice) {
                 case 1:
-                    filter.filterAirportByCity();
+                    airportObj.filterAirportByCity();
                     break;
                 case 2:
-                    filter.filterFlightByAirline();
+                    flightObj.filterFlightByAirline();
                     break;
                 case 3:
-                    filter.filterFlightByDepartureTime();
+                    flightObj.filterFlightByDepartureTime();
                     break;
                 case 4:
-                    filter.filterPaymentByPaymentMethod();
+                    paymentObj.filterPaymentByPaymentMethod();
                     break;
                 case 5:
                     return;
