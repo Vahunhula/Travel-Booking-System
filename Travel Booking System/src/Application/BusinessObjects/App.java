@@ -255,8 +255,10 @@ public class App {
     //TO autoinitialize the cache
     private static void autoInitialize() {
         MySqlCustomerDao mySqlCustomerDao = new MySqlCustomerDao();
+        MySqlAirportDao mySqlAirportDao = new MySqlAirportDao();
         try {
             mySqlCustomerDao.populateCustomerCache();
+            mySqlAirportDao.populateAirportCache();
         } catch (DaoException e) {
             e.printStackTrace();
         }

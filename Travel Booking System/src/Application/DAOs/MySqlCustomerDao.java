@@ -18,7 +18,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
-        List<Customer> customers = new ArrayList<>();
+        customerNumbersCache.clear();
 
         try{
             connection = getConnection();
@@ -28,16 +28,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
             resultSet = ps.executeQuery();
 
             while(resultSet.next()){
-                int customerId = resultSet.getInt("customer_id");
                 String customerNumber = resultSet.getString("customer_number");
-                String customerName = resultSet.getString("customer_name");
-                String customerEmail = resultSet.getString("email");
-                String customerPhone = resultSet.getString("tel_num");
-                String customerAddress = resultSet.getString("address");
-
-                Customer c = new Customer(customerId,customerNumber,customerName,customerEmail,customerPhone,customerAddress);
-                customers.add(c);
-
                 //add the customer number to the cache
                 customerNumbersCache.add(customerNumber);
             }

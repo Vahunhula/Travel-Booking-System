@@ -7,17 +7,48 @@ import Application.DAOs.CustomerDaoInterface;
 import Application.DTOs.Customer;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
-    //private String airport_number
-    //private String airport_name
-    //private String airport_location
 
+    private static TreeSet<String> airportNumberCache = new TreeSet<>();
 
+    public void populateAirportCache() throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        airportNumberCache.clear();
+
+        try{
+            connection = getConnection();
+            String query = "SELECT airport_number FROM airport";
+            ps = connection.prepareStatement(query);
+
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                String airportNumber = resultSet.getString("airport_number");
+                airportNumberCache.add(airportNumber);
+            }
+        }catch(SQLException e){
+            throw new DaoException("populateAirportNumberCache() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("populateAirportNumberCache() " + e.getMessage());
+            }
+        }
+    }
     @Override
     public List<Airport> findAllAirports() throws DaoException {
         Connection connection = null;
@@ -69,6 +100,11 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         Airport a = null;
+
+        //check if the airport number is in the cache in both upper and lower case
+        if(!airportNumberCache.contains(airportNumber.toUpperCase()) && !airportNumberCache.contains(airportNumber.toLowerCase())){
+            return null;
+        }
 
         try{
             connection = getConnection();
@@ -122,6 +158,9 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
 
             if(rowsAffected == 1){
                 deleted = true;
+
+                //remove the airport number from the cache
+                airportNumberCache.remove(airportNumber);
             }
         } catch(SQLException e){
             throw new DaoException("deleteAirportByNumber() " + e.getMessage());
@@ -165,6 +204,9 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
                     int airport_id = resultSet.getInt(1);
                     a = new Airport(airport_id, airport.getAirport_number(), airport.getAirport_name(), airport.getAirport_location());
                 }
+
+                //add the airport number to the cache
+                airportNumberCache.add(airport.getAirport_number());
             }
         } catch (SQLException e) {
             throw new DaoException("insertAirportresultSet() " + e.getMessage());
