@@ -9,6 +9,47 @@ import java.sql.*;
 import java.util.*;
 
 public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
+
+    private static TreeSet<String> flightNumbersCache = new TreeSet<>();
+
+    public void populateFlightCache() throws DaoException{
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        flightNumbersCache.clear();
+
+        try{
+            connection = getConnection();
+            String query = "SELECT * FROM flight";
+            ps = connection.prepareStatement(query);
+
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                String flightNumber = resultSet.getString("flight_number");
+                //add the flight number to the cache
+                flightNumbersCache.add(flightNumber.toLowerCase());
+            }
+
+        }catch(SQLException e){
+            throw new DaoException("populateFlightCache() " + e.getMessage());
+        }
+        finally{
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("populateFlightCache() " + e.getMessage());
+            }
+        }
+    }
     @Override
     public List<Flight> findAllFlights() throws DaoException {
         Connection connection = null;
@@ -63,6 +104,12 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         Flight flight = null;
+
+        //check if the flight number is in the cache in both upper and lower case
+        if(flightNumbersCache.contains(flightNumber.toUpperCase()) && flightNumbersCache.contains(flightNumber.toLowerCase())){
+            //if it is, then we can skip the database query
+            return null;
+        }
 
         try {
             connection = getConnection();
@@ -120,6 +167,9 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
             int result = ps.executeUpdate();
             if (result == 1) {
                 deleted = true;
+
+                //remove the flight number from the cache
+                flightNumbersCache.remove(flightNumber.toLowerCase());
             }
         } catch (SQLException e) {
             throw new DaoException("deleteFlightByNumber() " + e.getMessage());
@@ -166,7 +216,7 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
                 resultSet = ps.getGeneratedKeys();
                 if (resultSet.next()) {
                     int flightId = resultSet.getInt(1);
-                    f = new Flight(flightId, flight.getFlight_number(), flight.getAirport_number(), flight.getDeparture_location(), flight.getDeparture_time(), flight.getArrival_location(), flight.getArrival_time(), flight.getAirline_name(), flight.getFlight_cost());
+                    f = new Flight(flightId, flight.getFlight_number().toLowerCase(), flight.getAirport_number(), flight.getDeparture_location(), flight.getDeparture_time(), flight.getArrival_location(), flight.getArrival_time(), flight.getAirline_name(), flight.getFlight_cost());
                 }
             }
         } catch (SQLException e) {

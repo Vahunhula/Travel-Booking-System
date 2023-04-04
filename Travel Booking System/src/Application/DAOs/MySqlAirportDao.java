@@ -28,10 +28,10 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
 
             while(resultSet.next()){
                 String airportNumber = resultSet.getString("airport_number");
-                airportNumberCache.add(airportNumber);
+                airportNumberCache.add(airportNumber.toLowerCase());
             }
         }catch(SQLException e){
-            throw new DaoException("populateAirportNumberCache() " + e.getMessage());
+            throw new DaoException("populateAirportCache() " + e.getMessage());
         }
         finally{
             try {
@@ -45,7 +45,7 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
                     freeConnection(connection);
                 }
             } catch (SQLException e) {
-                throw new DaoException("populateAirportNumberCache() " + e.getMessage());
+                throw new DaoException("populateAirportCache() " + e.getMessage());
             }
         }
     }
@@ -160,7 +160,7 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
                 deleted = true;
 
                 //remove the airport number from the cache
-                airportNumberCache.remove(airportNumber);
+                airportNumberCache.remove(airportNumber.toLowerCase());
             }
         } catch(SQLException e){
             throw new DaoException("deleteAirportByNumber() " + e.getMessage());
@@ -202,7 +202,7 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface{
                 resultSet = ps.getGeneratedKeys();
                 if (resultSet.next()) {
                     int airport_id = resultSet.getInt(1);
-                    a = new Airport(airport_id, airport.getAirport_number(), airport.getAirport_name(), airport.getAirport_location());
+                    a = new Airport(airport_id, airport.getAirport_number().toLowerCase(), airport.getAirport_name(), airport.getAirport_location());
                 }
 
                 //add the airport number to the cache

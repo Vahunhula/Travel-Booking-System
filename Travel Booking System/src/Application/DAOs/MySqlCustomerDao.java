@@ -30,11 +30,11 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
             while(resultSet.next()){
                 String customerNumber = resultSet.getString("customer_number");
                 //add the customer number to the cache
-                customerNumbersCache.add(customerNumber);
+                customerNumbersCache.add(customerNumber.toLowerCase());
             }
 
         }catch(SQLException e){
-            throw new DaoException("findAllCustomersresultSet() " + e.getMessage());
+            throw new DaoException("populateCustomerCache() " + e.getMessage());
         }
         finally{
             try {
@@ -48,7 +48,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
                     freeConnection(connection);
                 }
             } catch (SQLException e) {
-                throw new DaoException("findAllCustomers() " + e.getMessage());
+                throw new DaoException("populateCustomerCache() " + e.getMessage());
             }
         }
     }
@@ -167,7 +167,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
                 deleted = true;
 
                 //remove the customer number from the cache
-                customerNumbersCache.remove(customerNumber);
+                customerNumbersCache.remove(customerNumber.toLowerCase());
             }
         } catch (SQLException e) {
             throw new DaoException("deleteCustomerByNumber() " + e.getMessage());
@@ -211,7 +211,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
                 resultSet = ps.getGeneratedKeys();
                 if (resultSet.next()) {
                     int customerId = resultSet.getInt(1);
-                    c = new Customer(customerId, customer.getCustomer_number(), customer.getCustomer_name(), customer.getEmail(), customer.getTel_num(), customer.getAddress());
+                    c = new Customer(customerId, customer.getCustomer_number().toLowerCase(), customer.getCustomer_name(), customer.getEmail(), customer.getTel_num(), customer.getAddress());
                 }
 
                 //add the customer number to the cache
