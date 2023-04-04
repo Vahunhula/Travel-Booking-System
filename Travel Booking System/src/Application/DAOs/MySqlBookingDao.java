@@ -6,9 +6,10 @@ import Application.Exceptions.DaoException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
-    private static List<String> bookingNumbersCache = new ArrayList<>();
+    private static TreeSet<String> bookingNumbersCache = new TreeSet<>();
 
     public void populateBookingCache() throws DaoException{
         Connection connection = null;

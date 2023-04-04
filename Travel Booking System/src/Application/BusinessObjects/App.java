@@ -256,9 +256,15 @@ public class App {
     private static void autoInitialize() {
         MySqlCustomerDao mySqlCustomerDao = new MySqlCustomerDao();
         MySqlAirportDao mySqlAirportDao = new MySqlAirportDao();
+        MySqlFlightDao mySqlFlightDao = new MySqlFlightDao();
+        MySqlBookingDao mySqlBookingDao = new MySqlBookingDao();
+        MySqlPaymentDao mySqlPaymentDao = new MySqlPaymentDao();
         try {
             mySqlCustomerDao.populateCustomerCache();
             mySqlAirportDao.populateAirportCache();
+            mySqlFlightDao.populateFlightCache();
+            mySqlBookingDao.populateBookingCache();
+            mySqlPaymentDao.populatePaymentCache();
         } catch (DaoException e) {
             e.printStackTrace();
         }
