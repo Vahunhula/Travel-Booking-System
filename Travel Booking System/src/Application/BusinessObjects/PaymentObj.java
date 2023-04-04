@@ -18,7 +18,6 @@ public class PaymentObj {
 
     //display all payments
     public void findAllPayments() {
-        PaymentDaoInterface paymentDao = new MySqlPaymentDao();
         try {
             List<Payment> payments = paymentDao.findAllPayments();
             if (payments.isEmpty()) {
@@ -35,7 +34,6 @@ public class PaymentObj {
     //to find payment by number and also if no payment found then it will display no payment found
     //and if payment found then it will display payment details(paymentNumber is a String)
     public void findPaymentByNumber() {
-        PaymentDaoInterface paymentDao = new MySqlPaymentDao();
         String paymentNumber = helper.readString("Enter payment number: ");
         try {
             Payment payment = paymentDao.findPaymentByNumber(paymentNumber);

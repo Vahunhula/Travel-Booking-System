@@ -14,7 +14,6 @@ public class BookingObj {
 
     //display all bookings
     public void findAllBookings() {
-        BookingDaoInterface bookingDao = new MySqlBookingDao();
         try {
             List<Booking> bookings = bookingDao.findAllBookings();
             if (bookings.isEmpty()) {
@@ -31,7 +30,6 @@ public class BookingObj {
     //to find booking by number and also if no booking found then it will display no booking found
     //and if booking found then it will display booking details(bookingNumber is a String)
     public void findBookingByNumber() {
-        BookingDaoInterface bookingDao = new MySqlBookingDao();
         String bookingNumber = helper.readString("Enter booking number: ");
         try {
             Booking booking = bookingDao.findBookingByNumber(bookingNumber);

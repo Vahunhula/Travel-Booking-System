@@ -19,7 +19,6 @@ public class AirportObj {
 
     //display all airports
     public void findAllAirports() {
-        AirportDaoInterface airportDao = new MySqlAirportDao();
         try {
             List<Airport> airports = airportDao.findAllAirports();
             if (airports.isEmpty()) {
@@ -36,7 +35,6 @@ public class AirportObj {
     //to find airport by number and also if no airport found then it will display no airport found
     //and if airport found then it will display airport details(airportNumber is a String)
     public void findAirportByNumber() {
-        AirportDaoInterface airportDao = new MySqlAirportDao();
         String airportNumber = helper.readString("Enter airport number: ");
         try {
             Airport airport = airportDao.findAirportByNumber(airportNumber);

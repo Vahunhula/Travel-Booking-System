@@ -17,7 +17,6 @@ public class FlightObj {
 
     //display all flights
     public void findAllFlights() {
-        FlightDaoInterface flightDao = new MySqlFlightDao();
         try {
             List<Flight> flights = flightDao.findAllFlights();
             if (flights.isEmpty()) {
@@ -34,7 +33,6 @@ public class FlightObj {
     //to find flight by number and also if no flight found then it will display no flight found
     //and if flight found then it will display flight details(flightNumber is a String)
     public void findFlightByNumber() {
-        FlightDaoInterface flightDao = new MySqlFlightDao();
         String flightNumber = helper.readString("Enter flight number: ");
         try {
             Flight flight = flightDao.findFlightByNumber(flightNumber);

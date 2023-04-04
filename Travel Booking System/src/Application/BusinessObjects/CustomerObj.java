@@ -15,7 +15,6 @@ public class CustomerObj {
 
     //display all customers
     public void findAllCustomers() {
-        CustomerDaoInterface customerDao = new MySqlCustomerDao();
         try {
             List<Customer> customers = customerDao.findAllCustomers();
             if (customers.isEmpty()) {
@@ -32,7 +31,6 @@ public class CustomerObj {
     //to find customer by number and also if no customer found then it will display no customer found
     //and if customer found then it will display customer details(customerNumber is a String)
     public void findCustomerByNumber() {
-        CustomerDaoInterface customerDao = new MySqlCustomerDao();
         String customerNumber = helper.readString("Enter customer number: ");
         try {
             Customer customer = customerDao.findCustomerByNumber(customerNumber);
@@ -48,7 +46,6 @@ public class CustomerObj {
 
     //to delete customer by number and also if no customer found then it will display no customer found
     public void deleteCustomerByNumber() {
-        CustomerDaoInterface customerDao = new MySqlCustomerDao();
         String customerNumber = helper.readString("Enter customer number: ");
         try {
             boolean deleted = customerDao.deleteCustomerByNumber(customerNumber);
