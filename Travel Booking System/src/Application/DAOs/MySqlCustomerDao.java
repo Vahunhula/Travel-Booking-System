@@ -14,59 +14,31 @@ import java.util.TreeSet;
 public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
     private static TreeSet<String> customerNumbersCache = new TreeSet<>();
 
+    //to get the helper connection
+    private HelperConnection helperConnection = new HelperConnection();
+
     public void populateCustomerCache() throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         customerNumbersCache.clear();
-
         try{
-            connection = getConnection();
-            String query = "SELECT * FROM customer";
-            ps = connection.prepareStatement(query);
-
-            resultSet = ps.executeQuery();
+            String query = "SELECT customer_number FROM customer";
+            ResultSet resultSet = helperConnection.executeQuery(query);
 
             while(resultSet.next()){
                 String customerNumber = resultSet.getString("customer_number");
                 //add the customer number to the cache
                 customerNumbersCache.add(customerNumber.toLowerCase());
             }
-
         }catch(SQLException e){
             throw new DaoException("populateCustomerCache() " + e.getMessage());
-        }
-        finally{
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("populateCustomerCache() " + e.getMessage());
-            }
         }
     }
 
     @Override
     public List<Customer> findAllCustomers() throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         List<Customer> customers = new ArrayList<>();
-
         try{
-            connection = getConnection();
             String query = "SELECT * FROM customer";
-            ps = connection.prepareStatement(query);
-
-            resultSet = ps.executeQuery();
-
+            ResultSet resultSet = helperConnection.executeQuery(query);
             while(resultSet.next()){
                 int customerId = resultSet.getInt("customer_id");
                 String customerNumber = resultSet.getString("customer_number");
@@ -82,44 +54,19 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
         }catch(SQLException e){
             throw new DaoException("findAllCustomersresultSet() " + e.getMessage());
         }
-        finally{
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("findAllCustomers() " + e.getMessage());
-            }
-        }
         return customers;
     }
 
     @Override
     public Customer findCustomerByNumber(String customerNumber) throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         Customer c = null;
-
         //check if the customer number is in the cache with both lower and upper case
         if(!customerNumbersCache.contains(customerNumber.toLowerCase()) && !customerNumbersCache.contains(customerNumber.toUpperCase())){
             return null;
         }
-
         try{
-            connection = getConnection();
             String query = "SELECT * FROM customer WHERE LOWER(customer_number) = LOWER(?)";
-            ps = connection.prepareStatement(query);
-            ps.setString(1,customerNumber);
-
-            resultSet = ps.executeQuery();
-
+            ResultSet resultSet = helperConnection.executeQuery(query, customerNumber);
             if(resultSet.next()){
                 int customerId = resultSet.getInt("customer_id");
                 String customerName = resultSet.getString("customer_name");
@@ -131,39 +78,17 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
             }
         } catch(SQLException e){
             throw new DaoException("findCustomerByNumber() " + e.getMessage());
-        } finally{
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("findCustomerByNumber() " + e.getMessage());
-            }
         }
         return c;
     }
 
     @Override
     public boolean deleteCustomerByNumber(String customerNumber) throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         boolean deleted = false;
-
         try {
-            connection = getConnection();
-            String query = "DELETE FROM customer WHERE LOWER(customer_number) = ?";
-            ps = connection.prepareStatement(query);
-            ps.setString(1, customerNumber.toLowerCase());
-
-            int result = ps.executeUpdate();
-            if (result == 1) {
+            String query = "DELETE FROM customer WHERE LOWER(customer_number) = LOWER(?)";
+            int rowsAffected = helperConnection.executeUpdate(query, customerNumber);
+             if(rowsAffected == 1){
                 deleted = true;
 
                 //remove the customer number from the cache
@@ -171,105 +96,40 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
             }
         } catch (SQLException e) {
             throw new DaoException("deleteCustomerByNumber() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("deleteCustomerByNumber() " + e.getMessage());
-            }
         }
         return deleted;
     }
 
     @Override
     public Customer insertCustomer(Customer customer) throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         Customer c = null;
-
         try {
-            connection = getConnection();
             String query = "INSERT INTO customer (customer_number, customer_name, email, tel_num, address) VALUES (?,?,?,?,?)";
-            ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, customer.getCustomer_number());
-            ps.setString(2, customer.getCustomer_name());
-            ps.setString(3, customer.getEmail());
-            ps.setString(4, customer.getTel_num());
-            ps.setString(5, customer.getAddress());
-
-            int result = ps.executeUpdate();
+            int result = helperConnection.executeUpdate(query, customer.getCustomer_number(), customer.getCustomer_name(), customer.getEmail(), customer.getTel_num(), customer.getAddress());
             if (result == 1) {
-                resultSet = ps.getGeneratedKeys();
-                if (resultSet.next()) {
-                    int customerId = resultSet.getInt(1);
-                    c = new Customer(customerId, customer.getCustomer_number().toLowerCase(), customer.getCustomer_name(), customer.getEmail(), customer.getTel_num(), customer.getAddress());
-                }
-
+                Customer insertedCustomer = findCustomerByNumber(customer.getCustomer_number());
+                c = insertedCustomer;
                 //add the customer number to the cache
                 customerNumbersCache.add(customer.getCustomer_number().toLowerCase());
             }
         } catch (SQLException e) {
             throw new DaoException("insertCustomerresultSet() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("insertCustomer() " + e.getMessage());
-            }
         }
         return c;
     }
 
     @Override
     public boolean checkIfEmailExists(String email) throws DaoException {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
         boolean exists = false;
 
         try {
-            connection = getConnection();
             String query = "SELECT * FROM customer WHERE LOWER(email) = LOWER(?)";
-            ps = connection.prepareStatement(query);
-            ps.setString(1, email);
-
-            resultSet = ps.executeQuery();
+            ResultSet resultSet = helperConnection.executeQuery(query, email);
             if (resultSet.next()) {
                 exists = true;
             }
         } catch (SQLException e) {
             throw new DaoException("checkIfEmailExists() " + e.getMessage());
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    freeConnection(connection);
-                }
-            } catch (SQLException e) {
-                throw new DaoException("checkIfEmailExists() " + e.getMessage());
-            }
         }
         return exists;
     }
