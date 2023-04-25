@@ -6,8 +6,20 @@ public class Packet {
     private MenuOptions option;
     private Object data;
 
+    private Throwable exception;
+
     public Packet(MenuOptions option, Object data) {
         this.option = option;
+        this.data = data;
+    }
+
+    //constructor to handle exceptions
+    public Packet(Throwable exception, Object data) {
+        this.exception = exception;
+        this.data = data;
+    }
+
+    public Packet(Object data) {
         this.data = data;
     }
 
