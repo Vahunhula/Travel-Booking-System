@@ -79,6 +79,10 @@ public class MySqlPaymentDao extends MySqlDao implements PaymentDaoInterface {
     @Override
     public boolean deletePaymentByNumber(String paymentNumber) throws DaoException {
         boolean deleted = false;
+        //check if the payment number is in the cache in both upper and lower case
+        if (!paymentNumbersCache.contains(paymentNumber.toLowerCase()) && !paymentNumbersCache.contains(paymentNumber.toUpperCase())) {
+            return false;
+        }
         try {
             String query = "DELETE FROM payment WHERE LOWER(payment_number) = ?";
             int result = helperConnection.executeUpdate(query, paymentNumber.toLowerCase());

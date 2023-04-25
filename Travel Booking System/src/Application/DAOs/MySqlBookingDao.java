@@ -80,6 +80,11 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
     @Override
     public boolean deleteBookingByNumber(String bookingNumber) throws DaoException {
         boolean deleted = false;
+        //check if the booking number is in the cache in both upper and lower case
+        if(!bookingNumbersCache.contains(bookingNumber.toLowerCase()) && !bookingNumbersCache.contains(bookingNumber.toUpperCase())){
+            //if it is NOT in the cache, then it is not in the database
+            return false;
+        }
         try{
             String query = "DELETE FROM booking WHERE LOWER(booking_number) = ?";
             int result = helperConnection.executeUpdate(query, bookingNumber.toLowerCase());

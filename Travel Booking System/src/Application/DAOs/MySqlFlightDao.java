@@ -59,7 +59,7 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
     public Flight findFlightByNumber(String flightNumber) throws DaoException {
         Flight flight = null;
         //check if the flight number is in the cache in both upper and lower case
-        if(flightNumbersCache.contains(flightNumber.toUpperCase()) && flightNumbersCache.contains(flightNumber.toLowerCase())){
+        if(!flightNumbersCache.contains(flightNumber.toUpperCase()) && !flightNumbersCache.contains(flightNumber.toLowerCase())){
             //if it is, then we can skip the database query
             return null;
         }
@@ -87,6 +87,11 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
     @Override
     public boolean deleteFlightByNumber(String flightNumber) throws DaoException {
         boolean deleted = false;
+        //check if the flight number is in the cache in both upper and lower case
+        if(!flightNumbersCache.contains(flightNumber.toUpperCase()) && !flightNumbersCache.contains(flightNumber.toLowerCase())){
+            //if it is, then we can skip the database query
+            return false;
+        }
         try {
             String query = "DELETE FROM flight WHERE LOWER(flight_number) = ?";
             int result = helperConnection.executeUpdate(query, flightNumber.toLowerCase());

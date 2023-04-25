@@ -85,6 +85,10 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
     @Override
     public boolean deleteCustomerByNumber(String customerNumber) throws DaoException {
         boolean deleted = false;
+        //check if the customer number is in the cache with both lower and upper case
+        if(!customerNumbersCache.contains(customerNumber.toLowerCase()) && !customerNumbersCache.contains(customerNumber.toUpperCase())){
+            return false;
+        }
         try {
             String query = "DELETE FROM customer WHERE LOWER(customer_number) = LOWER(?)";
             int rowsAffected = helperConnection.executeUpdate(query, customerNumber);

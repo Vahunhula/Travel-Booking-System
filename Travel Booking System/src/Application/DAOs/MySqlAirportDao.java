@@ -87,7 +87,10 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface {
     @Override
     public boolean deleteAirportByNumber(String airportNumber) throws DaoException {
         boolean deleted = false;
-
+        //check if the airport number is in the cache in both upper and lower case
+        if(!airportNumberCache.contains(airportNumber.toUpperCase()) && !airportNumberCache.contains(airportNumber.toLowerCase())){
+            return false;
+        }
         try {
             String query = "DELETE FROM airport WHERE LOWER(airport_number) = LOWER(?)";
             int rowsAffected = helperConnection.executeUpdate(query, airportNumber);
