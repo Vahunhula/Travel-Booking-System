@@ -3,8 +3,17 @@ package Application.BusinessObjects;
 import Application.DAOs.*;
 import Application.DTOs.*;
 import Application.Exceptions.DaoException;
+import Application.Protocol.MenuOptions;
+import Application.Protocol.Packet;
 
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.Scanner;
+
+import java.lang.reflect.Type;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class CustomerObj {
     static Helpers helper = new Helpers();
@@ -12,36 +21,73 @@ public class CustomerObj {
 
     static BookingDaoInterface bookingDao = new MySqlBookingDao();
 
+    private Scanner input;
+    private PrintWriter output;
 
+    public CustomerObj(Scanner input, PrintWriter output) {
+        this.input = input;
+        this.output = output;
+    }
     //display all customers
     public void findAllCustomers() {
-        try {
-            List<Customer> customers = customerDao.findAllCustomers();
+        Packet request = new Packet(MenuOptions.CustomerMenuOptions.FIND_ALL_CUSTOMERS, null);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Error: " + response.getException().getMessage());
+        } else {
+            String jsonCustomers = (String) response.getData();
+            Type customerListType = new TypeToken<List<Customer>>(){}.getType();
+            List<Customer> customers = new Gson().fromJson(jsonCustomers, customerListType);
+
             if (customers.isEmpty()) {
                 System.out.println("No customers found.");
             }
             for (Customer customer : customers) {
                 System.out.println(customer.toString());
             }
-        } catch (DaoException e) {
-            System.out.println("Error: " + e.getMessage());
         }
     }
+
 
     //to find customer by number and also if no customer found then it will display no customer found
     //and if customer found then it will display customer details(customerNumber is a String)
     public void findCustomerByNumber() {
         String customerNumber = helper.readString("Enter customer number: ");
-        try {
-            Customer customer = customerDao.findCustomerByNumber(customerNumber);
+        Packet request = new Packet(MenuOptions.CustomerMenuOptions.FIND_CUSTOMER_BY_NUMBER, customerNumber);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Error: " + response.getException().getMessage());
+        } else {
+            String jsonCustomer = (String) response.getData();
+            Customer customer = new Gson().fromJson(jsonCustomer, Customer.class);
             if (customer == null) {
                 System.out.println("No customer found.");
             } else {
-                System.out.println(customer.toString());
+                System.out.println(customer);
             }
-        } catch (DaoException e) {
-            System.out.println("Error: " + e.getMessage());
         }
+//        try {
+//            Customer customer = customerDao.findCustomerByNumber(customerNumber);
+//            if (customer == null) {
+//                System.out.println("No customer found.");
+//            } else {
+//                System.out.println(customer.toString());
+//            }
+//        } catch (DaoException e) {
+//            System.out.println("Error: " + e.getMessage());
+//        }
     }
 
     //to delete customer by number and also if no customer found then it will display no customer found

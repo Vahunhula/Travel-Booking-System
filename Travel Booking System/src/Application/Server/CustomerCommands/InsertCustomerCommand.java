@@ -19,7 +19,6 @@ public class InsertCustomerCommand implements Command {
             customerDao.insertCustomer(customer);
             return new Packet("Customer inserted.");
         } catch (DaoException e) {
-            return new Packet(e, null);
-        }
+            return new Packet(e);        }
     }
 }

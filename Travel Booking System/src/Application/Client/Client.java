@@ -4,15 +4,16 @@ import Application.BusinessObjects.*;
 import Application.DAOs.*;
 import Application.Exceptions.DaoException;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Client {
     //for my helper functions
     static Helpers helper = new Helpers();
 
     //to access the customer fuctions
-    static CustomerObj customerObj = new CustomerObj();
+    static CustomerObj customerObj;
 
     //to access the airport functions
     static AirportObj airportObj = new AirportObj();
@@ -38,6 +39,14 @@ public class Client {
             System.out.println("Client: Port# of Server :" + socket.getPort() );
 
             System.out.println("Client message: The Client is running and has connected to the server");
+
+//Step 2: Build input and output streams linked to the socket
+            OutputStream out = socket.getOutputStream();
+            PrintWriter output = new PrintWriter(new OutputStreamWriter(out));
+            InputStream in = socket.getInputStream();
+            Scanner input = new Scanner(new InputStreamReader(in));
+
+            customerObj = new CustomerObj(input, output);
 
             while (true) {
                 printMainMenu();

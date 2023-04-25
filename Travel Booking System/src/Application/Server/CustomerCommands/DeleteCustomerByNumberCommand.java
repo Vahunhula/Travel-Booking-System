@@ -21,7 +21,6 @@ public class DeleteCustomerByNumberCommand implements Command{
             Gson gson = new Gson();
             return new Packet(gson.toJson(deleted));
         } catch (DaoException e) {
-            return new Packet(e, null);
-        }
+            return new Packet(e);        }
     }
 }

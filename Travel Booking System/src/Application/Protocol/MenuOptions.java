@@ -39,4 +39,15 @@ public class MenuOptions {
         INSERT_PAYMENT,
         FILTER_PAYMENT_BY_PAYMENT_METHOD
     }
+
+    public enum VerifyMenuOptions{
+        SUCCESS,
+        FAILURE
+    }
+
+    public enum ErrorOption {
+        RUNTIME_EXCEPTION,
+        DAO_EXCEPTION
+    }
+
 }

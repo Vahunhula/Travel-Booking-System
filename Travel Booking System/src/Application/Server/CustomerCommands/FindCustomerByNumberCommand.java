@@ -21,7 +21,7 @@ public class FindCustomerByNumberCommand implements Command {
             Gson gson = new Gson();
             return new Packet(gson.toJson(customer));
         } catch (DaoException e) {
-            return new Packet(e, null);
+            return new Packet(e);
         }
     }
 }

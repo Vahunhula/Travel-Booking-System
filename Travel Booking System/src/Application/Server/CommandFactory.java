@@ -1,16 +1,13 @@
 package Application.Server;
 
-import Application.BusinessObjects.*;
 import Application.DAOs.*;
-import Application.DTOs.*;
-import Application.Exceptions.DaoException;
 import Application.Protocol.MenuOptions;
-import Application.Protocol.Packet;
 import Application.Server.CustomerCommands.DeleteCustomerByNumberCommand;
 import Application.Server.CustomerCommands.FindAllCustomersCommand;
 import Application.Server.CustomerCommands.FindCustomerByNumberCommand;
 import Application.Server.CustomerCommands.InsertCustomerCommand;
-import com.google.gson.Gson;
+
+import static Application.Protocol.MenuOptions.CustomerMenuOptions.*;
 
 public class CommandFactory {
     private CustomerDaoInterface customerDao = new MySqlCustomerDao();
@@ -20,18 +17,16 @@ public class CommandFactory {
     private PaymentDaoInterface paymentDao = new MySqlPaymentDao();
 
     public Command createCustomerCommand(MenuOptions.CustomerMenuOptions option) {
-        switch (option) {
-            case FIND_ALL_CUSTOMERS:
-                return new FindAllCustomersCommand(customerDao);
-            case FIND_CUSTOMER_BY_NUMBER:
-                return new FindCustomerByNumberCommand(customerDao);
-            case DELETE_CUSTOMER_BY_NUMBER:
-                return new DeleteCustomerByNumberCommand(customerDao);
-            case INSERT_CUSTOMER:
-                return new InsertCustomerCommand(customerDao);
-            default:
-                throw new IllegalArgumentException("Invalid option: " + option);
+        if (option.equals(FIND_ALL_CUSTOMERS)) {
+            return new FindAllCustomersCommand(customerDao);
+        } else if (option.equals(FIND_CUSTOMER_BY_NUMBER)) {
+            return new FindCustomerByNumberCommand(customerDao);
+        } else if (option.equals(DELETE_CUSTOMER_BY_NUMBER)) {
+            return new DeleteCustomerByNumberCommand(customerDao);
+        } else if (option.equals(INSERT_CUSTOMER)) {
+            return new InsertCustomerCommand(customerDao);
         }
+        throw new IllegalArgumentException("Invalid option: " + option);
     }
 
 //    public Command createAirportCommand(MenuOptions.AirportMenuOptions option) {
