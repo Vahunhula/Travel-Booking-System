@@ -25,7 +25,7 @@ public class Client {
     static BookingObj bookingObj;
 
     //to access the payment functions
-//    static PaymentObj paymentObj = new PaymentObj();
+    static PaymentObj paymentObj;
 
     public static void main(String[] args) {
         Client client = new Client();
@@ -51,6 +51,7 @@ public class Client {
             flightObj = new FlightObj(input, output);
             helper = new Helpers(input, output);
             bookingObj = new BookingObj(input, output);
+            paymentObj = new PaymentObj(input, output);
 
             while (true) {
                 printMainMenu();
@@ -121,7 +122,7 @@ public class Client {
                     bookingObj.findAllBookings();
                     break;
                 case 5:
-//                    paymentObj.findAllPayments();
+                    paymentObj.findAllPayments();
                     break;
                 case 6:
                     return;
@@ -156,7 +157,7 @@ public class Client {
                     bookingObj.findBookingByNumber();
                     break;
                 case 5:
-//                    paymentObj.findPaymentByNumber();
+                    paymentObj.findPaymentByNumber();
                     break;
                 case 6:
                     return;
@@ -191,7 +192,7 @@ public class Client {
                     bookingObj.deleteBookingByNumber();
                     break;
                 case 5:
-//                    paymentObj.deletePaymentByNumber();
+                    paymentObj.deletePaymentByNumber();
                     break;
                 case 6:
                     return;
@@ -226,7 +227,7 @@ public class Client {
                     bookingObj.insertBooking();
                     break;
                 case 5:
-//                    paymentObj.insertPayment();
+                    paymentObj.insertPayment();
                     break;
                 case 6:
                     return;
@@ -258,7 +259,7 @@ public class Client {
                     flightObj.filterFlightByDepartureTime();
                     break;
                 case 4:
-//                    paymentObj.filterPaymentByPaymentMethod();
+                    paymentObj.filterPaymentByPaymentMethod();
                     break;
                 case 5:
                     return;

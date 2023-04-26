@@ -40,7 +40,8 @@ public class MenuOptions {
         FIND_PAYMENT_BY_NUMBER,
         DELETE_PAYMENT_BY_NUMBER,
         INSERT_PAYMENT,
-        FILTER_PAYMENT_BY_PAYMENT_METHOD
+        FILTER_PAYMENT_BY_PAYMENT_METHOD,
+        FIND_PAYMENT_BY_PAYMENT_METHOD
     }
 
     public enum VerifyMenuOptions{

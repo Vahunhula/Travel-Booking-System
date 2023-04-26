@@ -104,10 +104,10 @@ public class MySqlPaymentDao extends MySqlDao implements PaymentDaoInterface {
             String query = "INSERT INTO payment (payment_number, booking_number, amount_paid, payment_date, method) VALUES (?,?,?,?,?)";
             int result = helperConnection.executeUpdate(query, payment.getPayment_number(), payment.getBooking_number(), payment.getAmount_paid(), payment.getPayment_date(), payment.getMethod());
             if (result == 1) {
-                Payment insertedPayment = findPaymentByNumber(payment.getPayment_number());
-                p = insertedPayment;
                 //add the payment number to the cache
                 paymentNumbersCache.add(payment.getPayment_number().toLowerCase());
+                Payment insertedPayment = findPaymentByNumber(payment.getPayment_number());
+                p = insertedPayment;
             }
         } catch (SQLException e) {
             throw new DaoException("insertPayment() " + e.getMessage());

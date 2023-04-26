@@ -648,8 +648,8 @@ public class Helpers {
                 } else {
                     LocalDate paymentDate1 = LocalDate.of(year, month, day);
                     LocalDate today = LocalDate.now();
-                    if (paymentDate1.isBefore(today)) {
-                        System.out.println("Error: payment date cannot be before today.");
+                    if (paymentDate1.isAfter(today)) {
+                        System.out.println("Error: payment date cannot be After today(No Payment On Credit).");
                         paymentDate = "";
                     }
                 }
