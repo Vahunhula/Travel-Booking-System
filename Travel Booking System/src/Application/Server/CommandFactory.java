@@ -2,12 +2,11 @@ package Application.Server;
 
 import Application.DAOs.*;
 import Application.Protocol.MenuOptions;
-import Application.Server.CustomerCommands.DeleteCustomerByNumberCommand;
-import Application.Server.CustomerCommands.FindAllCustomersCommand;
-import Application.Server.CustomerCommands.FindCustomerByNumberCommand;
-import Application.Server.CustomerCommands.InsertCustomerCommand;
+import Application.Server.AirportCommands.*;
+import Application.Server.CustomerCommands.*;
 
 import static Application.Protocol.MenuOptions.CustomerMenuOptions.*;
+import static Application.Protocol.MenuOptions.AirportMenuOptions.*;
 
 public class CommandFactory {
     private CustomerDaoInterface customerDao = new MySqlCustomerDao();
@@ -29,22 +28,22 @@ public class CommandFactory {
         throw new IllegalArgumentException("Invalid option: " + option);
     }
 
-//    public Command createAirportCommand(MenuOptions.AirportMenuOptions option) {
-//        switch (option) {
-//            case FIND_ALL_AIRPORTS:
-//                return new FindAllAirportsCommand(airportDao);
-//            case FIND_AIRPORT_BY_NUMBER:
-//                return new FindAirportByNumberCommand(airportDao);
-//            case DELETE_AIRPORT_BY_NUMBER:
-//                return new DeleteAirportByNumberCommand(airportDao);
-//            case INSERT_AIRPORT:
-//                return new InsertAirportCommand(airportDao);
-//            case FILTER_AIRPORT_BY_CITY:
-//                return new FilterAirportByCityCommand(airportDao);
-//            default:
-//                throw new IllegalArgumentException("Invalid option: " + option);
-//        }
-//    }
+    public Command createAirportCommand(MenuOptions.AirportMenuOptions option) {
+        if (option.equals(FIND_ALL_AIRPORTS)) {
+            return new FindAllAirportsCommand(airportDao);
+        } else if (option.equals(FIND_AIRPORT_BY_NUMBER)) {
+            return new FindAirportByNumberCommand(airportDao);
+        } else if (option.equals(DELETE_AIRPORT_BY_NUMBER)) {
+            return new DeleteAirportByNumberCommand(airportDao, flightDao);
+        } else if (option.equals(INSERT_AIRPORT)) {
+            return new InsertAirportCommand(airportDao);
+        } else if (option.equals(FILTER_AIRPORT_BY_CITY)) {
+            return new FilterAirportByCityCommand(airportDao);
+        } else if (option.equals(FIND_AIRPORT_BY_LOCATION)) {
+            return new FindAirportByLocationCommand(airportDao);
+        }
+        throw new IllegalArgumentException("Invalid option: " + option);
+    }
 //
 //    public Command createFlightCommand(MenuOptions.FlightMenuOptions option) {
 //        switch (option) {

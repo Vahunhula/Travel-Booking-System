@@ -6,6 +6,7 @@ import Application.Protocol.Packet;
 import java.io.*;
 import java.net.Socket;
 
+import static Application.Protocol.MenuOptions.AirportMenuOptions.*;
 import static Application.Protocol.MenuOptions.CustomerMenuOptions.*;
 
 public class ClientHandler implements Runnable {
@@ -40,36 +41,17 @@ public class ClientHandler implements Runnable {
                 Enum option = packet.getOption();
 
                 if (option.equals(FIND_ALL_CUSTOMERS) || option.equals(FIND_CUSTOMER_BY_NUMBER) || option.equals(DELETE_CUSTOMER_BY_NUMBER) || option.equals(INSERT_CUSTOMER)) {
-                    command = factory.createCustomerCommand((MenuOptions.CustomerMenuOptions)option);
-                    //                    case FIND_ALL_AIRPORTS:
-//                    case FIND_AIRPORT_BY_NUMBER:
-//                    case DELETE_AIRPORT_BY_NUMBER:
-//                    case INSERT_AIRPORT:
-//                    case FILTER_AIRPORT_BY_CITY:
-//                        command = factory.createAirportCommand(option);
-//                        break;
-//                    case FIND_ALL_FLIGHTS:
-//                    case FIND_FLIGHT_BY_NUMBER:
-//                    case DELETE_FLIGHT_BY_NUMBER:
-//                    case INSERT_FLIGHT:
-//                    case FILTER_FLIGHT_BY_AIIRLINE:
-//                    case FILTER_FLIGHT_BY_DEPARTURE_TIME:
-//                        command = factory.createFlightCommand(option);
-//                        break;
-//                    case FIND_ALL_BOOKINGS:
-//                    case FIND_BOOKING_BY_NUMBER:
-//                    case DELETE_BOOKING_BY_NUMBER:
-//                    case INSERT_BOOKING:
-//                        command = factory.createBookingCommand(option);
-//                        break;
-//                    case FIND_ALL_PAYMENTS:
-//                    case FIND_PAYMENT_BY_NUMBER:
-//                    case DELETE_PAYMENT_BY_NUMBER:
-//                    case INSERT_PAYMENT:
-//                    case FILTER_PAYMENT_BY_PAYMENT_METHOD:
-//                        command = factory.createPaymentCommand(option);
-//                        break;
+                    command = factory.createCustomerCommand((MenuOptions.CustomerMenuOptions) option);
+                } else if (option.equals(FIND_ALL_AIRPORTS) || option.equals(FIND_AIRPORT_BY_NUMBER) || option.equals(DELETE_AIRPORT_BY_NUMBER) || option.equals(INSERT_AIRPORT) || option.equals(FILTER_AIRPORT_BY_CITY) || option.equals(FIND_AIRPORT_BY_LOCATION)) {
+                    command = factory.createAirportCommand((MenuOptions.AirportMenuOptions) option);
                 }
+//                else if (option.equals(FIND_ALL_FLIGHTS) || option.equals(FIND_FLIGHT_BY_NUMBER) || option.equals(DELETE_FLIGHT_BY_NUMBER) || option.equals(INSERT_FLIGHT) || option.equals(FILTER_FLIGHT_BY_AIIRLINE) || option.equals(FILTER_FLIGHT_BY_DEPARTURE_TIME)) {
+//                    command = factory.createFlightCommand((MenuOptions.FlightMenuOptions) option);
+//                } else if (option.equals(FIND_ALL_BOOKINGS) || option.equals(FIND_BOOKING_BY_NUMBER) || option.equals(DELETE_BOOKING_BY_NUMBER) || option.equals(INSERT_BOOKING)) {
+//                    command = factory.createBookingCommand((MenuOptions.BookingMenuOptions) option);
+//                } else if (option.equals(FIND_ALL_PAYMENTS) || option.equals(FIND_PAYMENT_BY_NUMBER) || option.equals(DELETE_PAYMENT_BY_NUMBER) || option.equals(INSERT_PAYMENT) || option.equals(FILTER_PAYMENT_BY_PAYMENT_METHOD)) {
+//                    command = factory.createPaymentCommand((MenuOptions.PaymentMenuOptions) option);
+//                }
 
                 if (command != null) {
                     Packet responsePacket = command.execute(data);

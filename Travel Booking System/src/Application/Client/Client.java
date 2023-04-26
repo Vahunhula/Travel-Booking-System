@@ -16,7 +16,7 @@ public class Client {
     static CustomerObj customerObj;
 
     //to access the airport functions
-    static AirportObj airportObj = new AirportObj();
+    static AirportObj airportObj;
 
     //to access the flight functions
     static FlightObj flightObj = new FlightObj();
@@ -47,6 +47,7 @@ public class Client {
             Scanner input = new Scanner(new InputStreamReader(in));
 
             customerObj = new CustomerObj(input, output);
+            airportObj = new AirportObj(input, output);
 
             while (true) {
                 printMainMenu();
@@ -81,8 +82,6 @@ public class Client {
         {
             System.out.println(e.getMessage());
         }
-
-//        autoInitialize();
     }
 
     private static void printMainMenu() {
@@ -264,24 +263,6 @@ public class Client {
                     System.out.println("Invalid choice, please try again.");
                     break;
             }
-        }
-    }
-
-    //TO autoinitialize the cache
-    private static void autoInitialize() {
-        MySqlCustomerDao mySqlCustomerDao = new MySqlCustomerDao();
-        MySqlAirportDao mySqlAirportDao = new MySqlAirportDao();
-        MySqlFlightDao mySqlFlightDao = new MySqlFlightDao();
-        MySqlBookingDao mySqlBookingDao = new MySqlBookingDao();
-        MySqlPaymentDao mySqlPaymentDao = new MySqlPaymentDao();
-        try {
-            mySqlCustomerDao.populateCustomerCache();
-            mySqlAirportDao.populateAirportCache();
-            mySqlFlightDao.populateFlightCache();
-            mySqlBookingDao.populateBookingCache();
-            mySqlPaymentDao.populatePaymentCache();
-        } catch (DaoException e) {
-            e.printStackTrace();
         }
     }
 }

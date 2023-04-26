@@ -13,7 +13,8 @@ public class MenuOptions {
         FIND_AIRPORT_BY_NUMBER,
         DELETE_AIRPORT_BY_NUMBER,
         INSERT_AIRPORT,
-        FILTER_AIRPORT_BY_CITY
+        FILTER_AIRPORT_BY_CITY,
+        FIND_AIRPORT_BY_LOCATION
     }
 
     public enum FlightMenuOptions{

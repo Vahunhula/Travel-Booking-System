@@ -117,11 +117,11 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface {
             int rowsAffected = helperConnection.executeUpdate(query, airport.getAirport_number(), airport.getAirport_name(), airport.getAirport_location());
 
             if (rowsAffected == 1) {
+                //add the airport number to the cache
+                airportNumberCache.add(airport.getAirport_number().toLowerCase());
                 // retrieve the inserted airport and return it
                  Airport insertedAirport = findAirportByNumber(airport.getAirport_number());
                  a = insertedAirport;
-                //add the airport number to the cache
-                airportNumberCache.add(airport.getAirport_number().toLowerCase());
             } else {
                 throw new DaoException("Airport insertion failed.");
             }

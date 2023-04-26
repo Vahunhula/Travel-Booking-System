@@ -21,32 +21,6 @@ public class DeleteCustomerByNumberCommand implements Command{
         this.customerDao = customerDao;
         this.bookingDao = bookingDao;
     }
-
-
-//    public Packet execute(Object data) {
-//        String customerNumber = (String) data;
-//        try {
-//            boolean deleted = customerDao.deleteCustomerByNumber(customerNumber);
-//            Gson gson = new Gson();
-//            return new Packet(gson.toJson(deleted));
-//        } catch (DaoException e) {
-//            String exceptionMessage = e.getMessage() == null ? "Unknown error" : e.getMessage();
-//            System.out.println("DaoException: " + exceptionMessage); // Debugging line
-//            if (exceptionMessage.contains("foreign key constraint")) {
-//                try {
-//                    List<Booking> bookings = bookingDao.findAllBookingsByCustomerNumber(customerNumber);
-//                    Gson gson = new Gson();
-//                    String jsonBookings = gson.toJson(bookings);
-//                    return new Packet(ErrorOption.DAO_EXCEPTION, e, exceptionMessage, jsonBookings);
-//                } catch (DaoException e1) {
-//                    System.out.println("Inner DaoException: " + e1.getMessage()); // Debugging line
-//                    return new Packet(e1);
-//                }
-//            } else {
-//                return new Packet(e);
-//            }
-//        }
-//    }
 public Packet execute(Object data) {
     String customerNumber = (String) data;
     try {
