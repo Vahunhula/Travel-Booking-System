@@ -22,7 +22,7 @@ public class CommandFactory {
         } else if (option.equals(FIND_CUSTOMER_BY_NUMBER)) {
             return new FindCustomerByNumberCommand(customerDao);
         } else if (option.equals(DELETE_CUSTOMER_BY_NUMBER)) {
-            return new DeleteCustomerByNumberCommand(customerDao);
+            return new DeleteCustomerByNumberCommand(customerDao, bookingDao);
         } else if (option.equals(INSERT_CUSTOMER)) {
             return new InsertCustomerCommand(customerDao);
         }

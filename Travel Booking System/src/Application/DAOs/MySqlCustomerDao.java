@@ -111,10 +111,11 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
             String query = "INSERT INTO customer (customer_number, customer_name, email, tel_num, address) VALUES (?,?,?,?,?)";
             int result = helperConnection.executeUpdate(query, customer.getCustomer_number(), customer.getCustomer_name(), customer.getEmail(), customer.getTel_num(), customer.getAddress());
             if (result == 1) {
-                Customer insertedCustomer = findCustomerByNumber(customer.getCustomer_number());
-                c = insertedCustomer;
                 //add the customer number to the cache
                 customerNumbersCache.add(customer.getCustomer_number().toLowerCase());
+                Customer insertedCustomer = findCustomerByNumber(customer.getCustomer_number());
+                c = insertedCustomer;
+
             }
         } catch (SQLException e) {
             throw new DaoException("insertCustomerresultSet() " + e.getMessage());

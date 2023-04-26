@@ -54,7 +54,6 @@ public class CustomerObj {
         }
     }
 
-
     //to find customer by number and also if no customer found then it will display no customer found
     //and if customer found then it will display customer details(customerNumber is a String)
     public void findCustomerByNumber() {
@@ -78,46 +77,48 @@ public class CustomerObj {
                 System.out.println(customer);
             }
         }
-//        try {
-//            Customer customer = customerDao.findCustomerByNumber(customerNumber);
-//            if (customer == null) {
-//                System.out.println("No customer found.");
-//            } else {
-//                System.out.println(customer.toString());
-//            }
-//        } catch (DaoException e) {
-//            System.out.println("Error: " + e.getMessage());
-//        }
     }
 
-    //to delete customer by number and also if no customer found then it will display no customer found
     public void deleteCustomerByNumber() {
         String customerNumber = helper.readString("Enter customer number: ");
-        try {
-            boolean deleted = customerDao.deleteCustomerByNumber(customerNumber);
+        Packet request = new Packet(MenuOptions.CustomerMenuOptions.DELETE_CUSTOMER_BY_NUMBER, customerNumber);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+//        System.out.println("Client: Received JSON: " + jsonResponse); // Debugging line
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            String exceptionMessage = response.getException().getMessage();
+//            System.out.println("Error: " + (exceptionMessage == null ? "Unknown error" : exceptionMessage));
+
+            if (response.getData() != null) {
+                System.out.println("Customer-" + customerNumber + " cannot be deleted because it has related records in the database:");
+
+                // The related bookings can be sent as part of the response in the 'data' field.
+                String jsonBookings = (String) response.getData();
+                Type bookingListType = new TypeToken<List<Booking>>(){}.getType();
+                List<Booking> bookings = new Gson().fromJson(jsonBookings, bookingListType);
+
+                for (Booking booking : bookings) {
+                    System.out.println(booking);
+                }
+            }
+        } else {
+            boolean deleted = Boolean.parseBoolean((String) response.getData());
             if (deleted) {
                 System.out.println("Customer deleted.");
             } else {
                 System.out.println("No customer found.");
             }
-        } catch (DaoException e) {
-            if (e.getMessage().contains("foreign key constraint")) {
-                System.out.println("Customer-" + customerNumber + " cannot be deleted because it has related records in the database:");
-                try {
-                    List<Booking> bookings = bookingDao.findAllBookingsByCustomerNumber(customerNumber);
-                    for (Booking booking : bookings) {
-                        System.out.println(booking);
-                    }
-                } catch (DaoException e1) {
-                    System.out.println("Error: " + e1.getMessage());
-                }
-            } else {
-                System.out.println("Error deleting customer: " + e.getMessage());
-            }
         }
     }
 
-    //to insert a new customer
+
+
+
     public void insertCustomer() {
         String customerNumber = helper.readInputField("customerNumber", 10);
         String customerName = helper.readInputField("customerName", 50);
@@ -126,11 +127,26 @@ public class CustomerObj {
         String address = helper.readInputField("address", 50);
 
         Customer customer = new Customer(customerNumber, customerName, email, telephone, address);
-        try {
-            customerDao.insertCustomer(customer);
-            System.out.println("Customer inserted.");
-        } catch (DaoException e) {
-            System.out.println("Error inserting customer: " + e.getMessage());
+        Packet request = new Packet(MenuOptions.CustomerMenuOptions.INSERT_CUSTOMER, customer);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+//        System.out.println("Client: Received JSON: " + jsonResponse); // Debugging line
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Client: Error inserting customer: " + response.getExceptionMessage()); // Debugging line
+        } else {
+            String jsonCustomer = (String) response.getData();
+            Customer c = new Gson().fromJson(jsonCustomer, Customer.class);
+            if (c == null) {
+                System.out.println("Client: Customer Was Not Inserted."); // Debugging line
+            } else {
+                System.out.println(c);
+                System.out.println("Client: Customer inserted.");
+            }
         }
     }
 

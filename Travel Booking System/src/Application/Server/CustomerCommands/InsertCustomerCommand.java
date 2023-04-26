@@ -5,6 +5,7 @@ import Application.DTOs.Customer;
 import Application.Exceptions.DaoException;
 import Application.Protocol.Packet;
 import Application.Server.Command;
+import com.google.gson.Gson;
 
 public class InsertCustomerCommand implements Command {
     private CustomerDaoInterface customerDao;
@@ -16,9 +17,14 @@ public class InsertCustomerCommand implements Command {
     public Packet execute(Object data) {
         Customer customer = (Customer) data;
         try {
-            customerDao.insertCustomer(customer);
-            return new Packet("Customer inserted.");
+            Customer c = customerDao.insertCustomer(customer);
+            Gson gson = new Gson();
+//            System.out.println("Insert customer: " + c);
+//            System.out.println("Insert customer: " + gson.toJson(c));
+            return new Packet(gson.toJson(c));
         } catch (DaoException e) {
-            return new Packet(e);        }
+//            System.out.println("Insert customer error: " + e.getMessage()); // Debugging line
+            return new Packet(e);
+        }
     }
 }

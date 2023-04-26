@@ -21,12 +21,20 @@ public class Packet {
         this.data = data;
     }
 
+//    public Packet(Enum option, Throwable exception, Object data) {
+//        this.option = option;
+//        this.exception = exception;
+//        this.exceptionMessage = exception.getClass().getSimpleName() + ": " + exception.getMessage();
+//        this.data = data;
+//    }
+
     public Packet(Enum option, Throwable exception, Object data) {
         this.option = option;
         this.exception = exception;
         this.exceptionMessage = exception.getClass().getSimpleName() + ": " + exception.getMessage();
         this.data = data;
     }
+
 
     public Packet(Throwable exception, String exceptionMessage, Object data) {
         this.exception = exception;
@@ -66,5 +74,9 @@ public class Packet {
                 .registerTypeAdapter(Packet.class, new PacketDeserializer())
                 .create();
         return gson.fromJson(json, Packet.class);
+    }
+
+    public String getExceptionMessage() {
+        return exceptionMessage;
     }
 }
