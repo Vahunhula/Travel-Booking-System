@@ -105,10 +105,10 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
             String query = "INSERT INTO booking (booking_number, flight_number, customer_number, travel_date, seat_number) VALUES (?,?,?,?,?)";
             int result = helperConnection.executeUpdate(query, booking.getBooking_number(), booking.getFlight_number(), booking.getCustomer_number(), booking.getTravel_date(), booking.getSeat_number());
             if(result == 1){
-                Booking insertedBooking = findBookingByNumber(booking.getBooking_number());
-                b = insertedBooking;
                 //add the booking number to the cache
                 bookingNumbersCache.add(booking.getBooking_number().toLowerCase());
+                Booking insertedBooking = findBookingByNumber(booking.getBooking_number());
+                b = insertedBooking;
             }
         } catch(SQLException e){
             throw new DaoException("insertBooking() " + e.getMessage());

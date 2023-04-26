@@ -22,7 +22,7 @@ public class Client {
     static FlightObj flightObj;
 
     //to access the booking functions
-//    static BookingObj bookingObj = new BookingObj();
+    static BookingObj bookingObj;
 
     //to access the payment functions
 //    static PaymentObj paymentObj = new PaymentObj();
@@ -50,6 +50,7 @@ public class Client {
             airportObj = new AirportObj(input, output);
             flightObj = new FlightObj(input, output);
             helper = new Helpers(input, output);
+            bookingObj = new BookingObj(input, output);
 
             while (true) {
                 printMainMenu();
@@ -117,7 +118,7 @@ public class Client {
                     flightObj.findAllFlights();
                     break;
                 case 4:
-//                    bookingObj.findAllBookings();
+                    bookingObj.findAllBookings();
                     break;
                 case 5:
 //                    paymentObj.findAllPayments();
@@ -152,7 +153,7 @@ public class Client {
                     flightObj.findFlightByNumber();
                     break;
                 case 4:
-//                    bookingObj.findBookingByNumber();
+                    bookingObj.findBookingByNumber();
                     break;
                 case 5:
 //                    paymentObj.findPaymentByNumber();
@@ -187,7 +188,7 @@ public class Client {
                     flightObj.deleteFlightByNumber();
                     break;
                 case 4:
-//                    bookingObj.deleteBookingByNumber();
+                    bookingObj.deleteBookingByNumber();
                     break;
                 case 5:
 //                    paymentObj.deletePaymentByNumber();
@@ -222,7 +223,7 @@ public class Client {
                     flightObj.insertFlight();
                     break;
                 case 4:
-//                    bookingObj.insertBooking();
+                    bookingObj.insertBooking();
                     break;
                 case 5:
 //                    paymentObj.insertPayment();

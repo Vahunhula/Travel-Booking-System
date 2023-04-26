@@ -568,7 +568,7 @@ public class Helpers {
                 int month = Integer.parseInt(date[1]);
                 int day = Integer.parseInt(date[2]);
                 if (year < 2023 || month < 1 || month > 12 || day < 1 || day > 31) {
-                    System.out.println("Error: invalid date.");
+                    System.out.println("Error: invalid date, You need to put A date in the future.");
                     travelDate = "";
                 } else {
                     LocalDate travelDate1 = LocalDate.of(year, month, day);

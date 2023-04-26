@@ -9,6 +9,7 @@ import java.net.Socket;
 import static Application.Protocol.MenuOptions.AirportMenuOptions.*;
 import static Application.Protocol.MenuOptions.CustomerMenuOptions.*;
 import static Application.Protocol.MenuOptions.FlightMenuOptions.*;
+import static Application.Protocol.MenuOptions.BookingMenuOptions.*;
 
 public class ClientHandler implements Runnable {
     private Socket clientSocket;
@@ -49,9 +50,10 @@ public class ClientHandler implements Runnable {
                 else if (option.equals(FIND_ALL_FLIGHTS) || option.equals(FIND_FLIGHT_BY_NUMBER) || option.equals(DELETE_FLIGHT_BY_NUMBER) || option.equals(INSERT_FLIGHT) || option.equals(FILTER_FLIGHT_BY_AIRLINE_NAME) || option.equals(FILTER_FLIGHT_BY_DEPARTURE_TIME) || option.equals(FIND_FLIGHT_BY_AIRLINE_NAME)) {
                     command = factory.createFlightCommand((MenuOptions.FlightMenuOptions) option);
                 }
-//                else if (option.equals(FIND_ALL_BOOKINGS) || option.equals(FIND_BOOKING_BY_NUMBER) || option.equals(DELETE_BOOKING_BY_NUMBER) || option.equals(INSERT_BOOKING)) {
-//                    command = factory.createBookingCommand((MenuOptions.BookingMenuOptions) option);
-//                } else if (option.equals(FIND_ALL_PAYMENTS) || option.equals(FIND_PAYMENT_BY_NUMBER) || option.equals(DELETE_PAYMENT_BY_NUMBER) || option.equals(INSERT_PAYMENT) || option.equals(FILTER_PAYMENT_BY_PAYMENT_METHOD)) {
+                else if (option.equals(FIND_ALL_BOOKINGS) || option.equals(FIND_BOOKING_BY_NUMBER) || option.equals(DELETE_BOOKING_BY_NUMBER) || option.equals(INSERT_BOOKING)) {
+                    command = factory.createBookingCommand((MenuOptions.BookingMenuOptions) option);
+                }
+//                else if (option.equals(FIND_ALL_PAYMENTS) || option.equals(FIND_PAYMENT_BY_NUMBER) || option.equals(DELETE_PAYMENT_BY_NUMBER) || option.equals(INSERT_PAYMENT) || option.equals(FILTER_PAYMENT_BY_PAYMENT_METHOD)) {
 //                    command = factory.createPaymentCommand((MenuOptions.PaymentMenuOptions) option);
 //                }
 
