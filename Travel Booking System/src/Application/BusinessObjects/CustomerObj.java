@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class CustomerObj {
-    static Helpers helper = new Helpers();
+    static Helpers helper;
     static CustomerDaoInterface customerDao = new MySqlCustomerDao();
 
     static BookingDaoInterface bookingDao = new MySqlBookingDao();
@@ -57,6 +57,7 @@ public class CustomerObj {
     //to find customer by number and also if no customer found then it will display no customer found
     //and if customer found then it will display customer details(customerNumber is a String)
     public void findCustomerByNumber() {
+        helper = new Helpers(input, output);
         String customerNumber = helper.readString("Enter customer number: ");
         Packet request = new Packet(MenuOptions.CustomerMenuOptions.FIND_CUSTOMER_BY_NUMBER, customerNumber);
         String jsonRequest = request.toJson();
@@ -80,6 +81,7 @@ public class CustomerObj {
     }
 
     public void deleteCustomerByNumber() {
+        helper = new Helpers(input, output);
         String customerNumber = helper.readString("Enter customer number: ");
         Packet request = new Packet(MenuOptions.CustomerMenuOptions.DELETE_CUSTOMER_BY_NUMBER, customerNumber);
         String jsonRequest = request.toJson();
@@ -116,10 +118,8 @@ public class CustomerObj {
         }
     }
 
-
-
-
     public void insertCustomer() {
+        helper = new Helpers(input, output);
         String customerNumber = helper.readInputField("customerNumber", 10);
         String customerName = helper.readInputField("customerName", 50);
         String email = helper.readEmail();

@@ -15,7 +15,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class AirportObj {
-    static Helpers helper = new Helpers();
+    static Helpers helper;
     static AirportDaoInterface airportDao = new MySqlAirportDao();
     static FlightDaoInterface flightDao = new MySqlFlightDao();
 
@@ -56,6 +56,7 @@ public class AirportObj {
     //to find airport by number and also if no airport found then it will display no airport found
     //and if airport found then it will display airport details(airportNumber is a String)
     public void findAirportByNumber() {
+        helper = new Helpers(input, output);
         String airportNumber = helper.readString("Enter airport number: ");
         Packet request = new Packet(MenuOptions.AirportMenuOptions.FIND_AIRPORT_BY_NUMBER, airportNumber);
         String jsonRequest = request.toJson();
@@ -80,6 +81,7 @@ public class AirportObj {
 
     //to delete airport by number and also if no airport found then it will display no airport found
     public void deleteAirportByNumber() {
+        helper = new Helpers(input, output);
         String airportNumber = helper.readString("Enter airport number: ");
         Packet request = new Packet(MenuOptions.AirportMenuOptions.DELETE_AIRPORT_BY_NUMBER, airportNumber);
         String jsonRequest = request.toJson();
@@ -118,6 +120,7 @@ public class AirportObj {
 
     //to insert a new airport
     public void insertAirport() {
+        helper = new Helpers(input, output);
         String airportNumber = helper.readString("Enter airport number: ");
         String airportName = helper.readString("Enter airport name: ");
         String airportLocation = helper.readString("Enter airport location: ");
@@ -146,6 +149,7 @@ public class AirportObj {
 
     //to filter the airports by location
     public void filterAirportByCity() {
+        helper = new Helpers(input, output);
         Packet request = new Packet(MenuOptions.AirportMenuOptions.FILTER_AIRPORT_BY_CITY, null);
         String jsonRequest = request.toJson();
         output.println(jsonRequest);

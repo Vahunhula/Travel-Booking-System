@@ -113,10 +113,10 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
             String query = "INSERT INTO flight (flight_number, airport_number, departure_location, departure_time, arrival_location, arrival_time, airline_name, flight_cost) VALUES (?,?,?,?,?,?,?,?)";
             int result = helperConnection.executeUpdate(query, flight.getFlight_number(), flight.getAirport_number(), flight.getDeparture_location(), flight.getDeparture_time(), flight.getArrival_location(), flight.getArrival_time(), flight.getAirline_name(), flight.getFlight_cost());
             if (result == 1) {
+                //add the flight number to the cache
+                flightNumbersCache.add(flight.getFlight_number().toLowerCase());
                 Flight insertedFlight = findFlightByNumber(flight.getFlight_number());
                 f = insertedFlight;
-                //add the flight number to the cache
-                flightNumbersCache.add(f.getFlight_number().toLowerCase());
             }
         } catch (SQLException e) {
             throw new DaoException("insertFlight() " + e.getMessage());

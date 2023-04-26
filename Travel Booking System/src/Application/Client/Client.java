@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class Client {
     //for my helper functions
-    static Helpers helper = new Helpers();
+    static Helpers helper;
 
     //to access the customer fuctions
     static CustomerObj customerObj;
@@ -19,13 +19,13 @@ public class Client {
     static AirportObj airportObj;
 
     //to access the flight functions
-    static FlightObj flightObj = new FlightObj();
+    static FlightObj flightObj;
 
     //to access the booking functions
-    static BookingObj bookingObj = new BookingObj();
+//    static BookingObj bookingObj = new BookingObj();
 
     //to access the payment functions
-    static PaymentObj paymentObj = new PaymentObj();
+//    static PaymentObj paymentObj = new PaymentObj();
 
     public static void main(String[] args) {
         Client client = new Client();
@@ -48,6 +48,8 @@ public class Client {
 
             customerObj = new CustomerObj(input, output);
             airportObj = new AirportObj(input, output);
+            flightObj = new FlightObj(input, output);
+            helper = new Helpers(input, output);
 
             while (true) {
                 printMainMenu();
@@ -115,10 +117,10 @@ public class Client {
                     flightObj.findAllFlights();
                     break;
                 case 4:
-                    bookingObj.findAllBookings();
+//                    bookingObj.findAllBookings();
                     break;
                 case 5:
-                    paymentObj.findAllPayments();
+//                    paymentObj.findAllPayments();
                     break;
                 case 6:
                     return;
@@ -150,10 +152,10 @@ public class Client {
                     flightObj.findFlightByNumber();
                     break;
                 case 4:
-                    bookingObj.findBookingByNumber();
+//                    bookingObj.findBookingByNumber();
                     break;
                 case 5:
-                    paymentObj.findPaymentByNumber();
+//                    paymentObj.findPaymentByNumber();
                     break;
                 case 6:
                     return;
@@ -185,10 +187,10 @@ public class Client {
                     flightObj.deleteFlightByNumber();
                     break;
                 case 4:
-                    bookingObj.deleteBookingByNumber();
+//                    bookingObj.deleteBookingByNumber();
                     break;
                 case 5:
-                    paymentObj.deletePaymentByNumber();
+//                    paymentObj.deletePaymentByNumber();
                     break;
                 case 6:
                     return;
@@ -220,10 +222,10 @@ public class Client {
                     flightObj.insertFlight();
                     break;
                 case 4:
-                    bookingObj.insertBooking();
+//                    bookingObj.insertBooking();
                     break;
                 case 5:
-                    paymentObj.insertPayment();
+//                    paymentObj.insertPayment();
                     break;
                 case 6:
                     return;
@@ -255,7 +257,7 @@ public class Client {
                     flightObj.filterFlightByDepartureTime();
                     break;
                 case 4:
-                    paymentObj.filterPaymentByPaymentMethod();
+//                    paymentObj.filterPaymentByPaymentMethod();
                     break;
                 case 5:
                     return;

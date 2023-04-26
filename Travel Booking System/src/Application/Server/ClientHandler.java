@@ -8,6 +8,7 @@ import java.net.Socket;
 
 import static Application.Protocol.MenuOptions.AirportMenuOptions.*;
 import static Application.Protocol.MenuOptions.CustomerMenuOptions.*;
+import static Application.Protocol.MenuOptions.FlightMenuOptions.*;
 
 public class ClientHandler implements Runnable {
     private Socket clientSocket;
@@ -40,14 +41,15 @@ public class ClientHandler implements Runnable {
 
                 Enum option = packet.getOption();
 
-                if (option.equals(FIND_ALL_CUSTOMERS) || option.equals(FIND_CUSTOMER_BY_NUMBER) || option.equals(DELETE_CUSTOMER_BY_NUMBER) || option.equals(INSERT_CUSTOMER)) {
+                if (option.equals(FIND_ALL_CUSTOMERS) || option.equals(FIND_CUSTOMER_BY_NUMBER) || option.equals(DELETE_CUSTOMER_BY_NUMBER) || option.equals(INSERT_CUSTOMER) || option.equals(CHECK_DUPLICATE_EMAIL)) {
                     command = factory.createCustomerCommand((MenuOptions.CustomerMenuOptions) option);
                 } else if (option.equals(FIND_ALL_AIRPORTS) || option.equals(FIND_AIRPORT_BY_NUMBER) || option.equals(DELETE_AIRPORT_BY_NUMBER) || option.equals(INSERT_AIRPORT) || option.equals(FILTER_AIRPORT_BY_CITY) || option.equals(FIND_AIRPORT_BY_LOCATION)) {
                     command = factory.createAirportCommand((MenuOptions.AirportMenuOptions) option);
                 }
-//                else if (option.equals(FIND_ALL_FLIGHTS) || option.equals(FIND_FLIGHT_BY_NUMBER) || option.equals(DELETE_FLIGHT_BY_NUMBER) || option.equals(INSERT_FLIGHT) || option.equals(FILTER_FLIGHT_BY_AIIRLINE) || option.equals(FILTER_FLIGHT_BY_DEPARTURE_TIME)) {
-//                    command = factory.createFlightCommand((MenuOptions.FlightMenuOptions) option);
-//                } else if (option.equals(FIND_ALL_BOOKINGS) || option.equals(FIND_BOOKING_BY_NUMBER) || option.equals(DELETE_BOOKING_BY_NUMBER) || option.equals(INSERT_BOOKING)) {
+                else if (option.equals(FIND_ALL_FLIGHTS) || option.equals(FIND_FLIGHT_BY_NUMBER) || option.equals(DELETE_FLIGHT_BY_NUMBER) || option.equals(INSERT_FLIGHT) || option.equals(FILTER_FLIGHT_BY_AIRLINE_NAME) || option.equals(FILTER_FLIGHT_BY_DEPARTURE_TIME) || option.equals(FIND_FLIGHT_BY_AIRLINE_NAME)) {
+                    command = factory.createFlightCommand((MenuOptions.FlightMenuOptions) option);
+                }
+//                else if (option.equals(FIND_ALL_BOOKINGS) || option.equals(FIND_BOOKING_BY_NUMBER) || option.equals(DELETE_BOOKING_BY_NUMBER) || option.equals(INSERT_BOOKING)) {
 //                    command = factory.createBookingCommand((MenuOptions.BookingMenuOptions) option);
 //                } else if (option.equals(FIND_ALL_PAYMENTS) || option.equals(FIND_PAYMENT_BY_NUMBER) || option.equals(DELETE_PAYMENT_BY_NUMBER) || option.equals(INSERT_PAYMENT) || option.equals(FILTER_PAYMENT_BY_PAYMENT_METHOD)) {
 //                    command = factory.createPaymentCommand((MenuOptions.PaymentMenuOptions) option);

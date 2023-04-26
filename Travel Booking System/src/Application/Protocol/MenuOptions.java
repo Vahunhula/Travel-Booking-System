@@ -5,7 +5,8 @@ public class MenuOptions {
         FIND_ALL_CUSTOMERS,
         FIND_CUSTOMER_BY_NUMBER,
         DELETE_CUSTOMER_BY_NUMBER,
-        INSERT_CUSTOMER
+        INSERT_CUSTOMER,
+        CHECK_DUPLICATE_EMAIL
     }
 
     public enum AirportMenuOptions{
@@ -22,8 +23,9 @@ public class MenuOptions {
         FIND_FLIGHT_BY_NUMBER,
         DELETE_FLIGHT_BY_NUMBER,
         INSERT_FLIGHT,
-        FILTER_FLIGHT_BY_AIIRLINE,
-        FILTER_FLIGHT_BY_DEPARTURE_TIME
+        FILTER_FLIGHT_BY_AIRLINE_NAME,
+        FILTER_FLIGHT_BY_DEPARTURE_TIME,
+        FIND_FLIGHT_BY_AIRLINE_NAME
     }
 
     public enum BookingMenuOptions{

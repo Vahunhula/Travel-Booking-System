@@ -7,75 +7,125 @@ import Application.CompMethods.CompDescFliTime;
 import Application.DAOs.*;
 import Application.DTOs.*;
 import Application.Exceptions.DaoException;
+import Application.Protocol.MenuOptions;
+import Application.Protocol.Packet;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.PrintWriter;
+import java.lang.reflect.Type;
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class FlightObj {
-    static Helpers helper = new Helpers();
+    static Helpers helper;
     static FlightDaoInterface flightDao = new MySqlFlightDao();
     static BookingDaoInterface bookingDao = new MySqlBookingDao();
 
+    private Scanner input;
+    private PrintWriter output;
+
+    public FlightObj(Scanner input, PrintWriter output) {
+        this.input = input;
+        this.output = output;
+    }
+
     //display all flights
     public void findAllFlights() {
-        try {
-            List<Flight> flights = flightDao.findAllFlights();
+        Packet request = new Packet(MenuOptions.FlightMenuOptions.FIND_ALL_FLIGHTS, null);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Error: " + response.getException().getMessage());
+        } else {
+            String jsonFlights = (String) response.getData();
+            Type flightListType = new TypeToken<List<Flight>>() {
+            }.getType();
+            List<Flight> flights = new Gson().fromJson(jsonFlights, flightListType);
+
             if (flights.isEmpty()) {
                 System.out.println("No flights found.");
             }
             for (Flight flight : flights) {
                 System.out.println(flight.toString());
             }
-        } catch (DaoException e) {
-            System.out.println("Error: " + e.getMessage());
         }
     }
 
     //to find flight by number and also if no flight found then it will display no flight found
     //and if flight found then it will display flight details(flightNumber is a String)
     public void findFlightByNumber() {
+        helper = new Helpers(input, output);
         String flightNumber = helper.readString("Enter flight number: ");
-        try {
-            Flight flight = flightDao.findFlightByNumber(flightNumber);
+        Packet request = new Packet(MenuOptions.FlightMenuOptions.FIND_FLIGHT_BY_NUMBER, flightNumber);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Error: " + response.getException().getMessage());
+        } else {
+            String jsonFlight = (String) response.getData();
+            Flight flight = new Gson().fromJson(jsonFlight, Flight.class);
             if (flight == null) {
                 System.out.println("No flight found.");
             } else {
-                System.out.println(flight.toString());
+                System.out.println(flight);
             }
-        } catch (DaoException e) {
-            System.out.println("Error: " + e.getMessage());
         }
     }
 
     //to delete flight by number and also if no flight found then it will display no flight found
     //and also check if flight has related records in booking table then it will display those records
     public void deleteFlightByNumber() {
+        helper = new Helpers(input, output);
         String flightNumber = helper.readString("Enter flight number: ");
-        try {
-            boolean deleted = flightDao.deleteFlightByNumber(flightNumber);
+        Packet request = new Packet(MenuOptions.FlightMenuOptions.DELETE_FLIGHT_BY_NUMBER, flightNumber);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            String exceptionMessage = response.getException().getMessage();
+//            System.out.println("Error: " + (exceptionMessage == null ? "Unknown error" : exceptionMessage));
+
+            if (response.getData() != null) {
+                System.out.println("Flight-" + flightNumber + " cannot be deleted because it has related records in the database:");
+
+                // The related bookings can be sent as part of the response in the 'data' field.
+                String jsonBookings = (String) response.getData();
+                Type bookingListType = new TypeToken<List<Booking>>() {
+                }.getType();
+                List<Booking> bookings = new Gson().fromJson(jsonBookings, bookingListType);
+
+                for (Booking booking : bookings) {
+                    System.out.println(booking);
+                }
+            }
+        } else {
+            boolean deleted = Boolean.parseBoolean((String) response.getData());
             if (deleted) {
                 System.out.println("Flight deleted.");
             } else {
                 System.out.println("No flight found.");
-            }
-        } catch (DaoException e) {
-            if (e.getMessage().contains("foreign key constraint")) {
-                System.out.println("Flight-" + flightNumber + " cannot be deleted because it has related records in the database:");
-                try {
-                    List<Booking> bookings = bookingDao.findAllBookingsByFlightNumber(flightNumber);
-                    for (Booking booking : bookings) {
-                        System.out.println(booking);
-                    }
-                } catch (DaoException e1) {
-                    System.out.println("Error: " + e1.getMessage());
-                }
-            } else {
-                System.out.println("Error deleting flight: " + e.getMessage());
             }
         }
     }
 
     //to insert a new flight
     public void insertFlight() {
+        helper = new Helpers(input, output);
         String flightNumber = helper.readInputField("flightNumber", 10);
         String airportNumber = helper.checkAirportNumber();
         String departureLocation = helper.readInputField("departureLocation", 50);
@@ -86,24 +136,135 @@ public class FlightObj {
         double flightCost = helper.readFlightCost();
 
         Flight flight = new Flight(flightNumber, airportNumber, departureLocation, departureTime, arrivalLocation, arrivalTime, airlineName, flightCost);
-        try {
-            flightDao.insertFlight(flight);
-            System.out.println("Flight inserted.");
-        } catch (DaoException e) {
-            System.out.println("Error inserting flight: " + e.getMessage());
+        Packet request = new Packet(MenuOptions.FlightMenuOptions.INSERT_FLIGHT, flight);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Error inserting flight: " + response.getException().getMessage());
+        } else {
+            String jsonFlight = (String) response.getData();
+            Flight f = new Gson().fromJson(jsonFlight, Flight.class);
+            if (f == null) {
+                System.out.println("Flight was not inserted.");
+            } else {
+                System.out.println(f);
+                System.out.println("Flight inserted.");
+            }
         }
     }
 
+    // public void filterAirportByCity() {
+    //        helper = new Helpers(input, output);
+    //        Packet request = new Packet(MenuOptions.AirportMenuOptions.FILTER_AIRPORT_BY_CITY, null);
+    //        String jsonRequest = request.toJson();
+    //        output.println(jsonRequest);
+    //        output.flush();
+    //
+    //        String jsonResponse = input.nextLine();
+    //        Packet response = Packet.fromJson(jsonResponse);
+    //
+    //        if (response.getException() != null) {
+    //            System.out.println("Error: " + response.getException().getMessage());
+    //        } else {
+    //            // Deserialize the HashMap received from the server
+    //            Type hashMapType = new TypeToken<HashMap<Integer, String>>() {
+    //            }.getType();
+    //            HashMap<Integer, String> numberedAirportLocations = new Gson().fromJson((String) response.getData(), hashMapType);
+    //
+    //            for (Map.Entry<Integer, String> entry : numberedAirportLocations.entrySet()) {
+    //                System.out.println(entry.getKey() + ". " + entry.getValue());
+    //            }
+    //            while (true) {
+    //                int choice = helper.readInt("Enter your choice: ");
+    //                if (choice > numberedAirportLocations.size() || choice < 1) {
+    //                    System.out.println("Invalid choice, please try again.");
+    //                } else {
+    //                    String airportLocation = numberedAirportLocations.get(choice);
+    //
+    //                    Packet locationRequest = new Packet(MenuOptions.AirportMenuOptions.FIND_AIRPORT_BY_LOCATION, airportLocation);
+    //                    String jsonLocationRequest = locationRequest.toJson();
+    //                    output.println(jsonLocationRequest);
+    //                    output.flush();
+    //
+    //                    String jsonLocationResponse = input.nextLine();
+    //                    Packet locationResponse = Packet.fromJson(jsonLocationResponse);
+    //
+    //                    if (locationResponse.getException() != null) {
+    //                        System.out.println("Error: " + locationResponse.getException().getMessage());
+    //                    } else {
+    //                        String jsonAirports = (String) locationResponse.getData();
+    //                        Type airportListType = new TypeToken<List<Airport>>(){}.getType();
+    //                        List<Airport> airports = new Gson().fromJson(jsonAirports, airportListType);
+    //
+    //                        if (airports.isEmpty()) {
+    //                            System.out.println("No airports found.");
+    //                        } else {
+    //                            System.out.println("How do you want the airports to be sorted?");
+    //                            System.out.println("1. By Default");
+    //                            System.out.println("2. By Ascending Order");
+    //                            System.out.println("3. By Descending Order");
+    //                            while (true) {
+    //                                int sortChoice = helper.readInt("Enter your choice: ");
+    //                                if (sortChoice > 3 || sortChoice < 1) {
+    //                                    System.out.println("Invalid choice, please try again.");
+    //                                } else {
+    //                                    switch (sortChoice) {
+    //                                        case 1:
+    //                                            System.out.println("Airports in " + airportLocation + ":");
+    //                                            for (Airport airport : airports) {
+    //                                                System.out.println(airport);
+    //                                            }
+    //                                            break;
+    //                                        case 2:
+    //                                            System.out.println("Airports in " + airportLocation + " sorted by ascending order:");
+    //                                            airports.sort(new CompAscAirportName());
+    //                                            for (Airport airport : airports) {
+    //                                                System.out.println(airport);
+    //                                            }
+    //                                            break;
+    //                                        case 3:
+    //                                            System.out.println("Airports in " + airportLocation + " sorted by descending order:");
+    //                                            airports.sort(new CompDescAirportName());
+    //                                            for (Airport airport : airports) {
+    //                                                System.out.println(airport);
+    //                                            }
+    //                                            break;
+    //                                    }
+    //                                    break;
+    //                                }
+    //                            }
+    //                        }
+    //                    }
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //    }
+
     //to filter flights by airline
     public void filterFlightByAirline() {
-        try {
-            Set<String> uniqueAirlineNames = flightDao.uniqueAirlineName();
-            HashMap<Integer, String> numberedAirlineNames = new HashMap<>();
-            int i = 1;
-            for (String airlineName : uniqueAirlineNames) {
-                numberedAirlineNames.put(i, airlineName);
-                i++;
-            }
+        helper = new Helpers(input, output);
+        Packet request = new Packet(MenuOptions.FlightMenuOptions.FILTER_FLIGHT_BY_AIRLINE_NAME, null);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Error: " + response.getException().getMessage());
+        } else {
+            // Deserialize the HashMap received from the server
+            Type hashMapType = new TypeToken<HashMap<Integer, String>>() {
+            }.getType();
+            HashMap<Integer, String> numberedAirlineNames = new Gson().fromJson((String) response.getData(), hashMapType);
+
             for (Map.Entry<Integer, String> entry : numberedAirlineNames.entrySet()) {
                 System.out.println(entry.getKey() + ". " + entry.getValue());
             }
@@ -113,57 +274,153 @@ public class FlightObj {
                     System.out.println("Invalid choice, please try again.");
                 } else {
                     String airlineName = numberedAirlineNames.get(choice);
-                    List<Flight> flights = flightDao.findFlightByAirlineName(airlineName);
-                    if (flights.isEmpty()) {
-                        System.out.println("No flights found.");
+                    Packet airlineNameRequest = new Packet(MenuOptions.FlightMenuOptions.FIND_FLIGHT_BY_AIRLINE_NAME, airlineName);
+                    String jsonAirlineNameRequest = airlineNameRequest.toJson();
+                    output.println(jsonAirlineNameRequest);
+                    output.flush();
+
+                    String jsonAirlineNameResponse = input.nextLine();
+//                    System.out.println(jsonAirlineNameResponse); //Debugging line
+                    Packet airlineNameResponse = Packet.fromJson(jsonAirlineNameResponse);
+
+                    if (airlineNameResponse.getException() != null) {
+                        System.out.println("Error: " + airlineNameResponse.getException().getMessage());
                     } else {
-                        System.out.println("How do you want the flights to be sorted?");
-                        System.out.println("1. By Default");
-                        System.out.println("2. By Ascending Order");
-                        System.out.println("3. By Descending Order");
-                        while (true) {
-                            int sortChoice = helper.readInt("Enter your choice: ");
-                            if (sortChoice > 3 || sortChoice < 1) {
-                                System.out.println("Invalid choice, please try again.");
-                            } else {
-                                switch (sortChoice) {
-                                    case 1:
-                                        System.out.println("Flights by " + airlineName + ":");
-                                        for (Flight flight : flights) {
-                                            System.out.println(flight);
-                                        }
-                                        break;
-                                    case 2:
-                                        System.out.println("Flights by " + airlineName + " sorted by ascending order:");
-                                        flights.sort(new CompAscFliAirName());
-                                        for (Flight flight : flights) {
-                                            System.out.println(flight);
-                                        }
-                                        break;
-                                    case 3:
-                                        System.out.println("Flights by " + airlineName + " sorted by descending order:");
-                                        flights.sort(new CompDescFliAirName());
-                                        for (Flight flight : flights) {
-                                            System.out.println(flight);
-                                        }
-                                        break;
+                        String jsonFlights = (String) airlineNameResponse.getData();
+                        Type flightListType = new TypeToken<List<Flight>>() {
+                        }.getType();
+                        List<Flight> flights = new Gson().fromJson(jsonFlights, flightListType);
+
+                        if (flights.isEmpty()) {
+                            System.out.println("No flights found.");
+                        } else {
+                            System.out.println("How do you want the flights to be sorted?");
+                            System.out.println("1. By Default");
+                            System.out.println("2. By Ascending Order");
+                            System.out.println("3. By Descending Order");
+                            while (true) {
+                                int sortChoice = helper.readInt("Enter your choice: ");
+                                if (sortChoice > 3 || sortChoice < 1) {
+                                    System.out.println("Invalid choice, please try again.");
+                                } else {
+                                    switch (sortChoice) {
+                                        case 1:
+                                            System.out.println("Flights by " + airlineName + ":");
+                                            for (Flight flight : flights) {
+                                                System.out.println(flight);
+                                            }
+                                            break;
+                                        case 2:
+                                            System.out.println("Flights by " + airlineName + " sorted by ascending order:");
+                                            flights.sort(new CompAscFliAirName());
+                                            for (Flight flight : flights) {
+                                                System.out.println(flight);
+                                            }
+                                            break;
+                                        case 3:
+                                            System.out.println("Flights by " + airlineName + " sorted by descending order:");
+                                            flights.sort(new CompDescFliAirName());
+                                            for (Flight flight : flights) {
+                                                System.out.println(flight);
+                                            }
+                                            break;
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
+                        break;
                     }
-                    break;
                 }
             }
-        } catch (DaoException e) {
-            System.out.println("Error: " + e.getMessage());
         }
     }
+//    public void filterFlightByAirline() {
+//        helper = new Helpers(input, output);
+//        try {
+//            Set<String> uniqueAirlineNames = flightDao.uniqueAirlineName();
+//            HashMap<Integer, String> numberedAirlineNames = new HashMap<>();
+//            int i = 1;
+//            for (String airlineName : uniqueAirlineNames) {
+//                numberedAirlineNames.put(i, airlineName);
+//                i++;
+//            }
+//            for (Map.Entry<Integer, String> entry : numberedAirlineNames.entrySet()) {
+//                System.out.println(entry.getKey() + ". " + entry.getValue());
+//            }
+//            while (true) {
+//                int choice = helper.readInt("Enter your choice: ");
+//                if (choice > numberedAirlineNames.size() || choice < 1) {
+//                    System.out.println("Invalid choice, please try again.");
+//                } else {
+//                    String airlineName = numberedAirlineNames.get(choice);
+//                    List<Flight> flights = flightDao.findFlightByAirlineName(airlineName);
+//                    if (flights.isEmpty()) {
+//                        System.out.println("No flights found.");
+//                    } else {
+//                        System.out.println("How do you want the flights to be sorted?");
+//                        System.out.println("1. By Default");
+//                        System.out.println("2. By Ascending Order");
+//                        System.out.println("3. By Descending Order");
+//                        while (true) {
+//                            int sortChoice = helper.readInt("Enter your choice: ");
+//                            if (sortChoice > 3 || sortChoice < 1) {
+//                                System.out.println("Invalid choice, please try again.");
+//                            } else {
+//                                switch (sortChoice) {
+//                                    case 1:
+//                                        System.out.println("Flights by " + airlineName + ":");
+//                                        for (Flight flight : flights) {
+//                                            System.out.println(flight);
+//                                        }
+//                                        break;
+//                                    case 2:
+//                                        System.out.println("Flights by " + airlineName + " sorted by ascending order:");
+//                                        flights.sort(new CompAscFliAirName());
+//                                        for (Flight flight : flights) {
+//                                            System.out.println(flight);
+//                                        }
+//                                        break;
+//                                    case 3:
+//                                        System.out.println("Flights by " + airlineName + " sorted by descending order:");
+//                                        flights.sort(new CompDescFliAirName());
+//                                        for (Flight flight : flights) {
+//                                            System.out.println(flight);
+//                                        }
+//                                        break;
+//                                }
+//                                break;
+//                            }
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
+//        } catch (DaoException e) {
+//            System.out.println("Error: " + e.getMessage());
+//        }
+//    }
 
     //to filter flights by departure time
-    public void filterFlightByDepartureTime(){
-        try{
-            Map<String, List<Flight>> flightsByDepartureTime = flightDao.timeOfFlight();
+    public void filterFlightByDepartureTime() {
+        helper = new Helpers(input, output);
+
+        Packet request = new Packet(MenuOptions.FlightMenuOptions.FILTER_FLIGHT_BY_DEPARTURE_TIME, null);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Error: " + response.getException().getMessage());
+        } else {
+            // Deserialize the HashMap received from the server
+            Type hashMapType = new TypeToken<HashMap<String, List<Flight>>>() {
+            }.getType();
+            HashMap<String, List<Flight>> flightsByDepartureTime = new Gson().fromJson((String) response.getData(), hashMapType);
+
             int i = 1;
             for (Map.Entry<String, List<Flight>> entry : flightsByDepartureTime.entrySet()) {
                 System.out.println(i + ". " + entry.getKey());
@@ -218,8 +475,6 @@ public class FlightObj {
                     break;
                 }
             }
-        } catch (DaoException e) {
-            System.out.println("Error: " + e.getMessage());
         }
     }
 }

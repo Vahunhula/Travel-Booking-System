@@ -4,9 +4,11 @@ import Application.DAOs.*;
 import Application.Protocol.MenuOptions;
 import Application.Server.AirportCommands.*;
 import Application.Server.CustomerCommands.*;
+import Application.Server.FlightCommands.*;
 
 import static Application.Protocol.MenuOptions.CustomerMenuOptions.*;
 import static Application.Protocol.MenuOptions.AirportMenuOptions.*;
+import static Application.Protocol.MenuOptions.FlightMenuOptions.*;
 
 public class CommandFactory {
     private CustomerDaoInterface customerDao = new MySqlCustomerDao();
@@ -24,6 +26,8 @@ public class CommandFactory {
             return new DeleteCustomerByNumberCommand(customerDao, bookingDao);
         } else if (option.equals(INSERT_CUSTOMER)) {
             return new InsertCustomerCommand(customerDao);
+        } else if(option.equals(CHECK_DUPLICATE_EMAIL)){
+            return new CheckDuplicateEmailCommand(customerDao);
         }
         throw new IllegalArgumentException("Invalid option: " + option);
     }
@@ -41,6 +45,29 @@ public class CommandFactory {
             return new FilterAirportByCityCommand(airportDao);
         } else if (option.equals(FIND_AIRPORT_BY_LOCATION)) {
             return new FindAirportByLocationCommand(airportDao);
+        }
+        throw new IllegalArgumentException("Invalid option: " + option);
+    }
+
+    public Command createFlightCommand(MenuOptions.FlightMenuOptions option) {
+        if (option.equals(FIND_ALL_FLIGHTS)) {
+            return new FindAllFlightsCommand(flightDao);
+        }
+        else if (option.equals(FIND_FLIGHT_BY_NUMBER)) {
+            return new FindFlightByNumberCommand(flightDao);
+        }
+        else if (option.equals(DELETE_FLIGHT_BY_NUMBER)) {
+            return new DeleteFlightByNumberCommand(flightDao, bookingDao);
+        }
+        else if (option.equals(INSERT_FLIGHT)) {
+            return new InsertFlightCommand(flightDao);
+        } else if (option.equals(FILTER_FLIGHT_BY_AIRLINE_NAME)) {
+            return new FilterFlightByAirlineNameCommand(flightDao);
+        }
+        else if (option.equals(FILTER_FLIGHT_BY_DEPARTURE_TIME)) {
+            return new FilterFlightByDepartureTimeCommand(flightDao);
+        }else if (option.equals(FIND_FLIGHT_BY_AIRLINE_NAME)) {
+            return new FindFlightByAirlineNameCommand(flightDao);
         }
         throw new IllegalArgumentException("Invalid option: " + option);
     }

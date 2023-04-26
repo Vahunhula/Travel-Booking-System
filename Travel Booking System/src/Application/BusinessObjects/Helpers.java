@@ -3,7 +3,11 @@ package Application.BusinessObjects;
 import Application.DTOs.*;
 import Application.Exceptions.DaoException;
 import Application.DAOs.*;
+import Application.Protocol.MenuOptions;
+import Application.Protocol.Packet;
+import com.google.gson.Gson;
 
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -13,6 +17,15 @@ public class Helpers {
     static FlightDaoInterface flightDao = new MySqlFlightDao();
     static BookingDaoInterface bookingDao = new MySqlBookingDao();
     static PaymentDaoInterface paymentDao = new MySqlPaymentDao();
+
+    private Scanner input;
+    private PrintWriter output;
+
+    public Helpers(Scanner input, PrintWriter output) {
+        this.input = input;
+        this.output = output;
+    }
+
     public int readInt(String message) {
         Scanner scanner = new Scanner(System.in);
         int input;
@@ -73,14 +86,23 @@ public class Helpers {
                     System.out.println("Customer number cannot be longer than " + max + " characters.");
                 }
                 //check if customer number already exists
-                try {
-                    Customer customer = customerDao.findCustomerByNumber(customerNumber);
+                Packet request = new Packet(MenuOptions.CustomerMenuOptions.FIND_CUSTOMER_BY_NUMBER, customerNumber);
+                String jsonRequest = request.toJson();
+                output.println(jsonRequest);
+                output.flush();
+
+                String jsonResponse = input.nextLine();
+                Packet response = Packet.fromJson(jsonResponse);
+
+                if (response.getException() != null) {
+                    System.out.println("Error: " + response.getException().getMessage());
+                } else {
+                    String jsonCustomer = (String) response.getData();
+                    Customer customer = new Gson().fromJson(jsonCustomer, Customer.class);
                     if (customer != null) {
                         System.out.println("Customer number already exists. Please enter a different number.");
                         customerNumber = "";
                     }
-                } catch (DaoException e) {
-                    System.out.println("Error: " + e.getMessage());
                 }
             }
             field = customerNumber;
@@ -122,14 +144,23 @@ public class Helpers {
                     System.out.println("Airport number cannot be longer than " + max + " characters.");
                 }
                 //check if airport number already exists
-                try {
-                    Airport airport = airportDao.findAirportByNumber(airportNumber);
+                Packet request = new Packet(MenuOptions.AirportMenuOptions.FIND_AIRPORT_BY_NUMBER, airportNumber);
+                String jsonRequest = request.toJson();
+                output.println(jsonRequest);
+                output.flush();
+
+                String jsonResponse = input.nextLine();
+                Packet response = Packet.fromJson(jsonResponse);
+
+                if (response.getException() != null) {
+                    System.out.println("Error: " + response.getException().getMessage());
+                } else {
+                    String jsonAirport = (String) response.getData();
+                    Airport airport = new Gson().fromJson(jsonAirport, Airport.class);
                     if (airport != null) {
                         System.out.println("Airport number already exists. Please enter a different number.");
                         airportNumber = "";
                     }
-                } catch (DaoException e) {
-                    System.out.println("Error: " + e.getMessage());
                 }
             }
             field = airportNumber;
@@ -171,14 +202,23 @@ public class Helpers {
                     System.out.println("Flight number cannot be longer than " + max + " characters.");
                 }
                 //check if flight number already exists
-                try {
-                    Flight flight = flightDao.findFlightByNumber(flightNumber);
+                Packet request = new Packet(MenuOptions.FlightMenuOptions.FIND_FLIGHT_BY_NUMBER, flightNumber);
+                String jsonRequest = request.toJson();
+                output.println(jsonRequest);
+                output.flush();
+
+                String jsonResponse = input.nextLine();
+                Packet response = Packet.fromJson(jsonResponse);
+
+                if (response.getException() != null) {
+                    System.out.println("Error: " + response.getException().getMessage());
+                } else {
+                    String jsonFlight = (String) response.getData();
+                    Flight flight = new Gson().fromJson(jsonFlight, Flight.class);
                     if (flight != null) {
                         System.out.println("Flight number already exists. Please enter a different number.");
                         flightNumber = "";
                     }
-                } catch (DaoException e) {
-                    System.out.println("Error: " + e.getMessage());
                 }
             }
             field = flightNumber;
@@ -233,14 +273,23 @@ public class Helpers {
                     System.out.println("Booking number cannot be longer than " + max + " characters.");
                 }
                 //check if booking number already exists
-                try {
-                    Booking booking = bookingDao.findBookingByNumber(bookingNumber);
+                Packet request = new Packet(MenuOptions.BookingMenuOptions.FIND_BOOKING_BY_NUMBER, bookingNumber);
+                String jsonRequest = request.toJson();
+                output.println(jsonRequest);
+                output.flush();
+
+                String jsonResponse = input.nextLine();
+                Packet response = Packet.fromJson(jsonResponse);
+
+                if (response.getException() != null) {
+                    System.out.println("Error: " + response.getException().getMessage());
+                } else {
+                    String jsonBooking = (String) response.getData();
+                    Booking booking = new Gson().fromJson(jsonBooking, Booking.class);
                     if (booking != null) {
                         System.out.println("Booking number already exists. Please enter a different number.");
                         bookingNumber = "";
                     }
-                } catch (DaoException e) {
-                    System.out.println("Error: " + e.getMessage());
                 }
             }
             field = bookingNumber;
@@ -256,14 +305,23 @@ public class Helpers {
                     System.out.println("Payment number cannot be longer than " + max + " characters.");
                 }
                 //check if payment number already exists
-                try {
-                    Payment payment = paymentDao.findPaymentByNumber(paymentNumber);
+                Packet request = new Packet(MenuOptions.PaymentMenuOptions.FIND_PAYMENT_BY_NUMBER, paymentNumber);
+                String jsonRequest = request.toJson();
+                output.println(jsonRequest);
+                output.flush();
+
+                String jsonResponse = input.nextLine();
+                Packet response = Packet.fromJson(jsonResponse);
+
+                if (response.getException() != null) {
+                    System.out.println("Error: " + response.getException().getMessage());
+                } else {
+                    String jsonPayment = (String) response.getData();
+                    Payment payment = new Gson().fromJson(jsonPayment, Payment.class);
                     if (payment != null) {
                         System.out.println("Payment number already exists. Please enter a different number.");
                         paymentNumber = "";
                     }
-                } catch (DaoException e) {
-                    System.out.println("Error: " + e.getMessage());
                 }
             }
             field = paymentNumber;
@@ -283,14 +341,32 @@ public class Helpers {
             } else if (airportNumber.length() > 10) {
                 System.out.println("Airport number cannot be longer than 10 characters.");
             } else {
-                try {
-                    Airport airport = airportDao.findAirportByNumber(airportNumber);
+//                try {
+//                    Airport airport = airportDao.findAirportByNumber(airportNumber);
+//                    if (airport == null) {
+//                        System.out.println("Airport number does not exist. Please add the airport first in the InsertAirport().");
+//                        airportNumber = "";
+//                    }
+//                } catch (DaoException e) {
+//                    System.out.println("Error: " + e.getMessage());
+//                }
+                Packet request = new Packet(MenuOptions.AirportMenuOptions.FIND_AIRPORT_BY_NUMBER, airportNumber);
+                String jsonRequest = request.toJson();
+                output.println(jsonRequest);
+                output.flush();
+
+                String jsonResponse = input.nextLine();
+                Packet response = Packet.fromJson(jsonResponse);
+
+                if (response.getException() != null) {
+                    System.out.println("Error: " + response.getException().getMessage());
+                } else {
+                    String jsonAirport = (String) response.getData();
+                    Airport airport = new Gson().fromJson(jsonAirport, Airport.class);
                     if (airport == null) {
                         System.out.println("Airport number does not exist. Please add the airport first in the InsertAirport().");
                         airportNumber = "";
                     }
-                } catch (DaoException e) {
-                    System.out.println("Error: " + e.getMessage());
                 }
             }
         }
@@ -309,14 +385,32 @@ public class Helpers {
             } else if (flightNumber.length() > 10) {
                 System.out.println("Flight number cannot be longer than 10 characters.");
             } else {
-                try {
-                    Flight flight = flightDao.findFlightByNumber(flightNumber);
+//                try {
+//                    Flight flight = flightDao.findFlightByNumber(flightNumber);
+//                    if (flight == null) {
+//                        System.out.println("Flight number does not exist. Please add the flight first in the InsertFlight().");
+//                        flightNumber = "";
+//                    }
+//                } catch (DaoException e) {
+//                    System.out.println("Error: " + e.getMessage());
+//                }
+                Packet request = new Packet(MenuOptions.FlightMenuOptions.FIND_FLIGHT_BY_NUMBER, flightNumber);
+                String jsonRequest = request.toJson();
+                output.println(jsonRequest);
+                output.flush();
+
+                String jsonResponse = input.nextLine();
+                Packet response = Packet.fromJson(jsonResponse);
+
+                if (response.getException() != null) {
+                    System.out.println("Error: " + response.getException().getMessage());
+                } else {
+                    String jsonFlight = (String) response.getData();
+                    Flight flight = new Gson().fromJson(jsonFlight, Flight.class);
                     if (flight == null) {
                         System.out.println("Flight number does not exist. Please add the flight first in the InsertFlight().");
                         flightNumber = "";
                     }
-                } catch (DaoException e) {
-                    System.out.println("Error: " + e.getMessage());
                 }
             }
         }
@@ -335,14 +429,32 @@ public class Helpers {
             } else if (customerNumber.length() > 10) {
                 System.out.println("Customer number cannot be longer than 10 characters.");
             } else {
-                try {
-                    Customer customer = customerDao.findCustomerByNumber(customerNumber);
+//                try {
+//                    Customer customer = customerDao.findCustomerByNumber(customerNumber);
+//                    if (customer == null) {
+//                        System.out.println("Customer number does not exist. Please add the customer first in the InsertCustomer().");
+//                        customerNumber = "";
+//                    }
+//                } catch (DaoException e) {
+//                    System.out.println("Error: " + e.getMessage());
+//                }
+                Packet request = new Packet(MenuOptions.CustomerMenuOptions.FIND_CUSTOMER_BY_NUMBER, customerNumber);
+                String jsonRequest = request.toJson();
+                output.println(jsonRequest);
+                output.flush();
+
+                String jsonResponse = input.nextLine();
+                Packet response = Packet.fromJson(jsonResponse);
+
+                if (response.getException() != null) {
+                    System.out.println("Error: " + response.getException().getMessage());
+                } else {
+                    String jsonCustomer = (String) response.getData();
+                    Customer customer = new Gson().fromJson(jsonCustomer, Customer.class);
                     if (customer == null) {
                         System.out.println("Customer number does not exist. Please add the customer first in the InsertCustomer().");
                         customerNumber = "";
                     }
-                } catch (DaoException e) {
-                    System.out.println("Error: " + e.getMessage());
                 }
             }
         }
@@ -361,14 +473,32 @@ public class Helpers {
             } else if (bookingNumber.length() > 10) {
                 System.out.println("Booking number cannot be longer than 10 characters.");
             } else {
-                try {
-                    Booking booking = bookingDao.findBookingByNumber(bookingNumber);
+//                try {
+//                    Booking booking = bookingDao.findBookingByNumber(bookingNumber);
+//                    if (booking == null) {
+//                        System.out.println("Booking number does not exist. Please add the booking first in the InsertBooking().");
+//                        bookingNumber = "";
+//                    }
+//                } catch (DaoException e) {
+//                    System.out.println("Error: " + e.getMessage());
+//                }
+                Packet request = new Packet(MenuOptions.BookingMenuOptions.FIND_BOOKING_BY_NUMBER, bookingNumber);
+                String jsonRequest = request.toJson();
+                output.println(jsonRequest);
+                output.flush();
+
+                String jsonResponse = input.nextLine();
+                Packet response = Packet.fromJson(jsonResponse);
+
+                if (response.getException() != null) {
+                    System.out.println("Error: " + response.getException().getMessage());
+                } else {
+                    String jsonBooking = (String) response.getData();
+                    Booking booking = new Gson().fromJson(jsonBooking, Booking.class);
                     if (booking == null) {
                         System.out.println("Booking number does not exist. Please add the booking first in the InsertBooking().");
                         bookingNumber = "";
                     }
-                } catch (DaoException e) {
-                    System.out.println("Error: " + e.getMessage());
                 }
             }
         }
@@ -389,7 +519,7 @@ public class Helpers {
                 try {
                     CustomerDaoInterface customerDao = new MySqlCustomerDao();
                     if (customerDao.checkIfEmailExists(email)) {
-                        System.out.println("Error: email already exists.");
+                        System.out.println("Error: email already exists and Must be Unique");
                         email = "";
                     }
                 } catch (DaoException e) {
