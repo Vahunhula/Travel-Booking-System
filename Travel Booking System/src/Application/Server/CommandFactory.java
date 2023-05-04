@@ -20,6 +20,7 @@ public class CommandFactory {
     private FlightDaoInterface flightDao = new MySqlFlightDao();
     private BookingDaoInterface bookingDao = new MySqlBookingDao();
     private PaymentDaoInterface paymentDao = new MySqlPaymentDao();
+    private CustomerBookingDaoInterface customerBookingDao = new MySqlCustomerBookingDao();
 
     public Command createCustomerCommand(MenuOptions.CustomerMenuOptions option) {
         if (option.equals(FIND_ALL_CUSTOMERS)) {
@@ -32,6 +33,8 @@ public class CommandFactory {
             return new InsertCustomerCommand(customerDao);
         } else if (option.equals(CHECK_DUPLICATE_EMAIL)) {
             return new CheckDuplicateEmailCommand(customerDao);
+        } else if (option.equals(GET_CUSTOMER_NUMBERS_CACHE)) {
+            return new GetCustomerNumbersCacheCommand(customerDao);
         }
         throw new IllegalArgumentException("Invalid option: " + option);
     }
@@ -49,6 +52,8 @@ public class CommandFactory {
             return new FilterAirportByCityCommand(airportDao);
         } else if (option.equals(FIND_AIRPORT_BY_LOCATION)) {
             return new FindAirportByLocationCommand(airportDao);
+        } else if (option.equals(GET_AIRPORT_NUMBERS_CACHE)) {
+            return new GetAirportNumbersCacheCommand(airportDao);
         }
         throw new IllegalArgumentException("Invalid option: " + option);
     }
@@ -68,6 +73,9 @@ public class CommandFactory {
             return new FilterFlightByDepartureTimeCommand(flightDao);
         } else if (option.equals(FIND_FLIGHT_BY_AIRLINE_NAME)) {
             return new FindFlightByAirlineNameCommand(flightDao);
+        }else if (option.equals(GET_FLIGHT_NUMBERS_CACHE)) {
+            return new GetFlightNumbersCacheCommand(flightDao);
+
         }
         throw new IllegalArgumentException("Invalid option: " + option);
     }
@@ -81,6 +89,8 @@ public class CommandFactory {
             return new DeleteBookingByNumberCommand(bookingDao, paymentDao);
         } else if (option.equals(INSERT_BOOKING)) {
             return new InsertBookingCommand(bookingDao);
+        } else if (option.equals(GET_BOOKING_NUMBERS_CACHE)) {
+            return new GetBookingNumbersCacheCommand(bookingDao);
         }
         throw new IllegalArgumentException("Invalid option: " + option);
     }
@@ -98,6 +108,15 @@ public class CommandFactory {
             return new FilterPaymentByPaymentMethodCommand(paymentDao);
         } else if (option.equals(FIND_PAYMENT_BY_PAYMENT_METHOD)) {
             return new FindPaymentByPaymentMethodCommand(paymentDao);
+        } else if (option.equals(GET_PAYMENT_NUMBERS_CACHE)) {
+            return new GetPaymentNumbersCacheCommand(paymentDao);
+        }
+        throw new IllegalArgumentException("Invalid option: " + option);
+    }
+
+    public Command createCustomerBookingFlightCommand(MenuOptions.CustomerMenuOptions option) {
+        if(option.equals(FIND_ALL_CUSTOMERS_BOOKINGS_FLIGHTS)){
+            return new FindRelatedBookingWithFlightForCustomerCommand(customerBookingDao);
         }
         throw new IllegalArgumentException("Invalid option: " + option);
     }

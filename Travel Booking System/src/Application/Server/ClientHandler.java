@@ -43,19 +43,21 @@ public class ClientHandler implements Runnable {
 
                 Enum option = packet.getOption();
 
-                if (option.equals(FIND_ALL_CUSTOMERS) || option.equals(FIND_CUSTOMER_BY_NUMBER) || option.equals(DELETE_CUSTOMER_BY_NUMBER) || option.equals(INSERT_CUSTOMER) || option.equals(CHECK_DUPLICATE_EMAIL)) {
+                if (option.equals(FIND_ALL_CUSTOMERS) || option.equals(FIND_CUSTOMER_BY_NUMBER) || option.equals(DELETE_CUSTOMER_BY_NUMBER) || option.equals(INSERT_CUSTOMER) || option.equals(CHECK_DUPLICATE_EMAIL) || option.equals(GET_CUSTOMER_NUMBERS_CACHE)) {
                     command = factory.createCustomerCommand((MenuOptions.CustomerMenuOptions) option);
-                } else if (option.equals(FIND_ALL_AIRPORTS) || option.equals(FIND_AIRPORT_BY_NUMBER) || option.equals(DELETE_AIRPORT_BY_NUMBER) || option.equals(INSERT_AIRPORT) || option.equals(FILTER_AIRPORT_BY_CITY) || option.equals(FIND_AIRPORT_BY_LOCATION)) {
+                } else if (option.equals(FIND_ALL_AIRPORTS) || option.equals(FIND_AIRPORT_BY_NUMBER) || option.equals(DELETE_AIRPORT_BY_NUMBER) || option.equals(INSERT_AIRPORT) || option.equals(FILTER_AIRPORT_BY_CITY) || option.equals(FIND_AIRPORT_BY_LOCATION) || option.equals(GET_AIRPORT_NUMBERS_CACHE)) {
                     command = factory.createAirportCommand((MenuOptions.AirportMenuOptions) option);
                 }
-                else if (option.equals(FIND_ALL_FLIGHTS) || option.equals(FIND_FLIGHT_BY_NUMBER) || option.equals(DELETE_FLIGHT_BY_NUMBER) || option.equals(INSERT_FLIGHT) || option.equals(FILTER_FLIGHT_BY_AIRLINE_NAME) || option.equals(FILTER_FLIGHT_BY_DEPARTURE_TIME) || option.equals(FIND_FLIGHT_BY_AIRLINE_NAME)) {
+                else if (option.equals(FIND_ALL_FLIGHTS) || option.equals(FIND_FLIGHT_BY_NUMBER) || option.equals(DELETE_FLIGHT_BY_NUMBER) || option.equals(INSERT_FLIGHT) || option.equals(FILTER_FLIGHT_BY_AIRLINE_NAME) || option.equals(FILTER_FLIGHT_BY_DEPARTURE_TIME) || option.equals(FIND_FLIGHT_BY_AIRLINE_NAME) || option.equals(GET_FLIGHT_NUMBERS_CACHE)) {
                     command = factory.createFlightCommand((MenuOptions.FlightMenuOptions) option);
                 }
-                else if (option.equals(FIND_ALL_BOOKINGS) || option.equals(FIND_BOOKING_BY_NUMBER) || option.equals(DELETE_BOOKING_BY_NUMBER) || option.equals(INSERT_BOOKING)) {
+                else if (option.equals(FIND_ALL_BOOKINGS) || option.equals(FIND_BOOKING_BY_NUMBER) || option.equals(DELETE_BOOKING_BY_NUMBER) || option.equals(INSERT_BOOKING) || option.equals(GET_BOOKING_NUMBERS_CACHE)) {
                     command = factory.createBookingCommand((MenuOptions.BookingMenuOptions) option);
                 }
-                else if (option.equals(FIND_ALL_PAYMENTS) || option.equals(FIND_PAYMENT_BY_NUMBER) || option.equals(DELETE_PAYMENT_BY_NUMBER) || option.equals(INSERT_PAYMENT) || option.equals(FILTER_PAYMENT_BY_PAYMENT_METHOD) || option.equals(FIND_PAYMENT_BY_PAYMENT_METHOD)) {
+                else if (option.equals(FIND_ALL_PAYMENTS) || option.equals(FIND_PAYMENT_BY_NUMBER) || option.equals(DELETE_PAYMENT_BY_NUMBER) || option.equals(INSERT_PAYMENT) || option.equals(FILTER_PAYMENT_BY_PAYMENT_METHOD) || option.equals(FIND_PAYMENT_BY_PAYMENT_METHOD) || option.equals(GET_PAYMENT_NUMBERS_CACHE)) {
                     command = factory.createPaymentCommand((MenuOptions.PaymentMenuOptions) option);
+                }else if(option.equals(FIND_ALL_CUSTOMERS_BOOKINGS_FLIGHTS)){
+                    command = factory.createCustomerBookingFlightCommand((MenuOptions.CustomerMenuOptions) option);
                 }
 
                 if (command != null) {

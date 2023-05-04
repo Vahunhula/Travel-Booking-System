@@ -4,6 +4,7 @@ import Application.DTOs.Customer;
 import Application.Exceptions.DaoException;
 
 import java.util.List;
+import java.util.TreeSet;
 
 public interface CustomerDaoInterface {
     // Feature 1 – Find all Entities e.g. findAllPlayers() to return a List of all the entities and display
@@ -23,4 +24,7 @@ public interface CustomerDaoInterface {
 
     //to check if an email is already in the database
     public boolean checkIfEmailExists(String email) throws DaoException;
+
+    //for the customer cache
+    public TreeSet<String> populateCustomerCache() throws DaoException;
 }

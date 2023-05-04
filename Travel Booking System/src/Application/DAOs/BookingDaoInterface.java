@@ -5,6 +5,7 @@ import Application.DAOs.MySqlDao;
 import Application.Exceptions.DaoException;
 
 import java.util.List;
+import java.util.TreeSet;
 
 public interface BookingDaoInterface {
     //Feature 1 – Find all Entities e.g. findAllPlayers() to return a List of all the entities and display
@@ -26,4 +27,7 @@ public interface BookingDaoInterface {
     //an extra method made by me to find all bookings by flight number so that when a flight is
     //about to be deleted, all their affected bookings will be displayed
     public List<Booking> findAllBookingsByFlightNumber(String flightNumber) throws DaoException;
+
+    public TreeSet<String> populateBookingCache() throws DaoException;
+
 }

@@ -15,7 +15,7 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
     //to get the helper connection
     private HelperConnection helperConnection = new HelperConnection();
 
-    public void populateFlightCache() throws DaoException{
+    public TreeSet<String> populateFlightCache() throws DaoException{
         flightNumbersCache.clear();
         try{
             String query = "SELECT flight_number FROM flight";
@@ -28,6 +28,7 @@ public class MySqlFlightDao extends MySqlDao implements FlightDaoInterface {
         }catch(SQLException e){
             throw new DaoException("populateFlightCache() " + e.getMessage());
         }
+        return flightNumbersCache;
     }
     @Override
     public List<Flight> findAllFlights() throws DaoException {

@@ -12,11 +12,17 @@ import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 public class BookingObj {
+    //this is for the helper class which valdiates the user input
     static Helpers helper;
     static BookingDaoInterface bookingDao = new MySqlBookingDao();
     static PaymentDaoInterface paymentDao = new MySqlPaymentDao();
+
+    //this is to store the cache
+    private TreeSet<String> bookingNumbersCache;
+
 
     private Scanner input;
     private PrintWriter output;
@@ -24,6 +30,28 @@ public class BookingObj {
     public BookingObj(Scanner input, PrintWriter output) {
         this.input = input;
         this.output = output;
+        bookingNumbersCache = new TreeSet<>();
+    }
+
+    //this is used to initialize the cache
+    public void fetchBookingNumbersCache() {
+        //first we need to clear the cache
+        bookingNumbersCache.clear();
+        Packet request = new Packet(MenuOptions.BookingMenuOptions.GET_BOOKING_NUMBERS_CACHE, null);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Error: " + response.getException().getMessage());
+        } else {
+            String jsonCache = (String) response.getData();
+            Type cacheType = new TypeToken<TreeSet<String>>(){}.getType();
+            bookingNumbersCache = new Gson().fromJson(jsonCache, cacheType);
+        }
     }
 
     //display all bookings
@@ -57,6 +85,10 @@ public class BookingObj {
     public void findBookingByNumber() {
         helper = new Helpers(input, output);
         String bookingNumber = helper.readString("Enter booking number: ");
+        if(!bookingNumbersCache.contains(bookingNumber.toLowerCase()) && !bookingNumbersCache.contains(bookingNumber.toUpperCase())) {
+            System.out.println("Booking number not found.");
+            return;
+        }
         Packet request = new Packet(MenuOptions.BookingMenuOptions.FIND_BOOKING_BY_NUMBER, bookingNumber);
         String jsonRequest = request.toJson();
         output.println(jsonRequest);
@@ -83,6 +115,10 @@ public class BookingObj {
     public void deleteBookingByNumber() {
         helper = new Helpers(input, output);
         String bookingNumber = helper.readString("Enter booking number: ");
+        if(!bookingNumbersCache.contains(bookingNumber.toLowerCase()) && !bookingNumbersCache.contains(bookingNumber.toUpperCase())) {
+            System.out.println("Booking number not found.");
+            return;
+        }
         Packet request = new Packet(MenuOptions.BookingMenuOptions.DELETE_BOOKING_BY_NUMBER, bookingNumber);
         String jsonRequest = request.toJson();
         output.println(jsonRequest);
@@ -111,6 +147,7 @@ public class BookingObj {
             boolean deleted = Boolean.parseBoolean((String) response.getData());
             if (deleted) {
                 System.out.println("Booking deleted.");
+                bookingNumbersCache.remove(bookingNumber.toLowerCase());
             } else {
                 System.out.println("No booking found.");
             }
@@ -145,6 +182,7 @@ public class BookingObj {
             } else {
                 System.out.println(b);
                 System.out.println("Booking inserted.");
+                bookingNumbersCache.add(booking.getBooking_number().toLowerCase());
             }
         }
     }

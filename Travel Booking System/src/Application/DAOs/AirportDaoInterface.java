@@ -6,6 +6,7 @@ import Application.Exceptions.DaoException;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 public interface AirportDaoInterface {
 
@@ -29,4 +30,7 @@ public interface AirportDaoInterface {
 
     //to find airport by location
     public List<Airport> findAirportByLocation(String airportLocation) throws DaoException;
+
+    public TreeSet<String> populateAirportCache() throws DaoException;
+
 }

@@ -14,7 +14,7 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
     //to get the helper connection
     private HelperConnection helperConnection = new HelperConnection();
 
-    public void populateBookingCache() throws DaoException{
+    public TreeSet<String> populateBookingCache() throws DaoException{
         bookingNumbersCache.clear();
         try{
             String query = "SELECT booking_number FROM booking";
@@ -27,6 +27,7 @@ public class MySqlBookingDao extends MySqlDao implements BookingDaoInterface {
         }catch(SQLException e){
             throw new DaoException("populateBookingCache() " + e.getMessage());
         }
+        return bookingNumbersCache;
     }
     @Override
     public List<Booking> findAllBookings() throws DaoException {

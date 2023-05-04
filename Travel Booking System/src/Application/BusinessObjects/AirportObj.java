@@ -15,9 +15,14 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class AirportObj {
+    //this helper is used to validate user input
     static Helpers helper;
     static AirportDaoInterface airportDao = new MySqlAirportDao();
     static FlightDaoInterface flightDao = new MySqlFlightDao();
+
+    //to store airport numbers in cache and use them to dp check before querying the database
+    private TreeSet<String> airportNumbersCache;
+
 
     private Scanner input;
     private PrintWriter output;
@@ -25,6 +30,29 @@ public class AirportObj {
     public AirportObj(Scanner input, PrintWriter output) {
         this.input = input;
         this.output = output;
+        airportNumbersCache = new TreeSet<>();
+    }
+
+
+    //to fill in the cache
+    public void fetchAirportNumbersCache() {
+        //first we need to clear the cache
+        airportNumbersCache.clear();
+        Packet request = new Packet(MenuOptions.AirportMenuOptions.GET_AIRPORT_NUMBERS_CACHE, null);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Error: " + response.getException().getMessage());
+        } else {
+            String jsonCache = (String) response.getData();
+            Type cacheType = new TypeToken<TreeSet<String>>(){}.getType();
+            airportNumbersCache = new Gson().fromJson(jsonCache, cacheType);
+        }
     }
 
     //display all airports
@@ -58,6 +86,10 @@ public class AirportObj {
     public void findAirportByNumber() {
         helper = new Helpers(input, output);
         String airportNumber = helper.readString("Enter airport number: ");
+        if(!airportNumbersCache.contains(airportNumber.toLowerCase()) && !airportNumbersCache.contains(airportNumber.toUpperCase())) {
+            System.out.println("Airport number not found.");
+            return;
+        }
         Packet request = new Packet(MenuOptions.AirportMenuOptions.FIND_AIRPORT_BY_NUMBER, airportNumber);
         String jsonRequest = request.toJson();
         output.println(jsonRequest);
@@ -83,6 +115,10 @@ public class AirportObj {
     public void deleteAirportByNumber() {
         helper = new Helpers(input, output);
         String airportNumber = helper.readString("Enter airport number: ");
+        if(!airportNumbersCache.contains(airportNumber.toLowerCase()) && !airportNumbersCache.contains(airportNumber.toUpperCase())) {
+            System.out.println("Airport number not found.");
+            return;
+        }
         Packet request = new Packet(MenuOptions.AirportMenuOptions.DELETE_AIRPORT_BY_NUMBER, airportNumber);
         String jsonRequest = request.toJson();
         output.println(jsonRequest);
@@ -112,6 +148,7 @@ public class AirportObj {
             boolean deleted = Boolean.parseBoolean((String) response.getData());
             if (deleted) {
                 System.out.println("Airport deleted.");
+                airportNumbersCache.remove(airportNumber.toLowerCase());
             } else {
                 System.out.println("No airport found.");
             }
@@ -143,6 +180,7 @@ public class AirportObj {
             } else {
                 System.out.println(a);
                 System.out.println("Airport inserted.");
+                airportNumbersCache.add(airport.getAirport_number().toLowerCase());
             }
         }
     }

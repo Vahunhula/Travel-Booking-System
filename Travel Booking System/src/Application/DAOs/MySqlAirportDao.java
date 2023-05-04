@@ -15,7 +15,7 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface {
 
     HelperConnection helperConnection = new HelperConnection();
 
-    public void populateAirportCache() throws DaoException {
+    public TreeSet<String> populateAirportCache() throws DaoException {
         airportNumberCache.clear();
 
         try {
@@ -29,6 +29,7 @@ public class MySqlAirportDao extends MySqlDao implements AirportDaoInterface {
         } catch (SQLException e) {
             throw new DaoException("populateAirportCache() " + e.getMessage());
         }
+        return airportNumberCache;
     }
 
 

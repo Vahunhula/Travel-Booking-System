@@ -6,6 +6,7 @@ import Application.Exceptions.DaoException;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 public interface PaymentDaoInterface {
     //Feature 1 – Find all Entities e.g. findAllPlayers() to return a List of all the entities and display
@@ -29,4 +30,7 @@ public interface PaymentDaoInterface {
 
     //to find payment by payment type
     public List<Payment> findPaymentByPaymentMethod(String paymentMethod) throws DaoException;
+
+    public TreeSet<String> populatePaymentCache() throws DaoException;
+
 }

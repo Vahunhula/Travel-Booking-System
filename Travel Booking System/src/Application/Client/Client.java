@@ -33,10 +33,10 @@ public class Client {
     }
 
     public static void start() {
-        try{
+        try {
             Socket socket = new Socket("localhost", 8080);  // connect to server socket
             System.out.println("Client: Port# of this client : " + socket.getLocalPort());
-            System.out.println("Client: Port# of Server :" + socket.getPort() );
+            System.out.println("Client: Port# of Server :" + socket.getPort());
 
             System.out.println("Client message: The Client is running and has connected to the server");
 
@@ -54,6 +54,12 @@ public class Client {
             paymentObj = new PaymentObj(input, output);
 
             while (true) {
+                //these are to initialise the cache for the client side
+                customerObj.fetchCustomerNumbersCache();
+                airportObj.fetchAirportNumbersCache();
+                flightObj.fetchFlightNumbersCache();
+                bookingObj.fetchBookingNumbersCache();
+                paymentObj.fetchPaymentNumbersCache();
                 printMainMenu();
                 int choice = helper.readInt("Enter your choice: ");
                 switch (choice) {
@@ -81,9 +87,7 @@ public class Client {
                         break;
                 }
             }
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -106,6 +110,7 @@ public class Client {
             System.out.println("3. Find All Flights");
             System.out.println("4. Find All Bookings");
             System.out.println("5. Find All Payments");
+            System.out.println("6. Find Related Bookings With Flights For A Customer");
             System.out.println("6. Back to Main Menu");
             int choice = helper.readInt("Enter your choice: ");
             switch (choice) {
@@ -125,6 +130,9 @@ public class Client {
                     paymentObj.findAllPayments();
                     break;
                 case 6:
+                    customerObj.findRelatedBookingsWithFlightsForCustomers();
+                    break;
+                case 7:
                     return;
                 default:
                     System.out.println("Invalid choice, please try again.");

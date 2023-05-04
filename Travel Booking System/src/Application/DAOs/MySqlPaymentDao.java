@@ -13,7 +13,7 @@ public class MySqlPaymentDao extends MySqlDao implements PaymentDaoInterface {
     //to get the helper connection
     private HelperConnection helperConnection = new HelperConnection();
 
-    public void populatePaymentCache() throws DaoException {
+    public TreeSet<String> populatePaymentCache() throws DaoException {
         paymentNumbersCache.clear();
         try {
             String query = "SELECT payment_number FROM payment";
@@ -26,6 +26,7 @@ public class MySqlPaymentDao extends MySqlDao implements PaymentDaoInterface {
         } catch (SQLException e) {
             throw new DaoException("populatePaymentCache() " + e.getMessage());
         }
+        return paymentNumbersCache;
     }
 
     @Override

@@ -17,7 +17,8 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
     //to get the helper connection
     private HelperConnection helperConnection = new HelperConnection();
 
-    public void populateCustomerCache() throws DaoException {
+    @Override
+    public TreeSet<String> populateCustomerCache() throws DaoException {
         customerNumbersCache.clear();
         try{
             String query = "SELECT customer_number FROM customer";
@@ -31,6 +32,7 @@ public class MySqlCustomerDao extends  MySqlDao implements CustomerDaoInterface{
         }catch(SQLException e){
             throw new DaoException("populateCustomerCache() " + e.getMessage());
         }
+        return customerNumbersCache;
     }
 
     @Override

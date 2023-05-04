@@ -17,6 +17,8 @@ import java.util.*;
 public class PaymentObj {
     static Helpers helper;
     static PaymentDaoInterface paymentDao = new MySqlPaymentDao();
+    private TreeSet<String> paymentNumbersCache;
+
 
     private Scanner input;
     private PrintWriter output;
@@ -24,6 +26,28 @@ public class PaymentObj {
     public PaymentObj(Scanner input, PrintWriter output) {
         this.input = input;
         this.output = output;
+        paymentNumbersCache = new TreeSet<>();
+    }
+
+    //to initialize the cache for payment numbers
+    public void fetchPaymentNumbersCache() {
+        //first we need to clear the cache
+        paymentNumbersCache.clear();
+        Packet request = new Packet(MenuOptions.PaymentMenuOptions.GET_PAYMENT_NUMBERS_CACHE, null);
+        String jsonRequest = request.toJson();
+        output.println(jsonRequest);
+        output.flush();
+
+        String jsonResponse = input.nextLine();
+        Packet response = Packet.fromJson(jsonResponse);
+
+        if (response.getException() != null) {
+            System.out.println("Error: " + response.getException().getMessage());
+        } else {
+            String jsonCache = (String) response.getData();
+            Type cacheType = new TypeToken<TreeSet<String>>(){}.getType();
+            paymentNumbersCache = new Gson().fromJson(jsonCache, cacheType);
+        }
     }
 
     //display all payments
@@ -57,6 +81,10 @@ public class PaymentObj {
     public void findPaymentByNumber() {
         helper = new Helpers(input, output);
           String paymentNumber = helper.readString("Enter payment number: ");
+        if(!paymentNumbersCache.contains(paymentNumber.toLowerCase()) && !paymentNumbersCache.contains(paymentNumber.toUpperCase())) {
+            System.out.println("Payment number not found.");
+            return;
+        }
         Packet request = new Packet(MenuOptions.PaymentMenuOptions.FIND_PAYMENT_BY_NUMBER, paymentNumber);
         String jsonRequest = request.toJson();
         output.println(jsonRequest);
@@ -82,6 +110,10 @@ public class PaymentObj {
     public void deletePaymentByNumber() {
         helper = new Helpers(input, output);
         String paymentNumber = helper.readString("Enter payment number: ");
+        if(!paymentNumbersCache.contains(paymentNumber.toLowerCase()) && !paymentNumbersCache.contains(paymentNumber.toUpperCase())) {
+            System.out.println("Payment number not found.");
+            return;
+        }
         Packet request = new Packet(MenuOptions.PaymentMenuOptions.DELETE_PAYMENT_BY_NUMBER, paymentNumber);
         String jsonRequest = request.toJson();
         output.println(jsonRequest);
@@ -97,6 +129,7 @@ public class PaymentObj {
             boolean deleted = Boolean.parseBoolean((String) response.getData());
             if (deleted) {
                 System.out.println("Payment deleted.");
+                paymentNumbersCache.remove(paymentNumber.toLowerCase());
             } else {
                 System.out.println("No payment found.");
             }
@@ -131,97 +164,11 @@ public class PaymentObj {
             } else {
                 System.out.println(p);
                 System.out.println("Payment inserted.");
+                paymentNumbersCache.add(payment.getPayment_number().toLowerCase());
             }
         }
     }
 
-    //public void filterAirportByCity() {
-    //        helper = new Helpers(input, output);
-    //        Packet request = new Packet(MenuOptions.AirportMenuOptions.FILTER_AIRPORT_BY_CITY, null);
-    //        String jsonRequest = request.toJson();
-    //        output.println(jsonRequest);
-    //        output.flush();
-    //
-    //        String jsonResponse = input.nextLine();
-    //        Packet response = Packet.fromJson(jsonResponse);
-    //
-    //        if (response.getException() != null) {
-    //            System.out.println("Error: " + response.getException().getMessage());
-    //        } else {
-    //            // Deserialize the HashMap received from the server
-    //            Type hashMapType = new TypeToken<HashMap<Integer, String>>() {
-    //            }.getType();
-    //            HashMap<Integer, String> numberedAirportLocations = new Gson().fromJson((String) response.getData(), hashMapType);
-    //
-    //            for (Map.Entry<Integer, String> entry : numberedAirportLocations.entrySet()) {
-    //                System.out.println(entry.getKey() + ". " + entry.getValue());
-    //            }
-    //            while (true) {
-    //                int choice = helper.readInt("Enter your choice: ");
-    //                if (choice > numberedAirportLocations.size() || choice < 1) {
-    //                    System.out.println("Invalid choice, please try again.");
-    //                } else {
-    //                    String airportLocation = numberedAirportLocations.get(choice);
-    //
-    //                    Packet locationRequest = new Packet(MenuOptions.AirportMenuOptions.FIND_AIRPORT_BY_LOCATION, airportLocation);
-    //                    String jsonLocationRequest = locationRequest.toJson();
-    //                    output.println(jsonLocationRequest);
-    //                    output.flush();
-    //
-    //                    String jsonLocationResponse = input.nextLine();
-    //                    Packet locationResponse = Packet.fromJson(jsonLocationResponse);
-    //
-    //                    if (locationResponse.getException() != null) {
-    //                        System.out.println("Error: " + locationResponse.getException().getMessage());
-    //                    } else {
-    //                        String jsonAirports = (String) locationResponse.getData();
-    //                        Type airportListType = new TypeToken<List<Airport>>(){}.getType();
-    //                        List<Airport> airports = new Gson().fromJson(jsonAirports, airportListType);
-    //
-    //                        if (airports.isEmpty()) {
-    //                            System.out.println("No airports found.");
-    //                        } else {
-    //                            System.out.println("How do you want the airports to be sorted?");
-    //                            System.out.println("1. By Default");
-    //                            System.out.println("2. By Ascending Order");
-    //                            System.out.println("3. By Descending Order");
-    //                            while (true) {
-    //                                int sortChoice = helper.readInt("Enter your choice: ");
-    //                                if (sortChoice > 3 || sortChoice < 1) {
-    //                                    System.out.println("Invalid choice, please try again.");
-    //                                } else {
-    //                                    switch (sortChoice) {
-    //                                        case 1:
-    //                                            System.out.println("Airports in " + airportLocation + ":");
-    //                                            for (Airport airport : airports) {
-    //                                                System.out.println(airport);
-    //                                            }
-    //                                            break;
-    //                                        case 2:
-    //                                            System.out.println("Airports in " + airportLocation + " sorted by ascending order:");
-    //                                            airports.sort(new CompAscAirportName());
-    //                                            for (Airport airport : airports) {
-    //                                                System.out.println(airport);
-    //                                            }
-    //                                            break;
-    //                                        case 3:
-    //                                            System.out.println("Airports in " + airportLocation + " sorted by descending order:");
-    //                                            airports.sort(new CompDescAirportName());
-    //                                            for (Airport airport : airports) {
-    //                                                System.out.println(airport);
-    //                                            }
-    //                                            break;
-    //                                    }
-    //                                    break;
-    //                                }
-    //                            }
-    //                        }
-    //                    }
-    //                    break;
-    //                }
-    //            }
-    //        }
-    //    }
 
     //to filter the payment with the payment method
     public void filterPaymentByPaymentMethod() {
@@ -312,69 +259,4 @@ public class PaymentObj {
             }
         }
     }
-//    public void filterPaymentByPaymentMethod() {
-//        helper = new Helpers(input, output);
-//        try {
-//            Set<String> uniquePaymentMethods = paymentDao.uniquePaymentMethod();
-//            HashMap<Integer, String> numberedPaymentMethods = new HashMap<>();
-//            int i = 1;
-//            for (String paymentMethod : uniquePaymentMethods) {
-//                numberedPaymentMethods.put(i, paymentMethod);
-//                i++;
-//            }
-//            for (Map.Entry<Integer, String> entry : numberedPaymentMethods.entrySet()) {
-//                System.out.println(entry.getKey() + ". " + entry.getValue());
-//            }
-//            while (true) {
-//                int choice = helper.readInt("Enter your choice: ");
-//                if (choice > numberedPaymentMethods.size() || choice < 1) {
-//                    System.out.println("Invalid choice, please try again.");
-//                } else {
-//                    String paymentMethod = numberedPaymentMethods.get(choice);
-//                    List<Payment> payments = paymentDao.findPaymentByPaymentMethod(paymentMethod);
-//                    if (payments.isEmpty()) {
-//                        System.out.println("No payments found.");
-//                    } else {
-//                        System.out.println("How do you want the payments to be sorted?");
-//                        System.out.println("1. By Default");
-//                        System.out.println("2. By Ascending Order");
-//                        System.out.println("3. By Descending Order");
-//                        while (true) {
-//                            int sortChoice = helper.readInt("Enter your choice: ");
-//                            if (sortChoice > 3 || sortChoice < 1) {
-//                                System.out.println("Invalid choice, please try again.");
-//                            } else {
-//                                switch (sortChoice) {
-//                                    case 1:
-//                                        System.out.println("Payments by " + paymentMethod + ":");
-//                                        for (Payment payment : payments) {
-//                                            System.out.println(payment);
-//                                        }
-//                                        break;
-//                                    case 2:
-//                                        System.out.println("Payments by " + paymentMethod + " sorted by ascending order:");
-//                                        payments.sort(new CompAscPayMethod());
-//                                        for (Payment payment : payments) {
-//                                            System.out.println(payment);
-//                                        }
-//                                        break;
-//                                    case 3:
-//                                        System.out.println("Payments by " + paymentMethod + " sorted by descending order:");
-//                                        payments.sort(new CompDescPayMethod());
-//                                        for (Payment payment : payments) {
-//                                            System.out.println(payment);
-//                                        }
-//                                        break;
-//                                }
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    break;
-//                }
-//            }
-//        } catch (DaoException e) {
-//            System.out.println("Error: " + e.getMessage());
-//        }
-//    }
 }

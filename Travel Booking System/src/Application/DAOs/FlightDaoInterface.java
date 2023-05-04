@@ -6,6 +6,7 @@ import Application.Exceptions.DaoException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public interface FlightDaoInterface {
     //Feature 1 – Find all Entities e.g. findAllPlayers() to return a List of all the entities and display
@@ -35,4 +36,7 @@ public interface FlightDaoInterface {
 
     //to store the deparure time in morning, afternoon and night using a map that i will use in the App to filter the flights, return a map
     public Map<String, List<Flight>> timeOfFlight() throws DaoException;
+
+    public TreeSet<String> populateFlightCache() throws DaoException;
+
 }
