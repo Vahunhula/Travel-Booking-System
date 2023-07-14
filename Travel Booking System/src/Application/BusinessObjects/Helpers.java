@@ -57,7 +57,7 @@ public class Helpers {
     }
 
     //to read Double
-    public double readDouble(String message) {
+    public double       readDouble(String message) {
         Scanner scanner = new Scanner(System.in);
         double input;
         while (true) {

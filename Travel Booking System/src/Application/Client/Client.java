@@ -111,7 +111,7 @@ public class Client {
             System.out.println("4. Find All Bookings");
             System.out.println("5. Find All Payments");
             System.out.println("6. Find Related Bookings With Flights For A Customer");
-            System.out.println("6. Back to Main Menu");
+            System.out.println("7. Back to Main Menu");
             int choice = helper.readInt("Enter your choice: ");
             switch (choice) {
                 case 1:

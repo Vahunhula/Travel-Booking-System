@@ -172,7 +172,7 @@ public class CustomerObj {
 //        System.out.println("Client: Received JSON: " + jsonResponse); // Debugging line
         Packet response = Packet.fromJson(jsonResponse);
 
-        if (response.getException() != null) {
+        if (response.getException() !=null) {
             System.out.println("Client: Error inserting customer: " + response.getExceptionMessage()); // Debugging line
         } else {
             String jsonCustomer = (String) response.getData();
