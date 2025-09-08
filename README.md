@@ -10,12 +10,6 @@ This airline management system is a Java-based application which facilitates the
 * MySQL Server
 * JDBC Driver
 
-### Steps:
-
-* Clone the repository to your local machine using git clone <https://github.com/PatrickOrjieh/Travel-Booking-System.git>.
-* Import the project into your favorite Java IDE.
-* Set up a local MySQL server and create a database named travel_booking_system.
-* Run the newSqlSetUp.sql script in your MySQL server to set up the required tables and relationships.
 
 ## Usage
 The application comes with a user-friendly text-based menu that facilitates interaction with the various features.
@@ -36,5 +30,3 @@ JUnit tests have been written for most of the application's features. They can b
 * Handling Foreign Key Constraints: The application ensures data integrity by preventing deletion of entities linked to others.
 * Filtering System: Users can filter data based on a variety of attributes, enhancing the search functionality.
 
-## Contributing
-Contributions are welcome! Please fork the project and create a pull request with your changes.
